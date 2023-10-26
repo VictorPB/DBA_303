@@ -13,10 +13,10 @@ Repositorio del grupo de trabajo 303 de la asignatura DBA, ETSIIT, UGR
 
 ## Integrantes.
 
-* Jorge Bailon Gonzalez
-* María Florencio Díaz
-* Carlos Pérez Cruz
-* Víctor Pérez Barranco
+* Jorge Bailon Gonzalez.
+* María Florencio Díaz.
+* Carlos Pérez Cruz.
+* Víctor Pérez Barranco.
 ***
 
 ## PRÁCTICA 2. Movimiento de una agente en un mundo bidimensional
@@ -34,17 +34,17 @@ evaluará de forma colectiva (1.5ptos)
 
 ### Documentos a entregar
 
-- [ ] Código fuente
-- [ ] Memoria. Arquitectura de clases
-- [ ] Memoria. Decisiones de diseño e implementación
-- [ ] Presentación y/o vídeo
+- [ ] Código fuente.
+- [ ] Memoria. Arquitectura de clases.
+- [ ] Memoria. Decisiones de diseño e implementación.
+- [ ] Presentación y/o vídeo.
 
 ### Ejercicios a resolver
 Como se comentó al principio, el agente tendrá que ser capaz de dirigirse hacia su objetivo de la forma más eficiente posible, evitando obstáculos, y por supuesto, evitando salirse de los márgenes de su mundo.
 
 Se deben resolver, como mínimo, los siguientes mapas:
-* Sin obstáculos, yendo directo al objetivo
-* Con obstáculos básicos. Una línea horizontal de obstáculos, así como una línea vertical
-* Con obstáculos cóncavos. El agente tendrá que ser capaz de enfrentarse a obstáculos en forma de U invertida
-* Con obstáculos convexos. El agente tendrá que ser capaz de enfrentarse a obstáculos en forma de U
+* Sin obstáculos, yendo directo al objetivo.
+* Con obstáculos básicos. Una línea horizontal de obstáculos, así como una línea vertical.
+* Con obstáculos cóncavos. El agente tendrá que ser capaz de enfrentarse a obstáculos en forma de U invertida.
+* Con obstáculos convexos. El agente tendrá que ser capaz de enfrentarse a obstáculos en forma de U.
 
