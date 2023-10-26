@@ -7,8 +7,8 @@ Repositorio del grupo de trabajo 303 de la asignatura DBA, ETSIIT, UGR
 ![](images/logo.jpeg)
 ***
 ## Índice
-* [Integrantes.](#Integrantes.)
-* [PRÁCTICA 2.](#PRÁCTICA-2.-Movimiento-de-una-agente-en-un-mundo-bidimensional)
+* [Integrantes](#Integrantes.)
+* [PRÁCTICA 2](#PRÁCTICA-2.-Movimiento-de-una-agente-en-un-mundo-bidimensional)
 ***
 
 ## Integrantes.
