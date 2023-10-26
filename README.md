@@ -5,7 +5,7 @@
 
 Repositorio del grupo de trabajo 303 de la asignatura DBA, ETSIIT, UGR
 
-![](https://secretariageneral.ugr.es/sites/webugr/secretariageneral/public/inline-files/UGR-MARCA-02-monocromo.svg)
+![LOGO UGR](https://secretariageneral.ugr.es/sites/webugr/secretariageneral/public/inline-files/UGR-MARCA-02-monocromo.png)
 
 ***
 
