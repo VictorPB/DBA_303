@@ -34,11 +34,10 @@ evaluará de forma colectiva (1.5ptos)
 
 ### Documentos a entregar
 
-[ ] Código fuente
-[ ] Memoria
-  [ ]  Arquitectura de clases
-  [ ]  Decisiones de diseño e implementación
-[ ] Presentación y/o vídeo
+- [ ] Código fuente
+- [ ] Memoria. Arquitectura de clases
+- [ ] Memoria. Decisiones de diseño e implementación
+- [ ] Presentación y/o vídeo
 
 ### Ejercicios a resolver
 Como se comentó al principio, el agente tendrá que ser capaz de dirigirse hacia su objetivo de la forma más eficiente posible, evitando obstáculos, y por supuesto, evitando salirse de los márgenes de su mundo.
