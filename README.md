@@ -13,6 +13,7 @@ Repositorio del grupo de trabajo 303 de la asignatura DBA, ETSIIT, UGR
 ## Índice
 
 * [Integrantes](#Integrantes.)
+* [Recursos Externos](#recursos-externos)
 * [PRÁCTICA 2](#PRÁCTICA-2.-Movimiento-de-una-agente-en-un-mundo-bidimensional)
 
 ***
@@ -26,6 +27,11 @@ Repositorio del grupo de trabajo 303 de la asignatura DBA, ETSIIT, UGR
 * [![Static Badge](https://img.shields.io/badge/Víctor_Pérez_Barranco-grey?logo=github)](https://github.com/VictorPB)
 
 ***
+
+
+## Recursos Externos
+
+[Carpeta compartida Drive](https://drive.google.com/drive/folders/1so4ijG-vE99j2p71qAZ6ro4TsgbWVNi4?usp=drive_link)
 
 
 ## PRÁCTICA 2. Movimiento de una agente en un mundo bidimensional
