@@ -27,6 +27,19 @@ public enum Tile {
     }
     
     /**
+     * Method to get the correct Tile object from the value representation
+     * @param value the value representation
+     * @return The corresponding Tile object
+     */
+    public static Tile fromValue(int value) {
+        Tile res = null;
+        if(value == 0)          res = Tile.EMPTY;
+        else if(value == -1)    res = Tile.UNREACHABLE;
+        else                    res = Tile.UNKNOWN;
+        return res;
+    }
+    
+    /**
      * Tile value getter
      * @return the typeValue representation
      */
