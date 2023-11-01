@@ -14,31 +14,29 @@ import java.io.FileReader;
  * try to find a path to reach a goal position.
  */
 class Map {
-    
-    public enum BoxValue { EMPTY, UNAVAILABLE, UNKNOWN };
-    
+  
     /// The map matrix
-    private ArrayList<ArrayList<Integer>> board;
+    private ArrayList<ArrayList<Tile>> board;
     
-    /// NumCols (x dimension)
-    private int x;
+    /// NumCols (cols dimension)
+    private int cols;
     
-    /// Number of rows (y dimension);
-    private int y;
+    /// Number of rows (rows dimension);
+    private int rows;
 
     /**
      * Constructor with dimensions
-     * @param x Map x dimension (number of columns)
-     * @param y Map y dimension (number of rows)
+     * @param cols Map cols dimension (number of columns)
+     * @param rows Map rows dimension (number of rows)
      */
-    Map(int x, int y){
-        this.x = x;
-        this.y = y;
+    Map(int cols, int rows){
+        this.cols = cols;
+        this.rows = rows;
         this.board = new ArrayList<>();
-        for(int i=0; i<y; i++){
-            ArrayList<Integer> row = new ArrayList<>();
-            for(int j=0; j<x; j++){
-                row.add(0);
+        for(int i=0; i<rows; i++){
+            ArrayList<Tile> row = new ArrayList<>();
+            for(int j=0; j<cols; j++){
+                row.add(Tile.EMPTY);
             }
             this.board.add(row);
         }
@@ -50,8 +48,8 @@ class Map {
      */
     Map(String mapname){
         this.board = readMapFromFile(mapname);
-        this.x = this.board.size();
-        this.y = this.board.get(0).size();
+        this.cols = this.board.size();
+        this.rows = this.board.get(0).size();
     }
     
     /**
@@ -59,9 +57,9 @@ class Map {
      * @param filename
      * @return 
      */
-    private ArrayList<ArrayList<Integer>> readMapFromFile(String filename){
+    private ArrayList<ArrayList<Tile>> readMapFromFile(String filename){
         // Create a new empty array
-        ArrayList<ArrayList<Integer>> tempBoard = new ArrayList<>();
+        ArrayList<ArrayList<Tile>> tempBoard = new ArrayList<>();
         // Converts the filename to abosolute path
         String filepath = new File("maps/" + filename).getAbsolutePath();
         System.out.println(filepath);
@@ -80,10 +78,10 @@ class Map {
             
             for( int i=0; i<rows; i++){
                 bufferLine = br.readLine();
-                ArrayList<Integer> row = new ArrayList<>();
+                ArrayList<Tile> row = new ArrayList<>();
                 if(bufferLine!= null){
                     for(String c: bufferLine.split("\t")){
-                        row.add(Integer.parseInt(c));
+                        row.add(Tile.fromValue(Integer.parseInt(c)));
                     }
                     tempBoard.add(row);
                 }
@@ -110,10 +108,10 @@ class Map {
     @Override
     public String toString() {
         String res = "";
-        for(ArrayList<Integer> row : this.board){
-            for(Integer c: row){
-                if(c==0)        res+="▯";
-                else if(c==-1)  res+="▮";
+        for(ArrayList<Tile> row : this.board){
+            for(Tile c: row){
+                if(c == Tile.EMPTY)             res+="▯";
+                else if(c== Tile.UNREACHABLE)   res+="▮";
             }
             res +="\n";
         }
