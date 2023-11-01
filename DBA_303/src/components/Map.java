@@ -41,6 +41,7 @@ class Map {
             this.board.add(row);
         }
     }
+
     
     /**
      * Constructor with a map file name
@@ -52,6 +53,7 @@ class Map {
         this.rows = this.board.get(0).size();
     }
     
+    /** PRIVATE UTIL METHODS **************************************************/
     /**
      * Private method that reads the map given the .txt file name
      * @param filename
@@ -104,6 +106,33 @@ class Map {
         return tempBoard;
     }
 
+    
+    /** GETTERS ***************************************************************/
+    
+    /**
+     * Gets the number of rows of the map
+     */
+    int getNumRows() { return rows; };
+    
+    
+    /**
+     * Gets the number of columns of the map
+     */
+    int getNumCols() { return cols; };
+    
+    
+    /**
+     * Gets the Tile at a position
+     * @param r Row index
+     * @param c Column index
+     * @return The tile
+     */
+    Tile getTile(int r, int c){
+        return this.board.get(r).get(c);
+    }
+    
+    
+    /**************************************************************************/
 
     @Override
     public String toString() {
