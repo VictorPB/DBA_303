@@ -62,13 +62,7 @@ class Map {
     private ArrayList<ArrayList<Integer>> readMapFromFile(String filename){
         // Create a new empty array
         ArrayList<ArrayList<Integer>> tempBoard = new ArrayList<>();
-        // Checks the filename (convert to absolute path and adds the .txt
-        // extension if necessary and
-                
-//        int fnl = fnsplitted.length;
-////        if(!(fnsplitted[fnl-1].equals("txt"))){
-////            filename +=".txt";
-////        }
+        // Converts the filename to abosolute path
         String filepath = new File("maps/" + filename).getAbsolutePath();
         System.out.println(filepath);
         // Create the filereader and buffered reader objects and try to read 
@@ -94,7 +88,6 @@ class Map {
                     tempBoard.add(row);
                 }
             }
-            
         }
         catch(Exception e){
             e.printStackTrace();
@@ -113,6 +106,7 @@ class Map {
         return tempBoard;
     }
 
+
     @Override
     public String toString() {
         String res = "";
@@ -127,11 +121,11 @@ class Map {
     }
      
     
-    
     /**************************************************************************/
     
     /**
      * Testing the Map class...
+     * This function may open a map file, instanciates and print it in console
      * @param args 
      */
     public static void main(String[] args) {
@@ -142,5 +136,4 @@ class Map {
         
         System.out.println(mapa);
     }
-    
 }
