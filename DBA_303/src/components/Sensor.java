@@ -1,5 +1,5 @@
 /*
- * @file    
+ * @file    Sensor.java
  * @author  
  * @version 
  */
@@ -23,7 +23,7 @@ public class Sensor {
     /// The target position in absolute coordinates
     final Position targetPosition;
     
-    /// Teh current position of the agent in absolute coordinates
+    /// The current position of the agent in absolute coordinates
     Position agentPosition;
 
     
@@ -63,13 +63,27 @@ public class Sensor {
         return result;
     }
     
+    
     /**
-     * Updates the agent position given an Action
+     * Updates the agent position given an Action (if possible)
+     * @return @true if its updated, @false if not
      */
-    // Debe devolver un booleano si lo consigue? como metodo de proteccion?
     boolean updatePosition(Action action){
-        // implementamos un metodo en action que parta de una posicion y devuleva
-        // la nueva tras ser ejecutada?
-        return false;
+        Position newPosition = this.agentPosition.update(action);
+        if(theMap.getTile(newPosition.getY(),newPosition.getX()) == Tile.EMPTY){
+            this.agentPosition = newPosition;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    
+    /**
+     * Method to check if the agent has reached the goal
+     */
+    boolean targetReached(){
+        return agentPosition.equals(targetPosition);
     }
 }
