@@ -13,7 +13,7 @@ import java.io.FileReader;
  * @brief Class that models the board map where an agent will be deployed and
  * try to find a path to reach a goal position.
  */
-class Map {
+public class Map {
   
     /// The map matrix
     private ArrayList<ArrayList<Tile>> board;
@@ -154,7 +154,7 @@ class Map {
      * Testing the Map class...
      * This function may open a map file, instanciates and print it in console
      * @param args 
-     */
+     *
     public static void main(String[] args) {
         // testeamos la lectura del archivo:
         String file = "mapWithComplexObstacle1.txt";
@@ -163,4 +163,5 @@ class Map {
         
         System.out.println(mapa);
     }
+    * */
 }
