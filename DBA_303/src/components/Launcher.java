@@ -10,6 +10,9 @@ import jade.wrapper.StaleProxyException;
 /**
  *
  * @author carlos
+ * 
+ * @brief Class that implements the main function that loads the 
+ * containers and agents.
  */
 public class Launcher {
     public static void main(String[] args) throws StaleProxyException {
@@ -25,9 +28,6 @@ public class Launcher {
         Profile mainProfile = new ProfileImpl();
 
         // mainProfile parameters
-        // Includes: 
-        //      * mainProfile host
-        //      * mainContainer name
         mainProfile.setParameter(Profile.MAIN_HOST, host);
         mainProfile.setParameter(Profile.CONTAINER_NAME, mainContName);
         
@@ -36,9 +36,6 @@ public class Launcher {
         Profile agentProfile = new ProfileImpl();
 
         // agent Profile parameters
-        // Includes:
-        //      * agent Profile host
-        //      * agentContainer name
         agentProfile.setParameter(Profile.MAIN_HOST, host);
         agentProfile.setParameter(Profile.CONTAINER_NAME, agentContName);
         
