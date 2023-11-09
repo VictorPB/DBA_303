@@ -87,17 +87,17 @@ public class ScoutAgent extends Agent{
         
         if(targetRespectAgent.getX() == 0){        
             
-            if(tagetRespectAgent.getY() > 0){
+            if(targetRespectAgent.getY() > 0){
                 agentPos = new Position(1,1);
                 targetPos = new Position(1,cols-1);
             }
             
-            if(tagetRespectAgent.getY() < 0){
+            if(targetRespectAgent.getY() < 0){
                 agentPos = new Position(1,cols-2);
                 targetPos = new Position(1,0);
             }
             
-            if(tagetRespectAgent.getY() == 0){
+            if(targetRespectAgent.getY() == 0){
                 agentPos = new Position(1,1);
                 targetPos = new Position(1,1);
             }
@@ -106,7 +106,7 @@ public class ScoutAgent extends Agent{
     }
     
     
-    
+ 
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
@@ -210,9 +210,6 @@ public class ScoutAgent extends Agent{
            return true; 
         }
         
-    }
-    
-    
-    
+    }  
     
 }
