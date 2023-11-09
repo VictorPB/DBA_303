@@ -29,14 +29,14 @@ public class Map {
      * @param cols Map cols dimension (number of columns)
      * @param rows Map rows dimension (number of rows)
      */
-    Map(int cols, int rows){
+    public Map(int cols, int rows){
         this.cols = cols;
         this.rows = rows;
         this.board = new ArrayList<>();
         for(int i=0; i<rows; i++){
             ArrayList<Tile> row = new ArrayList<>();
             for(int j=0; j<cols; j++){
-                row.add(Tile.EMPTY);
+                row.add(Tile.UNKNOWN);
             }
             this.board.add(row);
         }
@@ -112,13 +112,13 @@ public class Map {
     /**
      * Gets the number of rows of the map
      */
-    int getNumRows() { return rows; };
+    public int getNumRows() { return rows; };
     
     
     /**
      * Gets the number of columns of the map
      */
-    int getNumCols() { return cols; };
+    public int getNumCols() { return cols; };
     
     
     /**
@@ -127,7 +127,7 @@ public class Map {
      * @param c Column index
      * @return The tile
      */
-    Tile getTile(int r, int c){
+    public Tile getTile(int r, int c){
         return this.board.get(r).get(c);
     }
     
@@ -154,7 +154,7 @@ public class Map {
      * Testing the Map class...
      * This function may open a map file, instanciates and print it in console
      * @param args 
-     *
+     * */
     public static void main(String[] args) {
         // testeamos la lectura del archivo:
         String file = "mapWithComplexObstacle1.txt";
@@ -163,5 +163,5 @@ public class Map {
         
         System.out.println(mapa);
     }
-    * */
+    
 }

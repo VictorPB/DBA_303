@@ -3,8 +3,12 @@
  * @author  
  * @version 
  */
-package components;
+package Agent;
 
+import components.Action;
+import components.Map;
+import components.Position;
+import components.Tile;
 import java.util.ArrayList;
 
 

@@ -7,6 +7,8 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
+import Agent.ScoutAgent;
+
 /**
  *
  * @author carlos
@@ -47,7 +49,7 @@ public class Launcher {
         
         // Creation of agent container controller
         AgentController agentController = agentContController.createNewAgent(agentName,
-        /*BasicHelloWorld.class.getCanonicalName()*/, null);
+        ScoutAgent.class.getCanonicalName(), null);
 
         // Start of agent
         agentController.start();
