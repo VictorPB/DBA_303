@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Agent;
+package agent;
 
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
@@ -24,6 +24,8 @@ public class ScoutAgent extends Agent{
     ArrayList<Tile> vision;
     
     Action nextAction;
+    
+    Sensor sensor;
     
     
     
@@ -110,10 +112,12 @@ public class ScoutAgent extends Agent{
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
-        //Get from sensors:
-        //pos target respect pos agent
-        //agent vision
-       
+        
+        Position agentPos = new Position(3,2);
+        Position targetPos = new Position(4,6);
+        
+        sensor = Sensor.getInstance("mapWithComplexObstacle1.txt", agentPos, targetPos);
+        
         //setMission(tagetRespectAgent, Vision);
         
         this.addBehaviour(new think_Manhattan());

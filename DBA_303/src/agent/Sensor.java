@@ -3,7 +3,7 @@
  * @author  
  * @version 
  */
-package Agent;
+package agent;
 
 import components.Action;
 import components.Map;
@@ -16,9 +16,11 @@ import java.util.ArrayList;
  *
  * @author JorgeBG
  */
-public class Sensor {
+public final class Sensor {
     
-    /// The real map to be consluted
+    private static Sensor instance;
+    
+    // The real map to be consluted
     final Map theMap;
     
     /// The origin position of the agent in absolute coordinates
@@ -33,14 +35,21 @@ public class Sensor {
     
     /**
      * Constructor for the sensor
-     * @param map
+     * @param mapFile
      * @param origin
      * @param target
      */
-    public Sensor(Map map, Position origin, Position target) {
-        this.theMap = map;
+    private Sensor(String mapFile, Position origin, Position target) {
+        this.theMap = new Map(mapFile);
         this.originPosition = this.agentPosition = origin;
         this.targetPosition = target;
+    }
+    
+    public static Sensor getInstance(String mapFile, Position origin, Position target){
+        if(instance == null){
+            instance = new Sensor(mapFile, origin, target);
+        }
+        return instance;
     }
     
     

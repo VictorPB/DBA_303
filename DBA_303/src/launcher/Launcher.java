@@ -1,5 +1,5 @@
 
-package components;
+package launcher;
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -7,7 +7,8 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-import Agent.ScoutAgent;
+import agent.ScoutAgent;
+import agent.Sensor;
 
 /**
  *

@@ -47,7 +47,7 @@ public class Map {
      * Constructor with a map file name
      * @param mapname 
      */
-    Map(String mapname){
+    public Map(String mapname){
         this.board = readMapFromFile(mapname);
         this.cols = this.board.size();
         this.rows = this.board.get(0).size();
