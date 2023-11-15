@@ -44,7 +44,7 @@ public class Sensor {
      * Method that evaluates the agent environment and return the array of tiles
      * @return The ordered tile array
      */
-    ArrayList<Tile> reveal(){
+    public ArrayList<Tile> reveal(){
         ArrayList<Tile> result = new ArrayList();
         int row = agentPosition.getY();
         int col = agentPosition.getX();
