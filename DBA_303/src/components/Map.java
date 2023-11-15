@@ -155,6 +155,7 @@ public class Map {
      * This function may open a map file, instanciates and print it in console
      * @param args 
      * */
+    /*
     public static void main(String[] args) {
         // testeamos la lectura del archivo:
         String file = "mapWithComplexObstacle1.txt";
@@ -163,5 +164,5 @@ public class Map {
         
         System.out.println(mapa);
     }
-    
+    */
 }

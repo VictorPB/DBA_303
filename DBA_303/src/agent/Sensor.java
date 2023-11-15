@@ -18,6 +18,7 @@ import java.util.ArrayList;
  */
 public final class Sensor {
     
+    // Static variable that save the only instance of the Singleton
     private static Sensor instance;
     
     // The real map to be consluted
@@ -50,6 +51,27 @@ public final class Sensor {
             instance = new Sensor(mapFile, origin, target);
         }
         return instance;
+    }
+    
+    // Getters and setters
+    public Map getMap () {
+        return theMap;
+    }
+    
+    public Position getOriginPosition () {
+        return originPosition;
+    }
+    
+    public Position getTargetPosition () {
+        return targetPosition;
+    }
+    
+    public Position getAgentPosition () {
+        return agentPosition;
+    }
+    
+    public void setAgentPosition (Position newAgentPosition) {
+        agentPosition = newAgentPosition;
     }
     
     
