@@ -229,42 +229,49 @@ public class ScoutAgent extends Agent{
     class think_obstacle extends Behaviour{
         private boolean behaviourFinished = false;
         
-        // Maria, no puedes instanciar sensor, para acceder a sus
-        // metodos, usa Sensor.getInstance().**metodo de sensor**
-        // Carlos, un saludo!
-        private Sensor sensor;
-        
-        public think_obstacle(Sensor sensor) {
-            this.sensor = sensor;
-        }
-
-        
         @Override
         public void action() {
             System.out.print("Evaluating next action in think_obstacle.\n");
             Position currentPos = agentPos;
             
             // Obtiene las casillas adyacentes con el sensor
-            ArrayList<Tile> adjacentTiles = sensor.reveal(); 
+            ArrayList<Tile> adjacentTiles = Sensor.getInstance().reveal(); 
             
             // Evalua las casillas adyacentes y elige la mejor opción
             Action bestAction = null;
             double bestScore = Integer.MIN_VALUE;
+            boolean isAccesible;
             
             // IMPORTANTE: Evitar pasar por diagonal de muro
             
             for (int i=0; i<adjacentTiles.size(); i++) {
                 if (i!= 4) {
+                    isAccesible = true;
                     Tile tile = adjacentTiles.get(i);
                 
-                    Position nextPos = currentPos;
+                    // Obtiene la posicion del array i
+                    Position nextPos = currentPos.update(i);
+                    
                     // Comprueba que la casilla no sea un obstáculo
                     if(tile != Tile.UNREACHABLE) {
-                        double score = calculateScore (currentPos, nextPos);
+                        // Comprobamos si las esquinas son accesibles
+                        if (i == 0 && upLeftIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        } else if (i == 2 && upRightIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        } else if (i == 6 && downLeftIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        } else if (i == 8 && downRightIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        }
+                    
+                        if (isAccesible) {
+                            double score = calculateScore (currentPos, nextPos);
 
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestAction = Action.values()[i];
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestAction = Action.values()[i];
+                            }
                         }
                     }
                 }
@@ -283,6 +290,43 @@ public class ScoutAgent extends Agent{
             int visitCount = visitedCountMap.get(currentPos.getX()).get(currentPos.getY());
             visitedCountMap.get(currentPos.getX()).set(currentPos.getY(), visitCount + 1);
 
+        }
+        
+        // Métodos para comprobar si las esquinas son alcanzables
+        // Esquina superior izquierda
+        private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            if ((adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(1) == Tile.UNREACHABLE)) {
+                return true;
+            }
+            else 
+                return false;
+        }
+        
+        // Esquina superior derecha
+        private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            if ((adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(5) == Tile.UNREACHABLE)) {
+                return true;
+            }
+            else 
+                return false;
+        }
+        
+        // Esquina inferior izquierda
+        private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            if ((adjacentTiles.get(3) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE)) {
+                return true;
+            }
+            else 
+                return false;
+        }
+        
+        // Esquina inferior derecha
+        private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            if ((adjacentTiles.get(5) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE)) {
+                return true;
+            }
+            else 
+                return false;
         }
         
         @Override

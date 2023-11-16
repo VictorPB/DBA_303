@@ -79,31 +79,35 @@ public class Position {
     }
     
     /**
-     * Method to create a new position from the actual one with an action  
-     * @param   int The number of the tile in the array os the adjacents
+     * Method to create a new position from the actual one with a position in
+     * adyacents array
+     * @param   int The number of the tile in the array of the adyacents
      * @return  The new position
      */
     public Position update (int i) {
         Position res = new Position(this);
         if (i==0){
             res.y-=1;
-            res.x -= 1;
+            res.x-=1;
         } else if (i==1) {
             res.y-=1;
         } else if (i==2) {
             res.y-=1;
+            res.x+=1;
         } else if (i==3) {
-            res.y-=1;
+            res.x-=1;
         } else if (i==4) {
-            res.y-=1;
+            // res sigue siendo igual
         } else if (i==5) {
-            res.y-=1;
+            res.x+=1;
         } else if (i==6) {
-            res.y-=1;
+            res.y+=1;
+            res.x-=1;
         } else if (i==7) {
-            res.y-=1;
+            res.y+=1;
         } else if (i==8) {
-            res.y-=1;
+            res.y+=1;
+            res.x+=1;
         } else {
             res.x = -1;
             res.y = -1;
