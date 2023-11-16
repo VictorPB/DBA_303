@@ -23,7 +23,17 @@ public class Map {
     
     /// Number of rows (rows dimension);
     private int rows;
-
+    
+    /**
+     * Default constructor
+     */
+    
+    public Map() {
+        this.cols = 0;
+        this.rows = 0;
+        this.board = new ArrayList<>();
+    }
+    
     /**
      * Constructor with dimensions
      * @param cols Map cols dimension (number of columns)
@@ -120,6 +130,19 @@ public class Map {
      */
     public int getNumCols() { return cols; };
     
+    /** SETTERS ***************************************************************/
+    
+    /**
+     * Sets the tile
+     * @param col
+     * @param row
+     * @param tile
+     */
+    public void setTile(int col, int row, Tile tile) { 
+        if(col >= 0 && col < board.get(0).size() && row >= 0 && row < board.size()) {
+            board.get(row).set(col, tile);
+        }
+    };
     
     /**
      * Gets the Tile at a position
@@ -146,7 +169,6 @@ public class Map {
         }
         return res;
     }
-     
     
     /**************************************************************************/
     

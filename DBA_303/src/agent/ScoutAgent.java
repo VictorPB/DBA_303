@@ -8,6 +8,7 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import components.*;
 import java.util.ArrayList;
+import components.Map;
 
 /**
  *
@@ -17,17 +18,26 @@ public class ScoutAgent extends Agent{
     
     Map exploredArea;
     
+    ArrayList<ArrayList<Integer>> visitedCountMap;
+    
     Position agentPos;
     
-    Position targetPos;
+    /* Guarda posición destino */
+    Position targetPos; 
     
     ArrayList<Tile> vision;
     
     Action nextAction;
-    
+
     Sensor sensor;
+
+    Tile nextTile;
+
     
     
+    public ScoutAgent() {
+        exploredArea = new Map();
+    }
     
     public void setMission(Position targetRespectAgent, ArrayList<Tile> vision){
         
@@ -213,7 +223,81 @@ public class ScoutAgent extends Agent{
         public boolean done(){
            return true; 
         }
-        
-    }  
+    }
     
+    /**
+     *  
+     */
+    class think_obstacle extends Behaviour{
+        private boolean behaviourFinished = false;
+        private Sensor sensor;
+        
+        public think_obstacle(Sensor sensor) {
+            this.sensor = sensor;
+        }
+
+        
+        @Override
+        public void action() {
+            System.out.print("Evaluating next action in think_obstacle.\n");
+            Position currentPos = agentPos;
+            
+            // Obtiene las casillas adyacentes con el sensor
+            ArrayList<Tile> adjacentTiles = sensor.reveal(); 
+            
+            // Evalua las casillas adyacentes y elige la mejor opción
+            Action bestAction = null;
+            double bestScore = Integer.MIN_VALUE;
+            
+            // IMPORTANTE: Evitar pasar por diagonal de muro
+            
+            for (int i=0; i<adjacentTiles.size(); i++) {
+                Tile tile = adjacentTiles.get(i);
+                
+                Position nextPos = currentPos;
+                // Comprueba que la casilla no sea un obstáculo
+                if(tile != Tile.UNREACHABLE) {
+                    double score = calculateScore (currentPos, nextPos);
+                    
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestAction = Action.values()[i];
+                    }
+                }
+            }
+            
+            if (bestAction != null) {
+                nextAction = bestAction;
+            } else {
+                System.err.print("Ninguna de las opciones posibles es la mejor.");
+            }
+            
+            // Actualizar mapas de exploración
+            exploredArea.setTile(currentPos.getX(), currentPos.getY(), Tile.EMPTY);
+            
+            // Sumar una visita en el mapa de exploración
+            int visitCount = visitedCountMap.get(currentPos.getX()).get(currentPos.getY());
+            visitedCountMap.get(currentPos.getX()).set(currentPos.getY(), visitCount + 1);
+
+        }
+        
+        @Override
+        public boolean done() {
+            return behaviourFinished;
+        }
+        
+        private double calculateScore (Position currentPos, Position nextPos) {
+           // TODO: Considerar la distancia al objetivo y el número de visitas 
+           int deltaX = nextPos.getX() - targetPos.getX();
+           int deltaY = nextPos.getY() - targetPos.getY();
+    
+           double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
+           int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
+           return Integer.MAX_VALUE - distanceToTarget*100 - visitCount; // Ajustar parámetros
+        }
+    }
+    
+    /**
+     * 
+     */   
 }
