@@ -23,7 +23,17 @@ public class Map {
     
     /// Number of rows (rows dimension);
     private int rows;
-
+    
+    /**
+     * Default constructor
+     */
+    
+    public Map() {
+        this.cols = 0;
+        this.rows = 0;
+        this.board = new ArrayList<>();
+    }
+    
     /**
      * Constructor with dimensions
      * @param cols Map cols dimension (number of columns)
@@ -47,7 +57,7 @@ public class Map {
      * Constructor with a map file name
      * @param mapname 
      */
-    Map(String mapname){
+    public Map(String mapname){
         this.board = readMapFromFile(mapname);
         this.cols = this.board.size();
         this.rows = this.board.get(0).size();
@@ -120,6 +130,19 @@ public class Map {
      */
     public int getNumCols() { return cols; };
     
+    /** SETTERS ***************************************************************/
+    
+    /**
+     * Sets the tile
+     * @param col
+     * @param row
+     * @param tile
+     */
+    public void setTile(int col, int row, Tile tile) { 
+        if(col >= 0 && col < board.get(0).size() && row >= 0 && row < board.size()) {
+            board.get(row).set(col, tile);
+        }
+    };
     
     /**
      * Gets the Tile at a position
@@ -146,7 +169,6 @@ public class Map {
         }
         return res;
     }
-     
     
     /**************************************************************************/
     
@@ -155,6 +177,7 @@ public class Map {
      * This function may open a map file, instanciates and print it in console
      * @param args 
      * */
+    /*
     public static void main(String[] args) {
         // testeamos la lectura del archivo:
         String file = "mapWithComplexObstacle1.txt";
@@ -163,5 +186,5 @@ public class Map {
         
         System.out.println(mapa);
     }
-    
+    */
 }

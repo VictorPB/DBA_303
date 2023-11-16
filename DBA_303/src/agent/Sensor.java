@@ -3,7 +3,7 @@
  * @author  
  * @version 
  */
-package Agent;
+package agent;
 
 import components.Action;
 import components.Map;
@@ -16,9 +16,12 @@ import java.util.ArrayList;
  *
  * @author JorgeBG
  */
-public class Sensor {
+public final class Sensor {
     
-    /// The real map to be consluted
+    // Static variable that save the only instance of the Singleton
+    private static Sensor instance;
+    
+    // The real map to be consluted
     final Map theMap;
     
     /// The origin position of the agent in absolute coordinates
@@ -33,14 +36,42 @@ public class Sensor {
     
     /**
      * Constructor for the sensor
-     * @param map
+     * @param mapFile
      * @param origin
      * @param target
      */
-    public Sensor(Map map, Position origin, Position target) {
-        this.theMap = map;
+    private Sensor(String mapFile, Position origin, Position target) {
+        this.theMap = new Map(mapFile);
         this.originPosition = this.agentPosition = origin;
         this.targetPosition = target;
+    }
+    
+    public static Sensor getInstance(String mapFile, Position origin, Position target){
+        if(instance == null){
+            instance = new Sensor(mapFile, origin, target);
+        }
+        return instance;
+    }
+    
+    // Getters and setters
+    public Map getMap () {
+        return theMap;
+    }
+    
+    public Position getOriginPosition () {
+        return originPosition;
+    }
+    
+    public Position getTargetPosition () {
+        return targetPosition;
+    }
+    
+    public Position getAgentPosition () {
+        return agentPosition;
+    }
+    
+    public void setAgentPosition (Position newAgentPosition) {
+        agentPosition = newAgentPosition;
     }
     
     
@@ -48,7 +79,7 @@ public class Sensor {
      * Method that evaluates the agent environment and return the array of tiles
      * @return The ordered tile array
      */
-    ArrayList<Tile> reveal(){
+    public ArrayList<Tile> reveal(){
         ArrayList<Tile> result = new ArrayList();
         int row = agentPosition.getY();
         int col = agentPosition.getX();
