@@ -295,38 +295,22 @@ public class ScoutAgent extends Agent{
         // Métodos para comprobar si las esquinas son alcanzables
         // Esquina superior izquierda
         private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            if ((adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(1) == Tile.UNREACHABLE)) {
-                return true;
-            }
-            else 
-                return false;
+            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(1) == Tile.UNREACHABLE;
         }
         
         // Esquina superior derecha
         private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            if ((adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(5) == Tile.UNREACHABLE)) {
-                return true;
-            }
-            else 
-                return false;
+            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(5) == Tile.UNREACHABLE;
         }
         
         // Esquina inferior izquierda
         private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            if ((adjacentTiles.get(3) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE)) {
-                return true;
-            }
-            else 
-                return false;
+            return adjacentTiles.get(3) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
         }
         
         // Esquina inferior derecha
         private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            if ((adjacentTiles.get(5) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE)) {
-                return true;
-            }
-            else 
-                return false;
+            return adjacentTiles.get(5) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
         }
         
         @Override
