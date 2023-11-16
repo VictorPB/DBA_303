@@ -313,11 +313,6 @@ public class ScoutAgent extends Agent{
             return adjacentTiles.get(5) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
         }
         
-        @Override
-        public boolean done() {
-            return behaviourFinished;
-        }
-        
         private double calculateScore (Position currentPos, Position nextPos) {
            // TODO: Considerar la distancia al objetivo y el número de visitas 
            int deltaX = nextPos.getX() - targetPos.getX();
@@ -326,6 +321,11 @@ public class ScoutAgent extends Agent{
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
            int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
            return Integer.MAX_VALUE - distanceToTarget*100 - visitCount; // Ajustar parámetros
+        }
+        
+        @Override
+        public boolean done() {
+            return behaviourFinished;
         }
     }
     
