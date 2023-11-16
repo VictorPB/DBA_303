@@ -252,16 +252,18 @@ public class ScoutAgent extends Agent{
             // IMPORTANTE: Evitar pasar por diagonal de muro
             
             for (int i=0; i<adjacentTiles.size(); i++) {
-                Tile tile = adjacentTiles.get(i);
+                if (i!= 4) {
+                    Tile tile = adjacentTiles.get(i);
                 
-                Position nextPos = currentPos;
-                // Comprueba que la casilla no sea un obstáculo
-                if(tile != Tile.UNREACHABLE) {
-                    double score = calculateScore (currentPos, nextPos);
-                    
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestAction = Action.values()[i];
+                    Position nextPos = currentPos;
+                    // Comprueba que la casilla no sea un obstáculo
+                    if(tile != Tile.UNREACHABLE) {
+                        double score = calculateScore (currentPos, nextPos);
+
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestAction = Action.values()[i];
+                        }
                     }
                 }
             }
