@@ -29,8 +29,6 @@ public class ScoutAgent extends Agent{
     
     Action nextAction;
 
-    Sensor sensor;
-
     Tile nextTile;
 
     
@@ -126,7 +124,7 @@ public class ScoutAgent extends Agent{
         Position agentPos = new Position(3,2);
         Position targetPos = new Position(4,6);
         
-        sensor = Sensor.getInstance("mapWithComplexObstacle1.txt", agentPos, targetPos);
+        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", agentPos, targetPos);
         
         //setMission(tagetRespectAgent, Vision);
         
@@ -230,6 +228,10 @@ public class ScoutAgent extends Agent{
      */
     class think_obstacle extends Behaviour{
         private boolean behaviourFinished = false;
+        
+        // Maria, no puedes instanciar sensor, para acceder a sus
+        // metodos, usa Sensor.getInstance().**metodo de sensor**
+        // Carlos, un saludo!
         private Sensor sensor;
         
         public think_obstacle(Sensor sensor) {
