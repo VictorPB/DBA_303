@@ -33,20 +33,22 @@ public final class Sensor {
     /// The current position of the agent in absolute coordinates
     private Position agentPosition;
 
+    /// Agent historic path
+    private ArrayList<Position> visitedPath;
     
     /**
      * Constructor for the sensor
-     * @param mapFile
-     * @param origin
-     * @param target
      */
-    private Sensor() {}
+    private Sensor() {
+        this.visitedPath = new ArrayList<>();
+    }
     
     public static Sensor getInstance(){
         return instance;
     }
     
-    // Getters and setters
+    /** GETTERS ***************************************************************/
+    
     public Map getMap () {
         return theMap;
     }
@@ -63,8 +65,13 @@ public final class Sensor {
         return agentPosition;
     }
     
+    public ArrayList<Position> getAgentVisitedPath(){
+        return this.visitedPath;
+    }
+    
     public void setAgentPosition (Position newAgentPosition) {
         this.agentPosition = newAgentPosition;
+        this.visitedPath.add(newAgentPosition);
     }
     
     public void setParameters (String map, Position origin, Position target) {
@@ -72,6 +79,8 @@ public final class Sensor {
         this.originPosition = origin;
         this.targetPosition = target;
     }
+    
+    /** OTHER USEFUL FUNCTIONS ************************************************/
     
     /**
      * Method that evaluates the agent environment and return the array of tiles
@@ -96,15 +105,16 @@ public final class Sensor {
         return result;
     }
     
-    
+    // TODO review the public visibility
     /**
      * Updates the agent position given an Action (if possible)
      * @return @true if its updated, @false if not
      */
-    boolean updatePosition(Action action){
+    public boolean updatePosition(Action action){
         Position newPosition = this.agentPosition.update(action);
         if(theMap.getTile(newPosition.getY(),newPosition.getX()) == Tile.EMPTY){
             this.agentPosition = newPosition;
+            this.visitedPath.add(newPosition);
             return true;
         }
         else{
