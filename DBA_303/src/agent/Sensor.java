@@ -19,19 +19,19 @@ import java.util.ArrayList;
 public final class Sensor {
     
     // Static variable that save the only instance of the Singleton
-    private static Sensor instance;
+    private static Sensor instance = new Sensor();
     
     // The real map to be consluted
-    final Map theMap;
+    private Map theMap;
     
     /// The origin position of the agent in absolute coordinates
-    final Position originPosition;
+    private Position originPosition;
     
     /// The target position in absolute coordinates
-    final Position targetPosition;
+    private Position targetPosition;
     
     /// The current position of the agent in absolute coordinates
-    Position agentPosition;
+    private Position agentPosition;
 
     
     /**
@@ -40,16 +40,9 @@ public final class Sensor {
      * @param origin
      * @param target
      */
-    private Sensor(String mapFile, Position origin, Position target) {
-        this.theMap = new Map(mapFile);
-        this.originPosition = this.agentPosition = origin;
-        this.targetPosition = target;
-    }
+    private Sensor() {}
     
-    public static Sensor getInstance(String mapFile, Position origin, Position target){
-        if(instance == null){
-            instance = new Sensor(mapFile, origin, target);
-        }
+    public static Sensor getInstance(){
         return instance;
     }
     
@@ -71,9 +64,14 @@ public final class Sensor {
     }
     
     public void setAgentPosition (Position newAgentPosition) {
-        agentPosition = newAgentPosition;
+        this.agentPosition = newAgentPosition;
     }
     
+    public void setParameters (String map, Position origin, Position target) {
+        this.theMap = new Map (map);
+        this.originPosition = origin;
+        this.targetPosition = target;
+    }
     
     /**
      * Method that evaluates the agent environment and return the array of tiles
