@@ -31,11 +31,7 @@ public class LauncherWindow extends javax.swing.JFrame {
     static public String mapName;
     static public Map selectedMap;
     static private List<JPanel> panelTileList;
-    
-    static Color colFree = Color.decode("#68BBE3");
-    static Color colWall = Color.decode("#003060");
-    static Color colUnkn = Color.decode("#CAD1D9");
-    
+        
     static public Position originPos = new Position(0,0);
     static public Position targetPos = new Position(0,0);
             
@@ -83,19 +79,8 @@ public class LauncherWindow extends javax.swing.JFrame {
         for(int i=0; i<rows; i++){
             for(int j=0; j<cols; j++){
                 Tile tile = selectedMap.getTile(i,j);
-                JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
-                switch (tile) {
-                    case EMPTY: 
-                        panelTile.setBackground(colFree);
-                        break;
-                    case UNREACHABLE:
-                        panelTile.setBackground(colWall);
-                        break;
-                    case UNKNOWN:
-                        panelTile.setBackground(colUnkn);
-                        break;
-                }
                 // add the tile to the panel
+                JPanel panelTile = AssetManager.getPreviewTilePanel(tile);
                 panelTileList.add(panelTile);
                 this.mapPreview.add(panelTile);
             }
