@@ -29,8 +29,6 @@ public class ScoutAgent extends Agent{
     
     Action nextAction;
 
-    Sensor sensor;
-
     Tile nextTile;
 
     
@@ -126,7 +124,7 @@ public class ScoutAgent extends Agent{
         Position agentPos = new Position(3,2);
         Position targetPos = new Position(4,6);
         
-        sensor = Sensor.getInstance("mapWithComplexObstacle1.txt", agentPos, targetPos);
+        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", agentPos, targetPos);
         
         //setMission(tagetRespectAgent, Vision);
         
@@ -230,12 +228,6 @@ public class ScoutAgent extends Agent{
      */
     class think_obstacle extends Behaviour{
         private boolean behaviourFinished = false;
-        private Sensor sensor;
-        
-        public think_obstacle(Sensor sensor) {
-            this.sensor = sensor;
-        }
-
         
         @Override
         public void action() {
@@ -243,25 +235,44 @@ public class ScoutAgent extends Agent{
             Position currentPos = agentPos;
             
             // Obtiene las casillas adyacentes con el sensor
-            ArrayList<Tile> adjacentTiles = sensor.reveal(); 
+            ArrayList<Tile> adjacentTiles = Sensor.getInstance().reveal(); 
             
             // Evalua las casillas adyacentes y elige la mejor opción
             Action bestAction = null;
             double bestScore = Integer.MIN_VALUE;
+            boolean isAccesible;
             
             // IMPORTANTE: Evitar pasar por diagonal de muro
             
             for (int i=0; i<adjacentTiles.size(); i++) {
-                Tile tile = adjacentTiles.get(i);
+                if (i!= 4) {
+                    isAccesible = true;
+                    Tile tile = adjacentTiles.get(i);
                 
-                Position nextPos = currentPos;
-                // Comprueba que la casilla no sea un obstáculo
-                if(tile != Tile.UNREACHABLE) {
-                    double score = calculateScore (currentPos, nextPos);
+                    // Obtiene la posicion del array i
+                    Position nextPos = currentPos.update(i);
                     
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestAction = Action.values()[i];
+                    // Comprueba que la casilla no sea un obstáculo
+                    if(tile != Tile.UNREACHABLE) {
+                        // Comprobamos si las esquinas son accesibles
+                        if (i == 0 && upLeftIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        } else if (i == 2 && upRightIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        } else if (i == 6 && downLeftIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        } else if (i == 8 && downRightIsUnreachable(adjacentTiles)) {
+                            isAccesible = false;
+                        }
+                    
+                        if (isAccesible) {
+                            double score = calculateScore (currentPos, nextPos);
+
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestAction = Action.values()[i];
+                            }
+                        }
                     }
                 }
             }
@@ -281,9 +292,25 @@ public class ScoutAgent extends Agent{
 
         }
         
-        @Override
-        public boolean done() {
-            return behaviourFinished;
+        // Métodos para comprobar si las esquinas son alcanzables
+        // Esquina superior izquierda
+        private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(1) == Tile.UNREACHABLE;
+        }
+        
+        // Esquina superior derecha
+        private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(5) == Tile.UNREACHABLE;
+        }
+        
+        // Esquina inferior izquierda
+        private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            return adjacentTiles.get(3) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
+        }
+        
+        // Esquina inferior derecha
+        private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
+            return adjacentTiles.get(5) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
@@ -294,6 +321,11 @@ public class ScoutAgent extends Agent{
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
            int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
            return Integer.MAX_VALUE - distanceToTarget*100 - visitCount; // Ajustar parámetros
+        }
+        
+        @Override
+        public boolean done() {
+            return behaviourFinished;
         }
     }
     
