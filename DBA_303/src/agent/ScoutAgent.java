@@ -121,16 +121,28 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
         
-        Position agentPos = new Position(3,2);
-        Position targetPos = new Position(4,6);
+        this.agentPos = new Position(0,0);
+        this.targetPos = new Position(0,6);
         
+        Sensor.getInstance().setAgentPosition(agentPos);
+  
         Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", agentPos, targetPos);
         
-        //setMission(tagetRespectAgent, Vision);
+        // Inicialización del mapa que lleva la cuenta de las veces que he pasado por una casilla
+        this.visitedCountMap = new ArrayList<>();  
+        for (int i = 0; i < Sensor.getInstance().getMap().getNumRows(); i++){
+            ArrayList<Integer> row = new ArrayList<>();
+            for (int j = 0; j < Sensor.getInstance().getMap().getNumCols(); j++) {
+                row.add(0);  
+            }
+            this.visitedCountMap.add(row);
+        }
         
-        this.addBehaviour(new think_Manhattan());
+        setMission(this.targetPos, this.vision);
         
-        
+        // this.addBehaviour(new think_Manhattan());
+        this.addBehaviour(new think_obstacle());
+        this.addBehaviour(new update_position());
         
     }
     
@@ -224,7 +236,7 @@ public class ScoutAgent extends Agent{
     }
     
     /**
-     *  
+     *  Agente que piensa a dónde debe ir. 
      */
     class think_obstacle extends Behaviour{
         private boolean behaviourFinished = false;
@@ -232,22 +244,29 @@ public class ScoutAgent extends Agent{
         @Override
         public void action() {
             System.out.print("Evaluating next action in think_obstacle.\n");
-            Position currentPos = agentPos;
+            
+            System.out.println("Sensor.getInstance().getAgentPosition() " + Sensor.getInstance().getAgentPosition());
+           
+            Position currentPos = new Position(Sensor.getInstance().getAgentPosition());
             
             // Obtiene las casillas adyacentes con el sensor
             ArrayList<Tile> adjacentTiles = Sensor.getInstance().reveal(); 
             
+            
             // Evalua las casillas adyacentes y elige la mejor opción
             Action bestAction = null;
-            double bestScore = Integer.MIN_VALUE;
+            double bestScore = -100.0;
             boolean isAccesible;
             
-            // IMPORTANTE: Evitar pasar por diagonal de muro
-            
-            for (int i=0; i<adjacentTiles.size(); i++) {
+            System.err.println("adjacentTiles.size() - > " + adjacentTiles.size());
+                        
+            for (int i=0; i < adjacentTiles.size(); i++) {
+                System.out.println("Valor de i: " + i);
+                
                 if (i!= 4) {
                     isAccesible = true;
                     Tile tile = adjacentTiles.get(i);
+                    System.err.println("adjacentTiles.get(i) ---- " + tile);
                 
                     // Obtiene la posicion del array i
                     Position nextPos = currentPos.update(i);
@@ -270,6 +289,7 @@ public class ScoutAgent extends Agent{
 
                             if (score > bestScore) {
                                 bestScore = score;
+                                System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
                                 bestAction = Action.values()[i];
                             }
                         }
@@ -277,16 +297,22 @@ public class ScoutAgent extends Agent{
                 }
             }
             
+            System.out.println("He salido del bucle ");
+            
             if (bestAction != null) {
                 nextAction = bestAction;
+                System.out.println("nextAction  " + nextAction);
             } else {
                 System.err.print("Ninguna de las opciones posibles es la mejor.");
             }
             
+            // Actualizar posición del agente
+            
             // Actualizar mapas de exploración
-            exploredArea.setTile(currentPos.getX(), currentPos.getY(), Tile.EMPTY);
+            // exploredArea.setTile(currentPos.getX(), currentPos.getY(), Tile.EMPTY);
             
             // Sumar una visita en el mapa de exploración
+            System.out.println("visitCount - - - " + visitedCountMap.get(currentPos.getX()).get(currentPos.getY()));
             int visitCount = visitedCountMap.get(currentPos.getX()).get(currentPos.getY());
             visitedCountMap.get(currentPos.getX()).set(currentPos.getY(), visitCount + 1);
 
@@ -314,14 +340,20 @@ public class ScoutAgent extends Agent{
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
+            System.out.println("currentPos " + currentPos + "nextPos " + nextPos);
            // TODO: Considerar la distancia al objetivo y el número de visitas 
            int deltaX = nextPos.getX() - targetPos.getX();
            int deltaY = nextPos.getY() - targetPos.getY();
     
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
            int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
-           return Integer.MAX_VALUE - distanceToTarget*100 - visitCount; // Ajustar parámetros
+            System.out.println("distanceToTarget " + distanceToTarget);
+           double score = 100 - distanceToTarget*100 - visitCount;
+           System.out.println("score " + score);
+           return score; // Ajustar parámetros
         }
+        
+        // Implementar behaviourFinished (llegada a destino)
         
         @Override
         public boolean done() {
@@ -331,5 +363,44 @@ public class ScoutAgent extends Agent{
     
     /**
      * 
-     */   
+     */
+    class update_position extends Behaviour{
+        @Override
+        public void action() {
+            Position pos = Sensor.getInstance().getAgentPosition();
+           
+            Sensor.getInstance().setAgentPosition(pos.update(nextAction)); 
+            
+            System.out.println();
+            
+            
+        }
+        @Override
+        public boolean done(){
+           return true; 
+        }
+    }
+    
+    /**
+     * 
+     */ 
+    class print extends Behaviour{
+        @Override
+        public void action() {
+            // Imprimir la posición
+            Position currentPosition = Sensor.getInstance().getAgentPosition();
+            
+            System.out.println(currentPosition);
+            
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        @Override
+        public boolean done(){
+           return true; 
+        }
+    }
 }

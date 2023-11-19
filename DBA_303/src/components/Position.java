@@ -135,7 +135,11 @@ public class Position {
         Position p = (Position)obj;
         return this.x==p.x && this.y==p.y;
     }
-    
-    /** COMPARE ***************************************************************/
+
+    @Override
+    public String toString() {
+        return "Posicion: X " + this.x + " Y " + this.y;
+    }
+
     
 }
