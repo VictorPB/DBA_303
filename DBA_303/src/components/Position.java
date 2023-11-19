@@ -126,5 +126,16 @@ public class Position {
      * Y position getter
      */
     public int getY() { return this.y; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Position))
+            return false;
+        
+        Position p = (Position)obj;
+        return this.x==p.x && this.y==p.y;
+    }
+    
+    /** COMPARE ***************************************************************/
     
 }

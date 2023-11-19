@@ -74,7 +74,6 @@ public class Map {
         ArrayList<ArrayList<Tile>> tempBoard = new ArrayList<>();
         // Converts the filename to abosolute path
         String filepath = new File("maps/" + filename).getAbsolutePath();
-        System.out.println(filepath);
         // Create the filereader and buffered reader objects and try to read 
         // the target file
         FileReader fr = null;
@@ -153,6 +152,16 @@ public class Map {
     public Tile getTile(int r, int c){
         return this.board.get(r).get(c);
     }
+    
+    /**
+     * Gets the Tile at a position (with Position instance)
+     * @param p The position
+     * @return The tile
+     */
+    public Tile getTile(Position p){
+        return this.board.get(p.getY()).get(p.getX());
+    }
+            
     
     
     /**************************************************************************/
