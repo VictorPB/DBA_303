@@ -23,7 +23,9 @@ public class ScoutAgent extends Agent{
     Position agentPos;
     
     /* Guarda posición destino */
-    Position targetPos; 
+    Position targetPos;
+    
+    boolean targetReached;
     
     ArrayList<Tile> vision;
     
@@ -124,6 +126,10 @@ public class ScoutAgent extends Agent{
         this.agentPos = new Position(0,0);
         this.targetPos = new Position(0,6);
         
+        if (!this.agentPos.equals(this.targetPos)) {
+            targetReached = false;
+        }
+        
         Sensor.getInstance().setAgentPosition(agentPos);
   
         Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", agentPos, targetPos);
@@ -138,9 +144,10 @@ public class ScoutAgent extends Agent{
             this.visitedCountMap.add(row);
         }
         
-        setMission(this.targetPos, this.vision);
+        //setMission(this.targetPos, this.vision);
         
         // this.addBehaviour(new think_Manhattan());
+        this.addBehaviour(new had_finished());
         this.addBehaviour(new think_obstacle());
         this.addBehaviour(new update_position());
         
@@ -149,7 +156,7 @@ public class ScoutAgent extends Agent{
     
     @Override
     protected void takeDown(){
-        System.out.println("Terminating ScoutAgent...\n");
+        System.out.println("Agent may have reached the target. Terminating ScoutAgent...\n");
     }
     
     /**
@@ -239,13 +246,12 @@ public class ScoutAgent extends Agent{
      *  Agente que piensa a dónde debe ir. 
      */
     class think_obstacle extends Behaviour{
-        private boolean behaviourFinished = false;
-        
+       
         @Override
         public void action() {
             System.out.print("Evaluating next action in think_obstacle.\n");
             
-            System.out.println("Sensor.getInstance().getAgentPosition() " + Sensor.getInstance().getAgentPosition());
+            System.out.println("Actual agent " + Sensor.getInstance().getAgentPosition());
            
             Position currentPos = new Position(Sensor.getInstance().getAgentPosition());
             
@@ -257,8 +263,6 @@ public class ScoutAgent extends Agent{
             Action bestAction = null;
             double bestScore = -100.0;
             boolean isAccesible;
-            
-            System.err.println("adjacentTiles.size() - > " + adjacentTiles.size());
                         
             for (int i=0; i < adjacentTiles.size(); i++) {
                 System.out.println("Valor de i: " + i);
@@ -266,7 +270,6 @@ public class ScoutAgent extends Agent{
                 if (i!= 4) {
                     isAccesible = true;
                     Tile tile = adjacentTiles.get(i);
-                    System.err.println("adjacentTiles.get(i) ---- " + tile);
                 
                     // Obtiene la posicion del array i
                     Position nextPos = currentPos.update(i);
@@ -297,7 +300,7 @@ public class ScoutAgent extends Agent{
                 }
             }
             
-            System.out.println("He salido del bucle ");
+            System.out.println("He salido del bucle \n\n");
             
             if (bestAction != null) {
                 nextAction = bestAction;
@@ -315,7 +318,6 @@ public class ScoutAgent extends Agent{
             System.out.println("visitCount - - - " + visitedCountMap.get(currentPos.getX()).get(currentPos.getY()));
             int visitCount = visitedCountMap.get(currentPos.getX()).get(currentPos.getY());
             visitedCountMap.get(currentPos.getX()).set(currentPos.getY(), visitCount + 1);
-
         }
         
         // Métodos para comprobar si las esquinas son alcanzables
@@ -340,29 +342,29 @@ public class ScoutAgent extends Agent{
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
-            System.out.println("currentPos " + currentPos + "nextPos " + nextPos);
+            System.out.println("En calculateScore: currentPos " + currentPos + ", nextPos " + nextPos+ "\n");
            // TODO: Considerar la distancia al objetivo y el número de visitas 
            int deltaX = nextPos.getX() - targetPos.getX();
            int deltaY = nextPos.getY() - targetPos.getY();
+           
+            System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
     
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
            int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
-            System.out.println("distanceToTarget " + distanceToTarget);
-           double score = 100 - distanceToTarget*100 - visitCount;
-           System.out.println("score " + score);
+            System.out.println("distanceToTarget: " + distanceToTarget);
+           double score = 1000 - distanceToTarget*100 - visitCount;
+           System.out.println("score: " + score);
            return score; // Ajustar parámetros
         }
         
-        // Implementar behaviourFinished (llegada a destino)
-        
         @Override
         public boolean done() {
-            return behaviourFinished;
+            return targetReached;
         }
     }
     
     /**
-     * 
+     * Behaviour that update the position of the agent
      */
     class update_position extends Behaviour{
         @Override
@@ -373,16 +375,22 @@ public class ScoutAgent extends Agent{
             
             System.out.println();
             
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+            
             
         }
         @Override
         public boolean done(){
-           return true; 
+           return targetReached; 
         }
     }
     
     /**
-     * 
+     * Behaviour that print the position of the agent
      */ 
     class print extends Behaviour{
         @Override
@@ -393,7 +401,7 @@ public class ScoutAgent extends Agent{
             System.out.println(currentPosition);
             
             try {
-                Thread.sleep(100);
+                Thread.sleep(3000);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
             }
@@ -403,4 +411,28 @@ public class ScoutAgent extends Agent{
            return true; 
         }
     }
+    
+    /**
+     *  Behaviour that verify if the agent had reached the target
+     */
+    class had_finished extends Behaviour {
+
+        @Override
+        public void action() {
+            if (Sensor.getInstance().getAgentPosition().equals(Sensor.getInstance().getTargetPosition())) {
+                targetReached = true;
+            }
+            else {
+                targetReached = false;
+            }
+        }
+
+        @Override
+        public boolean done() {
+            return targetReached;
+        }
+        
+        
+        
+    }  
 }
