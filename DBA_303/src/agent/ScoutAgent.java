@@ -123,8 +123,8 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
         
-        this.agentPos = new Position(0,0);
-        this.targetPos = new Position(0,6);
+        this.agentPos = new Position(7,7);
+        this.targetPos = new Position(5,5);
         
         if (!this.agentPos.equals(this.targetPos)) {
             targetReached = false;
@@ -251,12 +251,12 @@ public class ScoutAgent extends Agent{
         public void action() {
             System.out.print("Evaluating next action in think_obstacle.\n");
             
-            System.out.println("Actual agent " + Sensor.getInstance().getAgentPosition());
+            System.err.println("Actual agent " + Sensor.getInstance().getAgentPosition());
            
             Position currentPos = new Position(Sensor.getInstance().getAgentPosition());
             
             // Obtiene las casillas adyacentes con el sensor
-            ArrayList<Tile> adjacentTiles = Sensor.getInstance().reveal(); 
+            vision = Sensor.getInstance().reveal();
             
             
             // Evalua las casillas adyacentes y elige la mejor opción
@@ -264,12 +264,12 @@ public class ScoutAgent extends Agent{
             double bestScore = -100.0;
             boolean isAccesible;
                         
-            for (int i=0; i < adjacentTiles.size(); i++) {
+            for (int i=0; i < vision.size(); i++) {
                 System.out.println("Valor de i: " + i);
                 
                 if (i!= 4) {
                     isAccesible = true;
-                    Tile tile = adjacentTiles.get(i);
+                    Tile tile = vision.get(i);
                 
                     // Obtiene la posicion del array i
                     Position nextPos = currentPos.update(i);
@@ -277,13 +277,13 @@ public class ScoutAgent extends Agent{
                     // Comprueba que la casilla no sea un obstáculo
                     if(tile != Tile.UNREACHABLE) {
                         // Comprobamos si las esquinas son accesibles
-                        if (i == 0 && upLeftIsUnreachable(adjacentTiles)) {
+                        if (i == 0 && upLeftIsUnreachable(vision)) {
                             isAccesible = false;
-                        } else if (i == 2 && upRightIsUnreachable(adjacentTiles)) {
+                        } else if (i == 2 && upRightIsUnreachable(vision)) {
                             isAccesible = false;
-                        } else if (i == 6 && downLeftIsUnreachable(adjacentTiles)) {
+                        } else if (i == 6 && downLeftIsUnreachable(vision)) {
                             isAccesible = false;
-                        } else if (i == 8 && downRightIsUnreachable(adjacentTiles)) {
+                        } else if (i == 8 && downRightIsUnreachable(vision)) {
                             isAccesible = false;
                         }
                     
@@ -304,7 +304,7 @@ public class ScoutAgent extends Agent{
             
             if (bestAction != null) {
                 nextAction = bestAction;
-                System.out.println("nextAction  " + nextAction);
+                System.err.println("nextAction  " + nextAction);
             } else {
                 System.err.print("Ninguna de las opciones posibles es la mejor.");
             }
@@ -323,7 +323,7 @@ public class ScoutAgent extends Agent{
         // Métodos para comprobar si las esquinas son alcanzables
         // Esquina superior izquierda
         private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(1) == Tile.UNREACHABLE;
+            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(3) == Tile.UNREACHABLE;
         }
         
         // Esquina superior derecha
@@ -352,7 +352,7 @@ public class ScoutAgent extends Agent{
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
            int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
             System.out.println("distanceToTarget: " + distanceToTarget);
-           double score = 1000 - distanceToTarget*100 - visitCount;
+           double score = 1000 - distanceToTarget*100 - visitCount*200;
            System.out.println("score: " + score);
            return score; // Ajustar parámetros
         }
