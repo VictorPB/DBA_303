@@ -36,10 +36,14 @@ public class ScoutAgent extends Agent{
     
     
     public ScoutAgent() {
-        exploredArea = new Map();
+        //exploredArea = new Map();
     }
     
-    public void setMission(Position targetRespectAgent, ArrayList<Tile> vision){
+    public Map getExploredArea(){
+        return exploredArea;
+    }
+    
+    public void setMission(Position targetRespectAgent){
         
         
         // +2 -> una unidad por que al trabajar con la pos relativa, se empieza en 0
@@ -115,7 +119,22 @@ public class ScoutAgent extends Agent{
             }
         }
         
+        updateVision();
     }
+    
+    void updateVision(){
+        vision = Sensor.getInstance().reveal();
+              
+        int indexVision = 0;
+        
+        for(int i = agentPos.getY()-1; i <= agentPos.getY()+1; i++){
+            for(int j = agentPos.getX()-1; j <= agentPos.getX()+1; j++){
+                exploredArea.setTile(i, j, vision.get(indexVision));
+                indexVision++;
+            }         
+        }
+    }
+    
     
     
  
@@ -144,12 +163,13 @@ public class ScoutAgent extends Agent{
             this.visitedCountMap.add(row);
         }
         
-        //setMission(this.targetPos, this.vision);
+        setMission(Sensor.getInstance().getTargetRespectAgent());
         
         // this.addBehaviour(new think_Manhattan());
         this.addBehaviour(new had_finished());
         this.addBehaviour(new think_obstacle());
         this.addBehaviour(new update_position());
+        updateVision();
         
     }
     

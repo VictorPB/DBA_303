@@ -17,6 +17,7 @@ public enum Tile {
     
     /// internal representation
     private final int typeValue;
+    int times_visited;
 
     /**
      * Tile Constructor with the representation value
@@ -24,6 +25,7 @@ public enum Tile {
      */
     private Tile(int value) {
         this.typeValue = value;
+        this.times_visited = 0;
     }
     
     /**
@@ -44,5 +46,11 @@ public enum Tile {
      * @return the typeValue representation
      */
     public int getVal() { return this.typeValue; }
+    
+    /**
+     * Tile times visited getter
+     * @return Times the tile is visited
+     */
+    public int getTimesVisited() { return this.times_visited; }
     
 }

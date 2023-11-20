@@ -113,6 +113,13 @@ public final class Sensor {
     }
     
     
+    Position getTargetRespectAgent(){
+        return new Position(
+            targetPosition.getX() - originPosition.getX(),
+            targetPosition.getY() - originPosition.getY()
+        );
+    }
+    
     /**
      * Method to check if the agent has reached the goal
      */
