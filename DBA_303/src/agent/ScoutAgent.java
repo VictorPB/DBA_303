@@ -376,22 +376,34 @@ public class ScoutAgent extends Agent{
             
             System.out.println("-------------------\n");
             
-            System.out.println(exploredArea.toString());
+            // this may show in console what the agent know about the map
+            // it position and the target
+            for(int i=0; i<exploredArea.getNumRows(); i++){
+                for(int j=0; j<exploredArea.getNumCols(); j++){
+                    Position at = new Position(j,i);
+                    Tile t = exploredArea.getTile(i, j);
+                    if(at.equals(agentPos))          System.out.print("A");
+                    else if (at.equals(targetPos))   System.out.print("X");
+                    else if (t==Tile.EMPTY)             System.out.print("▯");
+                    else if (t==Tile.UNREACHABLE)       System.out.print("▮");
+                    else                                System.out.print("?");
+                }
+                System.out.println("");
+            }
+            
             
             for(int i=0; i<vision.size();i++){
                 System.out.println(vision.get(i).getVal());
             }
-            
-            
-            
+                       
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
             }
             
-            
         }
+        
         @Override
         public boolean done(){
            return targetReached; 
