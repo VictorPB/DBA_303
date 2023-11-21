@@ -188,7 +188,7 @@ public class ScoutAgent extends Agent{
             }
 
             //actualizamos posicion del objetivo y agente a una fila abajo
-            targetPos.update(Action.RIGHT);
+            targetPos = targetPos.update(Action.RIGHT);
             agentPos = agentPos.update(Action.RIGHT);
         
             exploredArea = newMap;
@@ -221,7 +221,7 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
   
-        Sensor.getInstance().setParameters("mapWithHorizontalWall.txt", new Position(8,7), new Position(2,1));
+        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", new Position(7,7), new Position(5,5));
         
         //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
         
@@ -274,7 +274,7 @@ public class ScoutAgent extends Agent{
                 boolean isAccesible;
 
                 for (int i=0; i < vision.size(); i++) {
-                    //System.out.println("Valor de i: " + i);
+                    System.out.println("Valor de i: " + i);
 
                     if (i!= 4) {
                         isAccesible = true;
@@ -301,7 +301,7 @@ public class ScoutAgent extends Agent{
 
                                 if (score < bestScore) {
                                     bestScore = score;
-                                    //System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
+                                    System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
                                     bestAction = Action.values()[i];
                                 }
                             }
@@ -343,18 +343,19 @@ public class ScoutAgent extends Agent{
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
-            //System.out.println("En calculateScore: currentPos " + currentPos + ", nextPos " + nextPos+ "\n");
+            System.out.println("En calculateScore: currentPos " + currentPos + ", nextPos " + nextPos+ "\n");
            // TODO: Considerar la distancia al objetivo y el número de visitas 
            int deltaX = nextPos.getX() - targetPos.getX();
            int deltaY = nextPos.getY() - targetPos.getY();
            
-           //System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
+           System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
     
            double distanceToTarget = Math.abs(deltaX) + Math.abs(deltaY);
            int visitCount = exploredArea.getTile(nextPos.getX(),nextPos.getY()).getTimesVisited();
-           //System.out.println("distanceToTarget: " + distanceToTarget);
+           System.out.println("distanceToTarget: " + distanceToTarget);
            double score = distanceToTarget*100 + visitCount*200;
-           //System.out.println("score: " + score);
+           System.out.println("visitCount: " + visitCount);
+           System.out.println("score: " + score);
            return score; // Ajustar parámetros
         }
         
@@ -371,9 +372,11 @@ public class ScoutAgent extends Agent{
         @Override
         public void action() {
             
+            exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
+            
             //Actualizamos la posicion del agente en su mapa interno
             agentPos = agentPos.update(nextAction);
-            exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
+            
             
             //Informamos de la accion a sensores
             Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(nextAction));            
