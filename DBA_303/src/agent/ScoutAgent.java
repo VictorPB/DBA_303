@@ -29,6 +29,8 @@ public class ScoutAgent extends Agent{
     ArrayList<Tile> vision;
     
     Action nextAction;
+    
+    Behaviour[] comportamientosActivos;
 
     
     
@@ -225,11 +227,17 @@ public class ScoutAgent extends Agent{
         
         setMission(Sensor.getInstance().getTargetRespectAgent());
         
+        comportamientosActivos = new Behaviour[]{
+            new think_obstacle(),
+            new update_position()
+        };
+
    
         this.addBehaviour(new had_finished());
-        this.addBehaviour(new think_obstacle());
-        this.addBehaviour(new update_position());
         
+        for(Behaviour b : comportamientosActivos){
+            this.addBehaviour(b);
+        }   
         
     }
     
@@ -248,68 +256,69 @@ public class ScoutAgent extends Agent{
        
         @Override
         public void action() {
-            System.out.print("Evaluating next action in think_obstacle.\n");
-            
-            System.out.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
-            System.out.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
-            System.out.println("Agent: Actual agent " + agentPos);
-            System.out.println("Agent: Actual target " + targetPos);
-                       
-            // Obtiene las casillas adyacentes con el sensor
-            vision = Sensor.getInstance().reveal();
-            
-            
-            // Evalua las casillas adyacentes y elige la mejor opción
-            Action bestAction = null;
-            double bestScore = Integer.MAX_VALUE;
-            boolean isAccesible;
-                        
-            for (int i=0; i < vision.size(); i++) {
-                //System.out.println("Valor de i: " + i);
-                
-                if (i!= 4) {
-                    isAccesible = true;
-                    Tile tile = vision.get(i);
-                    
-                    // Obtiene la posicion del array i
-                    Position nextPos = agentPos.update(i);
-                    
-                    // Comprueba que la casilla no sea un obstáculo
-                    if(tile != Tile.UNREACHABLE) {
-                        // Comprobamos si las esquinas son accesibles
-                        if (i == 0 && upLeftIsUnreachable(vision)) {
-                            isAccesible = false;
-                        } else if (i == 2 && upRightIsUnreachable(vision)) {
-                            isAccesible = false;
-                        } else if (i == 6 && downLeftIsUnreachable(vision)) {
-                            isAccesible = false;
-                        } else if (i == 8 && downRightIsUnreachable(vision)) {
-                            isAccesible = false;
-                        }
-                    
-                        if (isAccesible) {
-                            double score = calculateScore(agentPos, nextPos);
+            if(!targetReached){
+                System.out.print("Evaluating next action in think_obstacle.\n");
 
-                            if (score < bestScore) {
-                                bestScore = score;
-                                //System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
-                                bestAction = Action.values()[i];
+                System.out.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
+                System.out.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
+                System.out.println("Agent: Actual agent " + agentPos);
+                System.out.println("Agent: Actual target " + targetPos);
+
+                // Obtiene las casillas adyacentes con el sensor
+                vision = Sensor.getInstance().reveal();
+
+
+                // Evalua las casillas adyacentes y elige la mejor opción
+                Action bestAction = null;
+                double bestScore = Integer.MAX_VALUE;
+                boolean isAccesible;
+
+                for (int i=0; i < vision.size(); i++) {
+                    //System.out.println("Valor de i: " + i);
+
+                    if (i!= 4) {
+                        isAccesible = true;
+                        Tile tile = vision.get(i);
+
+                        // Obtiene la posicion del array i
+                        Position nextPos = agentPos.update(i);
+
+                        // Comprueba que la casilla no sea un obstáculo
+                        if(tile != Tile.UNREACHABLE) {
+                            // Comprobamos si las esquinas son accesibles
+                            if (i == 0 && upLeftIsUnreachable(vision)) {
+                                isAccesible = false;
+                            } else if (i == 2 && upRightIsUnreachable(vision)) {
+                                isAccesible = false;
+                            } else if (i == 6 && downLeftIsUnreachable(vision)) {
+                                isAccesible = false;
+                            } else if (i == 8 && downRightIsUnreachable(vision)) {
+                                isAccesible = false;
+                            }
+
+                            if (isAccesible) {
+                                double score = calculateScore(agentPos, nextPos);
+
+                                if (score < bestScore) {
+                                    bestScore = score;
+                                    //System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
+                                    bestAction = Action.values()[i];
+                                }
                             }
                         }
                     }
                 }
+
+                System.out.println("He salido del bucle \n\n");
+
+                if (bestAction != null) {
+                    nextAction = bestAction;
+                    System.out.println("nextAction  " + nextAction);
+                } else {
+                    System.out.print("Ninguna de las opciones posibles es la mejor.");
+                }
+            
             }
-            
-            System.out.println("He salido del bucle \n\n");
-            
-            if (bestAction != null) {
-                nextAction = bestAction;
-                System.out.println("nextAction  " + nextAction);
-            } else {
-                System.out.print("Ninguna de las opciones posibles es la mejor.");
-            }
-            
-            
         }
         
         // Métodos para comprobar si las esquinas son alcanzables
@@ -393,31 +402,8 @@ public class ScoutAgent extends Agent{
             
         }
         @Override
-        public boolean done(){
-           return targetReached; 
-        }
-    }
-    
-    /**
-     * Behaviour that print the position of the agent
-     */ 
-    class print extends Behaviour{
-        @Override
-        public void action() {
-            // Imprimir la posición
-            Position currentPosition = Sensor.getInstance().getAgentPosition();
-            
-            System.out.println(currentPosition);
-            
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        @Override
-        public boolean done(){
-           return true; 
+        public boolean done() {
+            return targetReached;
         }
     }
     
@@ -428,11 +414,12 @@ public class ScoutAgent extends Agent{
 
         @Override
         public void action() {
-            if (Sensor.getInstance().getAgentPosition().equals(Sensor.getInstance().getTargetPosition())) {
-                targetReached = true;
-            }
-            else {
-                targetReached = false;
+            targetReached = Sensor.getInstance().getAgentPosition().equals(Sensor.getInstance().getTargetPosition());
+            System.out.println("");
+            if(targetReached){
+                for(Behaviour b :comportamientosActivos){
+                    this.myAgent.removeBehaviour(b);
+                }
             }
         }
 
@@ -440,8 +427,6 @@ public class ScoutAgent extends Agent{
         public boolean done() {
             return targetReached;
         }
-        
-        
         
     }  
 }
