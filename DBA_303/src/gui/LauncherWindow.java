@@ -109,7 +109,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         panelTileList.get(originPos.getY() * rows + originPos.getX())
                 .add( 
                     new JLabel(AssetManager.getOriginIcon(16, 
-                                !selectedMap.getTile(originPos).equals(Tile.UNREACHABLE)))
+                                !selectedMap.getTile(originPos).isType(Tile.TypeTile.UNREACHABLE)))
                 );
 
         // Add the target icon only if its different from the origin position
@@ -117,7 +117,7 @@ public class LauncherWindow extends javax.swing.JFrame {
             panelTileList.get(targetPos.getY() * rows + targetPos.getX())
                 .add( 
                     new JLabel(AssetManager.getTargetIcon(16, 
-                                !selectedMap.getTile(targetPos).equals(Tile.UNREACHABLE)))
+                                !selectedMap.getTile(targetPos).isType(Tile.TypeTile.UNREACHABLE)))
                 );
         }
     }
