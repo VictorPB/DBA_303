@@ -121,13 +121,14 @@ public class ScoutAgent extends Agent{
     }
     
     void updateVision(){
+        
         vision = Sensor.getInstance().reveal();
               
         int indexVision = 0;
         
         for(int i = agentPos.getY()-1; i <= agentPos.getY()+1; i++){
             for(int j = agentPos.getX()-1; j <= agentPos.getX()+1; j++){
-                exploredArea.setTile(i, j, vision.get(indexVision));
+                exploredArea.setTile(j, i, vision.get(indexVision));
                 indexVision++;
             }         
         }
@@ -144,7 +145,7 @@ public class ScoutAgent extends Agent{
         if(agentPos.getX() == exploredArea.getNumCols()-1){         //En ultima columna
                       
             //Aumentamos el tamaño en una columna mas
-            newMap = new Map(exploredArea.getNumRows(), exploredArea.getNumCols()+1);
+            newMap = new Map(exploredArea.getNumCols()+1, exploredArea.getNumRows());
 
             
             for(int i = 0; i<exploredArea.getNumRows(); i++){
@@ -159,8 +160,8 @@ public class ScoutAgent extends Agent{
         
         if(agentPos.getY() == exploredArea.getNumRows()-1){         //En ultima fila
             
-            //Aumentamos el tamaño en una columna mas
-            newMap = new Map(exploredArea.getNumRows()+1, exploredArea.getNumCols());
+            //Aumentamos el tamaño en una fila mas
+            newMap = new Map(exploredArea.getNumCols(), exploredArea.getNumRows()+1);
 
             for(int i = 0; i<exploredArea.getNumRows(); i++){
                 for(int j = 0; j<exploredArea.getNumCols(); j++){
@@ -174,37 +175,39 @@ public class ScoutAgent extends Agent{
 
         if(agentPos.getX() == 0){
                 
-            //Aumentamos el tamaño en una fila mas
-            newMap = new Map(exploredArea.getNumRows()+1, exploredArea.getNumCols());
-
-            //Pintamos el mapa desplazado una fila abajo en newMap
-            for(int i = 0; i<exploredArea.getNumRows(); i++){
-                for(int j = 0; j<exploredArea.getNumCols(); j++){
-                    newMap.setTile(j, i+1, exploredArea.getTile(i, j));  //mas 1 en las columnas
-                }
-            }
-
-            //actualizamos posicion del objetivo a una fila abajo
-            targetPos.update(Action.DOWN);
-        
-            exploredArea = newMap;
-        }
-        
-        
-        if(agentPos.getY() == 0){           //Estamos en la primera columna
-                
             //Aumentamos el tamaño en una columna mas
-            newMap = new Map(exploredArea.getNumRows(), exploredArea.getNumCols()+1);
+            newMap = new Map(exploredArea.getNumCols()+1,exploredArea.getNumRows());
 
-            //Pintamos el mapa desplazado una columna a la derecha en newMap
+            //Pintamos el mapa desplazado una columna a la derecha
             for(int i = 0; i<exploredArea.getNumRows(); i++){
                 for(int j = 0; j<exploredArea.getNumCols(); j++){
                     newMap.setTile(j+1, i, exploredArea.getTile(i, j));  //mas 1 en las columnas
                 }
             }
 
-            //actualizamos posicion del objetivo a una fila abajo
+            //actualizamos posicion del objetivo y agente a una fila abajo
             targetPos.update(Action.RIGHT);
+            agentPos = agentPos.update(Action.RIGHT);
+        
+            exploredArea = newMap;
+        }
+        
+        
+        if(agentPos.getY() == 0){           //Estamos en la primera fila
+                
+            //Aumentamos el tamaño en una fila mas
+            newMap = new Map(exploredArea.getNumCols(), exploredArea.getNumRows()+1);
+
+            //Pintamos el mapa desplazado una columna a la derecha en newMap
+            for(int i = 0; i<exploredArea.getNumRows(); i++){
+                for(int j = 0; j<exploredArea.getNumCols(); j++){
+                    newMap.setTile(j, i+1, exploredArea.getTile(i, j));  //mas 1 en las columnas
+                }
+            }
+
+            //actualizamos posicion del objetivo y agente a una columna a la derecha
+            targetPos = targetPos.update(Action.DOWN);
+            agentPos = agentPos.update(Action.DOWN);
         
             exploredArea = newMap;
         }
@@ -216,16 +219,18 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
   
-        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", new Position(7,7), new Position(5,5));
+        Sensor.getInstance().setParameters("mapWithoutObstacle.txt", new Position(7,7), new Position(5,5));
         
         //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
+        
         setMission(Sensor.getInstance().getTargetRespectAgent());
         
         // this.addBehaviour(new think_Manhattan());
         this.addBehaviour(new had_finished());
-        this.addBehaviour(new think_obstacle());
+        //this.addBehaviour(new think_obstacle());
+        this.addBehaviour(new think_Manhattan());
         this.addBehaviour(new update_position());
-        updateVision();
+        
         
     }
     
@@ -306,10 +311,6 @@ public class ScoutAgent extends Agent{
                 
             }
             
-            
-             
-            doDelete();
-            
         }
         
         @Override
@@ -327,10 +328,10 @@ public class ScoutAgent extends Agent{
         public void action() {
             System.out.print("Evaluating next action in think_obstacle.\n");
             
-            System.err.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
-            System.err.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
-            System.err.println("Agent: Actual agent " + agentPos);
-            System.err.println("Agent: Actual target " + targetPos);
+            System.out.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
+            System.out.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
+            System.out.println("Agent: Actual agent " + agentPos);
+            System.out.println("Agent: Actual target " + targetPos);
                        
             // Obtiene las casillas adyacentes con el sensor
             vision = Sensor.getInstance().reveal();
@@ -342,12 +343,12 @@ public class ScoutAgent extends Agent{
             boolean isAccesible;
                         
             for (int i=0; i < vision.size(); i++) {
-                System.out.println("Valor de i: " + i);
+                //System.out.println("Valor de i: " + i);
                 
                 if (i!= 4) {
                     isAccesible = true;
                     Tile tile = vision.get(i);
-                
+                    
                     // Obtiene la posicion del array i
                     Position nextPos = agentPos.update(i);
                     
@@ -365,11 +366,11 @@ public class ScoutAgent extends Agent{
                         }
                     
                         if (isAccesible) {
-                            double score = calculateScore (agentPos, nextPos);
+                            double score = calculateScore(agentPos, nextPos);
 
                             if (score > bestScore) {
                                 bestScore = score;
-                                System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
+                                //System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
                                 bestAction = Action.values()[i];
                             }
                         }
@@ -381,9 +382,9 @@ public class ScoutAgent extends Agent{
             
             if (bestAction != null) {
                 nextAction = bestAction;
-                System.err.println("nextAction  " + nextAction);
+                System.out.println("nextAction  " + nextAction);
             } else {
-                System.err.print("Ninguna de las opciones posibles es la mejor.");
+                System.out.print("Ninguna de las opciones posibles es la mejor.");
             }
             
             
@@ -411,18 +412,18 @@ public class ScoutAgent extends Agent{
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
-            System.out.println("En calculateScore: currentPos " + currentPos + ", nextPos " + nextPos+ "\n");
+            //System.out.println("En calculateScore: currentPos " + currentPos + ", nextPos " + nextPos+ "\n");
            // TODO: Considerar la distancia al objetivo y el número de visitas 
            int deltaX = nextPos.getX() - targetPos.getX();
            int deltaY = nextPos.getY() - targetPos.getY();
            
-            System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
+           //System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
     
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
            int visitCount = exploredArea.getTile(nextPos.getX(),nextPos.getY()).getTimesVisited();
-            System.out.println("distanceToTarget: " + distanceToTarget);
+           //System.out.println("distanceToTarget: " + distanceToTarget);
            double score = 1000 - distanceToTarget*100 - visitCount*200;
-           System.out.println("score: " + score);
+           //System.out.println("score: " + score);
            return score; // Ajustar parámetros
         }
         
@@ -440,17 +441,26 @@ public class ScoutAgent extends Agent{
         public void action() {
             
             //Actualizamos la posicion del agente en su mapa interno
-            agentPos.update(nextAction);
+            agentPos = agentPos.update(nextAction);
             exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
             
             //Informamos de la accion a sensores
             Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(nextAction));            
-                       
+            
+            updateVision();
+            
             //If need resize AgentMap
             checkResizeMap();         
             
+            System.out.println("-------------------\n");
             
-            System.out.println("-------------------");
+            System.out.println(exploredArea.toString());
+            
+            for(int i=0; i<vision.size();i++){
+                System.out.println(vision.get(i).getVal());
+            }
+            
+            
             
             try {
                 Thread.sleep(1000);

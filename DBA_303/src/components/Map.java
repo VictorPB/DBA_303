@@ -173,6 +173,7 @@ public class Map {
             for(Tile c: row){
                 if(c == Tile.EMPTY)             res+="▯";
                 else if(c== Tile.UNREACHABLE)   res+="▮";
+                else if(c== Tile.UNKNOWN)       res+="?";
             }
             res +="\n";
         }

@@ -17,7 +17,7 @@ public enum Tile {
     
     /// internal representation
     private final int typeValue;
-    int times_visited;
+    private int times_visited;
 
     /**
      * Tile Constructor with the representation value
