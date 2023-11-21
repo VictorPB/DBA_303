@@ -5,7 +5,6 @@
  */
 package gui;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.stream.Stream;
@@ -14,7 +13,6 @@ import javax.swing.event.ListSelectionEvent;
 import components.Map;
 import components.Position;
 import components.Tile;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
@@ -107,7 +105,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         
         // Add the origin icon
         panelTileList.get(originPos.getY() * rows + originPos.getX())
-                .add( 
+                .add(
                     new JLabel(AssetManager.getOriginIcon(16, 
                                 !selectedMap.getTile(originPos).equals(Tile.UNREACHABLE)))
                 );
@@ -188,7 +186,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DBA 2023/24 - Grupo 303");
+        setTitle("DBA 2023/24 - P2 - Grupo 303");
         setResizable(false);
 
         DBATitle_Label.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N

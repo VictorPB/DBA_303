@@ -16,5 +16,7 @@ public enum Action{
     LEFT, 
     DOWN, 
     DOWN_RIGHT, 
-    DOWN_LEFT;
+    DOWN_LEFT,
+    IDLE,
+    END;
 }

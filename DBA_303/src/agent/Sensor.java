@@ -34,7 +34,7 @@ public final class Sensor {
     private Position agentPosition;
 
     /// Agent historic path
-    private ArrayList<Position> visitedPath;
+    private ArrayList<ActionPair> visitedPath;
     
     /**
      * Constructor for the sensor
@@ -65,13 +65,13 @@ public final class Sensor {
         return agentPosition;
     }
     
-    public ArrayList<Position> getAgentVisitedPath(){
+    public ArrayList<ActionPair> getAgentVisitedPath(){
         return this.visitedPath;
     }
     
     public void setAgentPosition (Position newAgentPosition) {
         this.agentPosition = newAgentPosition;
-        this.visitedPath.add(newAgentPosition);
+        this.visitedPath.add(new ActionPair(agentPosition, Action.IDLE));
     }
     
     public void setParameters (String map, Position origin, Position target) {
@@ -114,7 +114,8 @@ public final class Sensor {
         Position newPosition = this.agentPosition.update(action);
         if(theMap.getTile(newPosition.getY(),newPosition.getX()) == Tile.EMPTY){
             this.agentPosition = newPosition;
-            this.visitedPath.add(newPosition);
+            this.visitedPath.get(this.visitedPath.size()-1).a = action;
+            this.visitedPath.add(new ActionPair(newPosition, Action.IDLE));
             return true;
         }
         else{
@@ -128,5 +129,21 @@ public final class Sensor {
      */
     boolean targetReached(){
         return agentPosition.equals(targetPosition);
+    }
+    
+    /**
+     * A Class that models a visited node in the map
+     */
+    public class ActionPair {
+        Position p;
+        Action a;
+        
+        public ActionPair(Position p, Action a){
+            this.p = p;
+            this.a = a;
+        }
+        
+        public Position getPos(){return this.p;}
+        public Action getAct(){ return this.a;}
     }
 }

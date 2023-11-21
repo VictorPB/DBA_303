@@ -26,6 +26,7 @@ public class MainWindow extends javax.swing.JFrame {
     int MapTileWidth;
     
     
+    
     /**
      * Creates new form MainWindow with a Map as argument
      */
@@ -74,16 +75,16 @@ public class MainWindow extends javax.swing.JFrame {
     public void updateAgent(){
         clearAgentPath();
         
-        ArrayList<Position> path = Sensor.getInstance().getAgentVisitedPath();
+        ArrayList<Sensor.ActionPair> path = Sensor.getInstance().getAgentVisitedPath();
         
-        for(int i=0; i<path.size()-1; i++){
-            Position p = path.get(i);
+        for(int i=0; i<path.size(); i++){
+            Position p = path.get(i).getPos();
             JPanel panel = this.mainMapTilePanelArr.get(p.getY()).get(p.getX());
-            panel.add(new JLabel (AssetManager.getAgentPastIcon(this.MapTileWidth)));
+            if(path.get(i).getAct() == Action.IDLE)
+                panel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
+            else
+                panel.add(new JLabel (AssetManager.getAgentPastIcon(this.MapTileWidth)));
         }
-        Position last = path.get(path.size()-1);
-        JPanel lastPanel = this.mainMapTilePanelArr.get(last.getY()).get(last.getX());
-        lastPanel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
         
         this.mainMap.updateUI();
         
@@ -112,6 +113,7 @@ public class MainWindow extends javax.swing.JFrame {
         backBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("DBA 2023/24 - P2 - Grupo 303");
         setMaximumSize(new java.awt.Dimension(800, 600));
         setMinimumSize(new java.awt.Dimension(800, 600));
         setPreferredSize(new java.awt.Dimension(850, 600));
