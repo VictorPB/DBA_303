@@ -20,9 +20,10 @@ public class ScoutAgent extends Agent{
     
     ArrayList<ArrayList<Integer>> visitedCountMap;
     
+    //Posicion del agente en según mapa interno
     Position agentPos;
     
-    /* Guarda posición destino */
+    //Posición del destino segun mapa interno
     Position targetPos;
     
     boolean targetReached;
@@ -31,12 +32,12 @@ public class ScoutAgent extends Agent{
     
     Action nextAction;
 
-    Tile nextTile;
+    //Tile nextTile;       Creo q sobra
 
     
     
     public ScoutAgent() {
-        //exploredArea = new Map();
+        //exploredArea = new Map();         Creo q Sobra
     }
     
     public Map getExploredArea(){
@@ -135,23 +136,110 @@ public class ScoutAgent extends Agent{
         }
     }
     
-    
+    /**
+     * Check if Agent Map (exploredArea) needs to be resized because
+     * being in the border of the map.
+     */
+    void checkResizeMap(){
+         if(agentPos.getX() == 0 || agentPos.getY() == 0 ||
+               agentPos.getX() == exploredArea.getNumCols()-1 ||
+               agentPos.getY() == exploredArea.getNumRows()-1){
+               
+                
+            }
+        Map newMap;
+        
+        if(agentPos.getX() == exploredArea.getNumCols()-1){         //En ultima columna
+                      
+            //Aumentamos el tamaño en una columna mas
+            newMap = new Map(exploredArea.getNumRows(), exploredArea.getNumCols()+1);
+
+            
+            for(int i = 0; i<exploredArea.getNumRows(); i++){
+                for(int j = 0; j<exploredArea.getNumCols(); j++){
+                    newMap.setTile(j, i, exploredArea.getTile(i, j));
+                }                  
+            }
+            
+            exploredArea = newMap;
+        }
+        
+        
+        if(agentPos.getY() == exploredArea.getNumRows()-1){         //En ultima fila
+            
+            //Aumentamos el tamaño en una columna mas
+            newMap = new Map(exploredArea.getNumRows()+1, exploredArea.getNumCols());
+
+            for(int i = 0; i<exploredArea.getNumRows(); i++){
+                for(int j = 0; j<exploredArea.getNumCols(); j++){
+                    newMap.setTile(j, i, exploredArea.getTile(i, j));
+                }
+            } 
+            
+            exploredArea = newMap;
+        }
+
+
+        if(agentPos.getX() == 0){
+                
+            //Aumentamos el tamaño en una fila mas
+            newMap = new Map(exploredArea.getNumRows()+1, exploredArea.getNumCols());
+
+            //Pintamos el mapa desplazado una fila abajo en newMap
+            for(int i = 0; i<exploredArea.getNumRows(); i++){
+                for(int j = 0; j<exploredArea.getNumCols(); j++){
+                    newMap.setTile(j, i+1, exploredArea.getTile(i, j));  //mas 1 en las columnas
+                }
+            }
+
+            //actualizamos posicion del objetivo a una fila abajo
+            targetPos.update(Action.DOWN);
+        
+            exploredArea = newMap;
+        }
+        
+        
+        if(agentPos.getY() == 0){           //Estamos en la primera columna
+                
+            //Aumentamos el tamaño en una columna mas
+            newMap = new Map(exploredArea.getNumRows(), exploredArea.getNumCols()+1);
+
+            //Pintamos el mapa desplazado una columna a la derecha en newMap
+            for(int i = 0; i<exploredArea.getNumRows(); i++){
+                for(int j = 0; j<exploredArea.getNumCols(); j++){
+                    newMap.setTile(j+1, i, exploredArea.getTile(i, j));  //mas 1 en las columnas
+                }
+            }
+
+            //actualizamos posicion del objetivo a una fila abajo
+            targetPos.update(Action.RIGHT);
+        
+            exploredArea = newMap;
+        }
+        
+    }
     
  
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
         
-        this.agentPos = new Position(7,7);
-        this.targetPos = new Position(5,5);
+        //this.agentPos = new Position(7,7);
+        //this.targetPos = new Position(5,5);
         
+        /*                                              Seria el comportamiento had_finished
         if (!this.agentPos.equals(this.targetPos)) {
             targetReached = false;
         }
+        */
         
-        Sensor.getInstance().setAgentPosition(agentPos);
+        //Sensor.getInstance().setAgentPosition(agentPos);
   
-        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", agentPos, targetPos);
+        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", new Position(7,7), new Position(5,5));
+        
+        
+        /*      Esto lo hacemos en mapa directamente, el mapa guarda las
+                veces que hemos pasado por cada casilla
         
         // Inicialización del mapa que lleva la cuenta de las veces que he pasado por una casilla
         this.visitedCountMap = new ArrayList<>();  
@@ -162,7 +250,9 @@ public class ScoutAgent extends Agent{
             }
             this.visitedCountMap.add(row);
         }
+        */
         
+        //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
         setMission(Sensor.getInstance().getTargetRespectAgent());
         
         // this.addBehaviour(new think_Manhattan());
@@ -258,7 +348,7 @@ public class ScoutAgent extends Agent{
         
         @Override
         public boolean done(){
-           return true; 
+           return targetReached; 
         }
     }
     
@@ -389,11 +479,19 @@ public class ScoutAgent extends Agent{
     class update_position extends Behaviour{
         @Override
         public void action() {
-            Position pos = Sensor.getInstance().getAgentPosition();
-           
-            Sensor.getInstance().setAgentPosition(pos.update(nextAction)); 
             
-            System.out.println();
+            //Actualizamos la posicion del agente en 
+            agentPos.update(nextAction);
+            
+            Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(nextAction));            
+            
+            
+            //If need resice AgentMap
+            checkResizeMap();
+           
+            
+            
+            System.out.println("-------------------");
             
             try {
                 Thread.sleep(3000);
