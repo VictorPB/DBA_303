@@ -70,6 +70,7 @@ public final class Sensor {
     public void setParameters (String map, Position origin, Position target) {
         this.theMap = new Map (map);
         this.originPosition = origin;
+        this.agentPosition = origin;
         this.targetPosition = target;
     }
     

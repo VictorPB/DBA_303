@@ -53,4 +53,9 @@ public enum Tile {
      */
     public int getTimesVisited() { return this.times_visited; }
     
+    
+    public void newVisit(){
+        this.times_visited++;
+    }
+    
 }

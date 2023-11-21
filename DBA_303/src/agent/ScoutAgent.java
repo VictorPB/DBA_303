@@ -18,8 +18,6 @@ public class ScoutAgent extends Agent{
     
     Map exploredArea;
     
-    ArrayList<ArrayList<Integer>> visitedCountMap;
-    
     //Posicion del agente en según mapa interno
     Position agentPos;
     
@@ -32,12 +30,10 @@ public class ScoutAgent extends Agent{
     
     Action nextAction;
 
-    //Tile nextTile;       Creo q sobra
-
     
     
     public ScoutAgent() {
-        //exploredArea = new Map();         Creo q Sobra
+    
     }
     
     public Map getExploredArea(){
@@ -120,6 +116,7 @@ public class ScoutAgent extends Agent{
             }
         }
         
+        exploredArea.getTile(agentPos).newVisit();
         updateVision();
     }
     
@@ -141,12 +138,7 @@ public class ScoutAgent extends Agent{
      * being in the border of the map.
      */
     void checkResizeMap(){
-         if(agentPos.getX() == 0 || agentPos.getY() == 0 ||
-               agentPos.getX() == exploredArea.getNumCols()-1 ||
-               agentPos.getY() == exploredArea.getNumRows()-1){
-               
-                
-            }
+
         Map newMap;
         
         if(agentPos.getX() == exploredArea.getNumCols()-1){         //En ultima columna
@@ -223,34 +215,8 @@ public class ScoutAgent extends Agent{
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
-        
-        //this.agentPos = new Position(7,7);
-        //this.targetPos = new Position(5,5);
-        
-        /*                                              Seria el comportamiento had_finished
-        if (!this.agentPos.equals(this.targetPos)) {
-            targetReached = false;
-        }
-        */
-        
-        //Sensor.getInstance().setAgentPosition(agentPos);
   
         Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", new Position(7,7), new Position(5,5));
-        
-        
-        /*      Esto lo hacemos en mapa directamente, el mapa guarda las
-                veces que hemos pasado por cada casilla
-        
-        // Inicialización del mapa que lleva la cuenta de las veces que he pasado por una casilla
-        this.visitedCountMap = new ArrayList<>();  
-        for (int i = 0; i < Sensor.getInstance().getMap().getNumRows(); i++){
-            ArrayList<Integer> row = new ArrayList<>();
-            for (int j = 0; j < Sensor.getInstance().getMap().getNumCols(); j++) {
-                row.add(0);  
-            }
-            this.visitedCountMap.add(row);
-        }
-        */
         
         //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
         setMission(Sensor.getInstance().getTargetRespectAgent());
@@ -361,10 +327,11 @@ public class ScoutAgent extends Agent{
         public void action() {
             System.out.print("Evaluating next action in think_obstacle.\n");
             
-            System.err.println("Actual agent " + Sensor.getInstance().getAgentPosition());
-           
-            Position currentPos = new Position(Sensor.getInstance().getAgentPosition());
-            
+            System.err.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
+            System.err.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
+            System.err.println("Agent: Actual agent " + agentPos);
+            System.err.println("Agent: Actual target " + targetPos);
+                       
             // Obtiene las casillas adyacentes con el sensor
             vision = Sensor.getInstance().reveal();
             
@@ -382,7 +349,7 @@ public class ScoutAgent extends Agent{
                     Tile tile = vision.get(i);
                 
                     // Obtiene la posicion del array i
-                    Position nextPos = currentPos.update(i);
+                    Position nextPos = agentPos.update(i);
                     
                     // Comprueba que la casilla no sea un obstáculo
                     if(tile != Tile.UNREACHABLE) {
@@ -398,7 +365,7 @@ public class ScoutAgent extends Agent{
                         }
                     
                         if (isAccesible) {
-                            double score = calculateScore (currentPos, nextPos);
+                            double score = calculateScore (agentPos, nextPos);
 
                             if (score > bestScore) {
                                 bestScore = score;
@@ -419,15 +386,7 @@ public class ScoutAgent extends Agent{
                 System.err.print("Ninguna de las opciones posibles es la mejor.");
             }
             
-            // Actualizar posición del agente
             
-            // Actualizar mapas de exploración
-            // exploredArea.setTile(currentPos.getX(), currentPos.getY(), Tile.EMPTY);
-            
-            // Sumar una visita en el mapa de exploración
-            System.out.println("visitCount - - - " + visitedCountMap.get(currentPos.getX()).get(currentPos.getY()));
-            int visitCount = visitedCountMap.get(currentPos.getX()).get(currentPos.getY());
-            visitedCountMap.get(currentPos.getX()).set(currentPos.getY(), visitCount + 1);
         }
         
         // Métodos para comprobar si las esquinas son alcanzables
@@ -460,7 +419,7 @@ public class ScoutAgent extends Agent{
             System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
     
            double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
-           int visitCount = visitedCountMap.get(nextPos.getX()).get(nextPos.getY());
+           int visitCount = exploredArea.getTile(nextPos.getX(),nextPos.getY()).getTimesVisited();
             System.out.println("distanceToTarget: " + distanceToTarget);
            double score = 1000 - distanceToTarget*100 - visitCount*200;
            System.out.println("score: " + score);
@@ -480,21 +439,21 @@ public class ScoutAgent extends Agent{
         @Override
         public void action() {
             
-            //Actualizamos la posicion del agente en 
+            //Actualizamos la posicion del agente en su mapa interno
             agentPos.update(nextAction);
+            exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
             
+            //Informamos de la accion a sensores
             Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(nextAction));            
-            
-            
-            //If need resice AgentMap
-            checkResizeMap();
-           
+                       
+            //If need resize AgentMap
+            checkResizeMap();         
             
             
             System.out.println("-------------------");
             
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
             }
@@ -519,7 +478,7 @@ public class ScoutAgent extends Agent{
             System.out.println(currentPosition);
             
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
             }
