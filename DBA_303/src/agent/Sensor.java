@@ -36,9 +36,6 @@ public final class Sensor {
     
     /**
      * Constructor for the sensor
-     * @param mapFile
-     * @param origin
-     * @param target
      */
     private Sensor() {}
     

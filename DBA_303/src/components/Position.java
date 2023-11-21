@@ -115,8 +115,14 @@ public class Position {
         return res;
     }
     
-    int getManhattanTo(Position target){
+    public int getManhattanTo(Position target){
         return Math.abs(target.x-this.x) + Math.abs(target.y-this.y);
+    }
+    
+    public double getEuclideTo(Position target){
+        int dX = Math.abs(target.x-this.x);
+        int dY = Math.abs(target.y-this.y);
+        return Math.sqrt(dX*dX + dY*dY);
     }
     
     /** GETTERS ***************************************************************/

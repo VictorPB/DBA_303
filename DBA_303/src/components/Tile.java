@@ -54,6 +54,10 @@ public class Tile {
         return type == this.type;
     }
     
+    public boolean isReacheable(){
+        return this.type != TypeTile.UNREACHABLE;
+    }
+    
     public enum TypeTile {
         
     // ENUM VALUES

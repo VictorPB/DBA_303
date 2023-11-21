@@ -172,7 +172,7 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
   
-        Sensor.getInstance().setParameters("mapWithoutObstacle.txt", new Position(7,7), new Position(2,3));
+        Sensor.getInstance().setParameters("mapWithDiagonalWall.txt", new Position(8,2), new Position(9,3));
         
         //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
         
@@ -234,7 +234,7 @@ public class ScoutAgent extends Agent{
                         Position nextPos = agentPos.update(i);
 
                         // Comprueba que la casilla no sea un obstáculo
-                        if(!tile.isType(Tile.TypeTile.UNREACHABLE)) {
+                        if(tile.isReacheable()) {
                             // Comprobamos si las esquinas son accesibles
                             if (i == 0 && upLeftIsUnreachable(vision)) {
                                 isAccesible = false;
@@ -300,7 +300,7 @@ public class ScoutAgent extends Agent{
            int deltaX = nextPos.getX() - targetPos.getX();
            int deltaY = nextPos.getY() - targetPos.getY();
            
-           double distanceToTarget = Math.abs(deltaX) + Math.abs(deltaY);
+           double distanceToTarget = nextPos.getEuclideTo(targetPos);
            int visitCount = exploredArea.getTile(nextPos.getY(), nextPos.getX()).getTimesVisited();
            double score = distanceToTarget*100 + visitCount*200;
            
@@ -352,11 +352,6 @@ public class ScoutAgent extends Agent{
                     else                                                System.out.print("?");
                 }
                 System.out.println("");
-            }
-            
-            
-            for(int i=0; i<vision.size();i++){
-                System.out.println(vision.get(i).getVal());
             }
                        
             try {
