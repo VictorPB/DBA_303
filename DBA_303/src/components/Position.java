@@ -115,6 +115,16 @@ public class Position {
         return res;
     }
     
+    public int getManhattanTo(Position target){
+        return Math.abs(target.x-this.x) + Math.abs(target.y-this.y);
+    }
+    
+    public double getEuclideTo(Position target){
+        int dX = Math.abs(target.x-this.x);
+        int dY = Math.abs(target.y-this.y);
+        return Math.sqrt(dX*dX + dY*dY);
+    }
+    
     /** GETTERS ***************************************************************/
     
     /**
@@ -135,7 +145,11 @@ public class Position {
         Position p = (Position)obj;
         return this.x==p.x && this.y==p.y;
     }
-    
-    /** COMPARE ***************************************************************/
+
+    @Override
+    public String toString() {
+        return "Posicion: X " + this.x + " Y " + this.y;
+    }
+
     
 }

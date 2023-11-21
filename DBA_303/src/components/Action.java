@@ -9,12 +9,13 @@ package components;
  * @brief   Class that models the different actions that the agent can perform
  */
 public enum Action{
+    UP_LEFT,
     UP, 
     UP_RIGHT, 
-    UP_LEFT, 
-    RIGHT, 
     LEFT, 
+    CENTER,
+    RIGHT, 
+    DOWN_LEFT,
     DOWN, 
-    DOWN_RIGHT, 
-    DOWN_LEFT;
+    DOWN_RIGHT;
 }

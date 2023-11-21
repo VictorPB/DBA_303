@@ -37,9 +37,9 @@ public class AssetManager {
         return new ImageIcon(sourceIcon.getImage().getScaledInstance(dim,dim, Image.SCALE_DEFAULT ));
     }
     
-    static JPanel getPreviewTilePanel(Tile tileType){
+    static JPanel getPreviewTilePanel(Tile tile){
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
-        switch (tileType) {
+        switch (tile.getType()) {
                     case EMPTY: 
                         panelTile.setBackground(COL_FREE);
                         break;
