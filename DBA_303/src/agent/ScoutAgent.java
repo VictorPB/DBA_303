@@ -173,7 +173,7 @@ public class ScoutAgent extends Agent{
         }
 
 
-        if(agentPos.getX() == 0){
+        if(agentPos.getX() == 0){               //Estamos en la primera columna
                 
             //Aumentamos el tamaño en una columna mas
             newMap = new Map(exploredArea.getNumCols()+1,exploredArea.getNumRows());
@@ -219,16 +219,15 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
   
-        Sensor.getInstance().setParameters("mapWithoutObstacle.txt", new Position(7,7), new Position(5,5));
+        Sensor.getInstance().setParameters("mapWithHorizontalWall.txt", new Position(8,7), new Position(2,1));
         
         //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
         
         setMission(Sensor.getInstance().getTargetRespectAgent());
         
-        // this.addBehaviour(new think_Manhattan());
+   
         this.addBehaviour(new had_finished());
-        //this.addBehaviour(new think_obstacle());
-        this.addBehaviour(new think_Manhattan());
+        this.addBehaviour(new think_obstacle());
         this.addBehaviour(new update_position());
         
         
@@ -240,84 +239,7 @@ public class ScoutAgent extends Agent{
         System.out.println("Agent may have reached the target. Terminating ScoutAgent...\n");
     }
     
-    /**
-     * 
-     */
-    class think_Manhattan extends Behaviour{
-        
-        @Override
-        public void action() {
 
-            System.out.print("Evaluating next action.\n");
-            
-            
-            if(targetPos.getX() > agentPos.getX()){       //target right
-                
-                if(targetPos.getY() > agentPos.getY()){   //target bottom right
-                    
-                    nextAction = Action.DOWN_RIGHT;
-                    
-                }
-                
-                if(targetPos.getY() < agentPos.getY()){    //target top right
-                    
-                    nextAction = Action.UP_RIGHT;
-            
-                }
-                
-                if(targetPos.getY() == agentPos.getY()){    //target same row right
-                    
-                    nextAction = Action.RIGHT;
-                    
-                }
-                
-            }
-            
-            if(targetPos.getX() < agentPos.getX()){       //target left
-                
-                if(targetPos.getY() > agentPos.getY()){   //target bottom left
-                    
-                    nextAction = Action.DOWN_LEFT;
-                    
-                }
-                
-                if(targetPos.getY() < agentPos.getY()){    //target top left
-                    
-                    nextAction = Action.UP_LEFT;
-            
-                }
-                
-                if(targetPos.getY() == agentPos.getY()){    //target same row left
-                    
-                    nextAction = Action.LEFT;
-                    
-                }
-                
-            }
-            
-            if(targetPos.getX() == agentPos.getX()){            //target same column
-                
-                if(targetPos.getY() > agentPos.getY()){   //target down
-                    
-                    nextAction = Action.DOWN;
-                    
-                }
-                
-                if(targetPos.getY() < agentPos.getY()){    //target top
-                    
-                    nextAction = Action.UP;
-            
-                }
-                
-            }
-            
-        }
-        
-        @Override
-        public boolean done(){
-           return targetReached; 
-        }
-    }
     
     /**
      *  Agente que piensa a dónde debe ir. 
@@ -339,7 +261,7 @@ public class ScoutAgent extends Agent{
             
             // Evalua las casillas adyacentes y elige la mejor opción
             Action bestAction = null;
-            double bestScore = -100.0;
+            double bestScore = Integer.MAX_VALUE;
             boolean isAccesible;
                         
             for (int i=0; i < vision.size(); i++) {
@@ -368,7 +290,7 @@ public class ScoutAgent extends Agent{
                         if (isAccesible) {
                             double score = calculateScore(agentPos, nextPos);
 
-                            if (score > bestScore) {
+                            if (score < bestScore) {
                                 bestScore = score;
                                 //System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
                                 bestAction = Action.values()[i];
@@ -419,10 +341,10 @@ public class ScoutAgent extends Agent{
            
            //System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
     
-           double distanceToTarget = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)); // Distancia Euclídea
+           double distanceToTarget = Math.abs(deltaX) + Math.abs(deltaY);
            int visitCount = exploredArea.getTile(nextPos.getX(),nextPos.getY()).getTimesVisited();
            //System.out.println("distanceToTarget: " + distanceToTarget);
-           double score = 1000 - distanceToTarget*100 - visitCount*200;
+           double score = distanceToTarget*100 + visitCount*200;
            //System.out.println("score: " + score);
            return score; // Ajustar parámetros
         }
