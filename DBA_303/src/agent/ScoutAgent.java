@@ -47,8 +47,8 @@ public class ScoutAgent extends Agent{
         
         // +2 -> una unidad por que al trabajar con la pos relativa, se empieza en 0
         //      y otra unidad para la vision del agente
-        int rows = Math.abs(targetRespectAgent.getX()) + 2;
-        int cols = Math.abs(targetRespectAgent.getY()) + 2;
+        int rows = Math.abs(targetRespectAgent.getY()) + 2;
+        int cols = Math.abs(targetRespectAgent.getX()) + 2;
         
         if(rows < 3){
             rows = 3;
@@ -66,17 +66,17 @@ public class ScoutAgent extends Agent{
             
             if(targetRespectAgent.getY() > 0){
                 agentPos = new Position(1,1);
-                targetPos = new Position(rows-1,cols-1);
+                targetPos = new Position(cols-1,rows-1);
             }
             
             if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(1,cols-2);
-                targetPos = new Position(rows-1,0);
+                agentPos = new Position(1,rows-2);
+                targetPos = new Position(cols-1,0);
             }
             
             if(targetRespectAgent.getY() == 0){
                 agentPos = new Position(1,1);
-                targetPos = new Position(rows-1,1);
+                targetPos = new Position(cols-1,1);
             }
         }
         
@@ -84,18 +84,18 @@ public class ScoutAgent extends Agent{
         if(targetRespectAgent.getX() < 0){        
             
             if(targetRespectAgent.getY() > 0){
-                agentPos = new Position(rows-2,1);
-                targetPos = new Position(0,cols-1);
+                agentPos = new Position(1, rows-2 );
+                targetPos = new Position(cols-1, 0);
             }
             
             if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(rows-2,cols-2);
+                agentPos = new Position(cols-2,rows-2);
                 targetPos = new Position(0,0);
             }
             
             if(targetRespectAgent.getY() == 0){
-                agentPos = new Position(rows-2,1);
-                targetPos = new Position(0,1);
+                agentPos = new Position(1, rows-2);
+                targetPos = new Position(1, 0);
             }
         }
         
@@ -104,12 +104,12 @@ public class ScoutAgent extends Agent{
             
             if(targetRespectAgent.getY() > 0){
                 agentPos = new Position(1,1);
-                targetPos = new Position(1,cols-1);
+                targetPos = new Position(cols-1,1);
             }
             
             if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(1,cols-2);
-                targetPos = new Position(1,0);
+                agentPos = new Position(cols-2,1);
+                targetPos = new Position(0,1);
             }
             
             if(targetRespectAgent.getY() == 0){
@@ -119,6 +119,11 @@ public class ScoutAgent extends Agent{
         }
         
         exploredArea.getTile(agentPos).newVisit();
+        for(int i=0; i<exploredArea.getNumRows(); i++){
+            for(int j=0; j<exploredArea.getNumCols(); j++)
+                System.out.print(exploredArea.getTile(i, j).getTimesVisited());
+            System.out.println("");
+        }
         updateVision();
     }
     
@@ -140,80 +145,26 @@ public class ScoutAgent extends Agent{
      * Check if Agent Map (exploredArea) needs to be resized because
      * being in the border of the map.
      */
-    void checkResizeMap(){
+    void updateResizeMap(){
 
-        Map newMap;
-        
-        if(agentPos.getX() == exploredArea.getNumCols()-1){         //En ultima columna
-                      
-            //Aumentamos el tamaño en una columna mas
-            newMap = new Map(exploredArea.getNumCols()+1, exploredArea.getNumRows());
-
-            
-            for(int i = 0; i<exploredArea.getNumRows(); i++){
-                for(int j = 0; j<exploredArea.getNumCols(); j++){
-                    newMap.setTile(j, i, exploredArea.getTile(i, j));
-                }                  
-            }
-            
-            exploredArea = newMap;
-        }
-        
-        
-        if(agentPos.getY() == exploredArea.getNumRows()-1){         //En ultima fila
-            
-            //Aumentamos el tamaño en una fila mas
-            newMap = new Map(exploredArea.getNumCols(), exploredArea.getNumRows()+1);
-
-            for(int i = 0; i<exploredArea.getNumRows(); i++){
-                for(int j = 0; j<exploredArea.getNumCols(); j++){
-                    newMap.setTile(j, i, exploredArea.getTile(i, j));
-                }
-            } 
-            
-            exploredArea = newMap;
-        }
-
-
-        if(agentPos.getX() == 0){               //Estamos en la primera columna
-                
-            //Aumentamos el tamaño en una columna mas
-            newMap = new Map(exploredArea.getNumCols()+1,exploredArea.getNumRows());
-
-            //Pintamos el mapa desplazado una columna a la derecha
-            for(int i = 0; i<exploredArea.getNumRows(); i++){
-                for(int j = 0; j<exploredArea.getNumCols(); j++){
-                    newMap.setTile(j+1, i, exploredArea.getTile(i, j));  //mas 1 en las columnas
-                }
-            }
-
-            //actualizamos posicion del objetivo y agente a una fila abajo
+        if(agentPos.getX() == 0){
+            exploredArea.addColToBeggining();
+            agentPos  = agentPos.update(Action.RIGHT);
             targetPos = targetPos.update(Action.RIGHT);
-            agentPos = agentPos.update(Action.RIGHT);
-        
-            exploredArea = newMap;
+        }
+        else if(agentPos.getX() == exploredArea.getNumCols()-1){         //En ultima columna
+            exploredArea.addColToEnd();
         }
         
-        
-        if(agentPos.getY() == 0){           //Estamos en la primera fila
-                
-            //Aumentamos el tamaño en una fila mas
-            newMap = new Map(exploredArea.getNumCols(), exploredArea.getNumRows()+1);
-
-            //Pintamos el mapa desplazado una columna a la derecha en newMap
-            for(int i = 0; i<exploredArea.getNumRows(); i++){
-                for(int j = 0; j<exploredArea.getNumCols(); j++){
-                    newMap.setTile(j, i+1, exploredArea.getTile(i, j));  //mas 1 en las columnas
-                }
-            }
-
-            //actualizamos posicion del objetivo y agente a una columna a la derecha
+        if( agentPos.getY() == 0){
+            exploredArea.addRowToBeggining();
+            agentPos  = agentPos.update(Action.DOWN);
             targetPos = targetPos.update(Action.DOWN);
-            agentPos = agentPos.update(Action.DOWN);
-        
-            exploredArea = newMap;
         }
-        
+        else if(agentPos.getY() == exploredArea.getNumRows()-1){
+            exploredArea.addRowToEnd();
+        }
+
     }
     
  
@@ -221,7 +172,7 @@ public class ScoutAgent extends Agent{
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
   
-        Sensor.getInstance().setParameters("mapWithComplexObstacle1.txt", new Position(7,7), new Position(5,5));
+        Sensor.getInstance().setParameters("mapWithoutObstacle.txt", new Position(7,7), new Position(2,3));
         
         //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
         
@@ -274,7 +225,6 @@ public class ScoutAgent extends Agent{
                 boolean isAccesible;
 
                 for (int i=0; i < vision.size(); i++) {
-                    System.out.println("Valor de i: " + i);
 
                     if (i!= 4) {
                         isAccesible = true;
@@ -284,7 +234,7 @@ public class ScoutAgent extends Agent{
                         Position nextPos = agentPos.update(i);
 
                         // Comprueba que la casilla no sea un obstáculo
-                        if(tile != Tile.UNREACHABLE) {
+                        if(!tile.isType(Tile.TypeTile.UNREACHABLE)) {
                             // Comprobamos si las esquinas son accesibles
                             if (i == 0 && upLeftIsUnreachable(vision)) {
                                 isAccesible = false;
@@ -301,7 +251,6 @@ public class ScoutAgent extends Agent{
 
                                 if (score < bestScore) {
                                     bestScore = score;
-                                    System.out.println("Action.values()[i] " + Action.values()[i] + " i " + i);
                                     bestAction = Action.values()[i];
                                 }
                             }
@@ -324,38 +273,40 @@ public class ScoutAgent extends Agent{
         // Métodos para comprobar si las esquinas son alcanzables
         // Esquina superior izquierda
         private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(3) == Tile.UNREACHABLE;
+            return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) && 
+                    adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE);
         }
         
         // Esquina superior derecha
         private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1) == Tile.UNREACHABLE && adjacentTiles.get(5) == Tile.UNREACHABLE;
+            return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) &&
+                    adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE);
         }
         
         // Esquina inferior izquierda
         private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(3) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
+            return adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE) &&
+                    adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
         }
         
         // Esquina inferior derecha
         private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(5) == Tile.UNREACHABLE && adjacentTiles.get(7) == Tile.UNREACHABLE;
+            return adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE) &&
+                    adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
-            System.out.println("En calculateScore: currentPos " + currentPos + ", nextPos " + nextPos+ "\n");
            // TODO: Considerar la distancia al objetivo y el número de visitas 
            int deltaX = nextPos.getX() - targetPos.getX();
            int deltaY = nextPos.getY() - targetPos.getY();
            
-           System.out.println("\n\ndeltaX :" + deltaX + ", deltaY :" + deltaY + "\n");
-    
            double distanceToTarget = Math.abs(deltaX) + Math.abs(deltaY);
-           int visitCount = exploredArea.getTile(nextPos.getX(),nextPos.getY()).getTimesVisited();
-           System.out.println("distanceToTarget: " + distanceToTarget);
+           int visitCount = exploredArea.getTile(nextPos.getY(), nextPos.getX()).getTimesVisited();
            double score = distanceToTarget*100 + visitCount*200;
-           System.out.println("visitCount: " + visitCount);
-           System.out.println("score: " + score);
+           
+           System.out.println("- at["+agentPos.getX()+","+agentPos.getY()+"]" + 
+                   " -> ["+nextPos.getX()+","+nextPos.getY()+"]*("+visitCount+")"+
+                   "  --  d("+deltaX+","+deltaY+") = "+distanceToTarget+"  -  SCORE:"+score);
            return score; // Ajustar parámetros
         }
         
@@ -384,7 +335,7 @@ public class ScoutAgent extends Agent{
             updateVision();
             
             //If need resize AgentMap
-            checkResizeMap();         
+            updateResizeMap();        
             
             System.out.println("-------------------\n");
             
@@ -394,11 +345,11 @@ public class ScoutAgent extends Agent{
                 for(int j=0; j<exploredArea.getNumCols(); j++){
                     Position at = new Position(j,i);
                     Tile t = exploredArea.getTile(i, j);
-                    if(at.equals(agentPos))          System.out.print("A");
-                    else if (at.equals(targetPos))   System.out.print("X");
-                    else if (t==Tile.EMPTY)             System.out.print("▯");
-                    else if (t==Tile.UNREACHABLE)       System.out.print("▮");
-                    else                                System.out.print("?");
+                    if(at.equals(agentPos))                          System.out.print("A");
+                    else if (at.equals(targetPos))                   System.out.print("X");
+                    else if (t.isType(Tile.TypeTile.EMPTY))         System.out.print("▯");
+                    else if (t.isType(Tile.TypeTile.UNREACHABLE))   System.out.print("▮");
+                    else                                                System.out.print("?");
                 }
                 System.out.println("");
             }

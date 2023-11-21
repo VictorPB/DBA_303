@@ -87,7 +87,7 @@ public final class Sensor {
                 // if the position is out of the map bounds, it adds an
                 // unreachable tile. otherwise it adds the source tile.
                 if(i<0 || i>=theMap.getNumRows() || j<0 || j>=theMap.getNumCols()){
-                    result.add(Tile.UNREACHABLE);
+                    result.add(new Tile(Tile.TypeTile.UNREACHABLE));
                 }
                 else{
                     result.add(theMap.getTile(i, j));
@@ -104,7 +104,7 @@ public final class Sensor {
      */
     boolean updatePosition(Action action){
         Position newPosition = this.agentPosition.update(action);
-        if(theMap.getTile(newPosition.getY(),newPosition.getX()) == Tile.EMPTY){
+        if(theMap.getTile(newPosition.getY(),newPosition.getX()).isType(Tile.TypeTile.EMPTY)){
             this.agentPosition = newPosition;
             return true;
         }
