@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.text.DefaultCaret;
 import launcher.Launcher;
 
 /**
@@ -26,6 +27,7 @@ import launcher.Launcher;
 public class MainWindow extends javax.swing.JFrame {
 
     Map map;
+    String mapStringName;
     List<List<JPanel>> mainMapTilePanelArr;
     int MapTileWidth;
     
@@ -34,11 +36,12 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow with a Map as argument
      */
-    public MainWindow(Map map) {
+    public MainWindow(Map map, String mapName) {
         initComponents();
         
-        // set the internal map
+        // set the internal map and the name to the title
         this.map = map;
+        this.mapName.setText(mapName);
         
         // init the main map tile array
         int rows = this.map.getNumRows();
@@ -193,6 +196,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         this.logTextArea.setText(log);
         this.logTextArea.updateUI();
+        this.logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
     }
     
     
@@ -214,14 +218,18 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         logTextArea = new javax.swing.JTextArea();
         closeBtn = new javax.swing.JButton();
+        mainMapTitle = new javax.swing.JLabel();
+        mentalMapTitle = new javax.swing.JLabel();
+        logTextTitle = new javax.swing.JLabel();
+        mapName = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DBA 2023/24 - P2 - Grupo 303");
-        setMaximumSize(new java.awt.Dimension(800, 600));
-        setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(850, 600));
+        setMaximumSize(new java.awt.Dimension(830, 630));
+        setMinimumSize(new java.awt.Dimension(830, 630));
+        setPreferredSize(new java.awt.Dimension(830, 630));
         setResizable(false);
-        setSize(new java.awt.Dimension(850, 600));
+        setSize(new java.awt.Dimension(830, 630));
 
         mainMap.setPreferredSize(new java.awt.Dimension(500, 500));
 
@@ -252,6 +260,10 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 250, Short.MAX_VALUE)
         );
 
+        jScrollPane1.setAutoscrolls(true);
+        jScrollPane1.setRowHeaderView(null);
+        jScrollPane1.setViewportView(null);
+
         logTextArea.setEditable(false);
         logTextArea.setColumns(20);
         logTextArea.setRows(5);
@@ -259,31 +271,59 @@ public class MainWindow extends javax.swing.JFrame {
 
         closeBtn.setText("Cerrar");
 
+        mainMapTitle.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        mainMapTitle.setText("Mapa principal");
+
+        mentalMapTitle.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        mentalMapTitle.setText("Mapa interno mental del agente:");
+
+        logTextTitle.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        logTextTitle.setText("Log acciones");
+
+        mapName.setFont(new java.awt.Font("Arial", 2, 12)); // NOI18N
+        mapName.setText("nombremapa");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(mainMapTitle)
+                        .addGap(27, 27, 27)
+                        .addComponent(mapName)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                    .addComponent(closeBtn)
-                    .addComponent(agentMentalMap, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                        .addComponent(closeBtn)
+                        .addComponent(agentMentalMap, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(mentalMapTitle)
+                    .addComponent(logTextTitle))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mentalMapTitle)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(mainMapTitle)
+                        .addComponent(mapName)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(agentMentalMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(logTextTitle)
+                        .addGap(4, 4, 4)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(closeBtn)
                 .addGap(16, 16, 16))
         );
@@ -341,6 +381,10 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JButton closeBtn;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea logTextArea;
+    private javax.swing.JLabel logTextTitle;
     private javax.swing.JPanel mainMap;
+    private javax.swing.JLabel mainMapTitle;
+    private javax.swing.JLabel mapName;
+    private javax.swing.JLabel mentalMapTitle;
     // End of variables declaration//GEN-END:variables
 }
