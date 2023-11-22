@@ -36,7 +36,7 @@ public class Map {
         for(int i=0; i<rows; i++){
             ArrayList<Tile> row = new ArrayList<>();
             for(int j=0; j<cols; j++){
-                row.add(new Tile(Tile.TypeTile.UNKNOWN));
+                row.add(new Tile(Tile.Type.UNKNOWN));
             }
             this.board.add(row);
         }
@@ -160,25 +160,25 @@ public class Map {
     public void addRowToEnd(){
         ArrayList<Tile> newRow = new ArrayList<>();
         for(int i=0; i<getNumCols(); i++)  
-            newRow.add(new Tile(Tile.TypeTile.UNKNOWN));
+            newRow.add(new Tile(Tile.Type.UNKNOWN));
         this.board.add(newRow);
     }
     
     public void addRowToBeggining(){
         ArrayList<Tile> newRow = new ArrayList<>();
         for(int i=0; i<getNumCols(); i++)  
-            newRow.add(new Tile(Tile.TypeTile.UNKNOWN));
+            newRow.add(new Tile(Tile.Type.UNKNOWN));
         this.board.add(0,newRow);
     }
     
     public void addColToEnd(){
         for(ArrayList r : this.board)
-            r.add(new Tile(Tile.TypeTile.UNKNOWN));
+            r.add(new Tile(Tile.Type.UNKNOWN));
     }
     
     public void addColToBeggining(){
         for(ArrayList r : this.board)
-            r.add(0, new Tile(Tile.TypeTile.UNKNOWN));
+            r.add(0, new Tile(Tile.Type.UNKNOWN));
     }
     
     /**************************************************************************/
@@ -188,9 +188,9 @@ public class Map {
         String res = "";
         for(ArrayList<Tile> row : this.board){
             for(Tile c: row){
-                if(c.isType(Tile.TypeTile.EMPTY))               res+="▯";
-                else if(c.isType(Tile.TypeTile.UNREACHABLE))    res+="▮";
-                else if(c.isType(Tile.TypeTile.UNKNOWN))        res+="?";
+                if(c.isType(Tile.Type.EMPTY))               res+="▯";
+                else if(c.isType(Tile.Type.UNREACHABLE))    res+="▮";
+                else if(c.isType(Tile.Type.UNKNOWN))        res+="?";
             }
             res +="\n";
         }
