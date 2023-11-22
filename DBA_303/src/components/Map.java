@@ -130,10 +130,11 @@ public class Map {
      * @param row
      * @param tile
      */
-    public void setTile(int col, int row, Tile tile) { 
+    public void setTile(int row, int col, Tile tile) { 
         if(col >= 0 && col < board.get(0).size() && row >= 0 && row < board.size()) {
             board.get(row).set(col, tile);
         }
+        else{System.out.println("at "+row+","+col+" not setted");}
     };
     
     /**

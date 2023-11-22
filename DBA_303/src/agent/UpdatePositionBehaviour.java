@@ -33,13 +33,11 @@ public class UpdatePositionBehaviour extends Behaviour{
             // The sensor actualize the position of the agent
             Sensor.getInstance().updatePosition(myAgent.nextAction);
             
+            //If needs it, resize AgentMap
+            myAgent.updateResizeMap(); 
+            
             // The agent update what is surrounding him
             myAgent.updateVision();
-            
-            //If needs it, resize AgentMap
-            myAgent.updateResizeMap();        
-            
-            System.out.println("-------------------\n");
             
             // this may show in console what the agent know about the map
             // it position and the target
@@ -55,7 +53,10 @@ public class UpdatePositionBehaviour extends Behaviour{
                 }
                 System.out.println("");
             }
-                       
+
+                        
+            System.out.println("---------------------------------");
+            
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ie) {

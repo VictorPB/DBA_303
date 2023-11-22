@@ -96,7 +96,6 @@ public class MainWindow extends javax.swing.JFrame {
         //Create new grid
         GridLayout gridLayout = new GridLayout(size,size, 1,1);
         this.agentMentalMap.setLayout(gridLayout);
-        System.out.println("["+rows +"x"+cols+"]"+"  tiles: "+size+ "   dim: ["+tileSize+"]");
         
         // Complete a squared map
         for(int i=0; i<size; i++){
@@ -120,7 +119,6 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("Panel: "+this.agentMentalMap.getComponent(0).getSize());
         this.agentMentalMap.updateUI();
         
     }

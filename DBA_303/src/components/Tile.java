@@ -75,6 +75,11 @@ public class Tile {
     public boolean isReacheable(){
         return this.type == Type.EMPTY;
     }
+
+    @Override
+    public String toString() {
+        return this.type.toString();
+    }
     
     /**
      * Enum type to model the tile type
@@ -98,6 +103,11 @@ public class Tile {
             else if(value == -1)    res = Type.UNREACHABLE;
             else                    res = Type.UNKNOWN;
             return res;
+        }
+
+        @Override
+        public String toString() {
+            return Integer.toString(typeValue);
         }
     }
 }
