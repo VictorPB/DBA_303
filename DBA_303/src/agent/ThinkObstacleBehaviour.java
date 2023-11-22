@@ -50,7 +50,7 @@ public class ThinkObstacleBehaviour extends Behaviour {
                 if (i!= 4) {
                     isAccesible = true;
                     Tile tile = myAgent.vision.get(i);
-                    Position nextPos = myAgent.agentPos.update(i);
+                    Position nextPos = myAgent.agentPos.update(Action.fromValue(i));
 
                     // It checks that the tile is reacheable
                     if(tile.isReacheable()) {
