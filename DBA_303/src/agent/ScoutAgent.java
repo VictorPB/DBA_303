@@ -209,6 +209,6 @@ public class ScoutAgent extends Agent{
     
     @Override
     protected void takeDown(){
-        System.out.println("Agent may have reached the target. Terminating ScoutAgent...\n");
+        System.out.println("Agent has reached the target. Terminating ScoutAgent...\n");
     }
 }

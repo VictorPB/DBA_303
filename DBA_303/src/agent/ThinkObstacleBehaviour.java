@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class ThinkObstacleBehaviour extends Behaviour {
 
-    // Private atribute to access the agent that use the behaviour
+    // Private atribute to access the agent that uses the behaviour
     private final ScoutAgent myAgent;
     
     public ThinkObstacleBehaviour(ScoutAgent agent) {
@@ -56,13 +56,13 @@ public class ThinkObstacleBehaviour extends Behaviour {
                     if(tile.isReacheable()) {
                         // It checks if he is evaluating a corner
                         // If it is a corner, it checks if it's not reacheable
-                        if (i == 0 && upLeftIsUnreachable(myAgent.vision)) {
+                        if (i == 0 && !upLeftIsReachable(myAgent.vision)) {
                             isAccesible = false;
-                        } else if (i == 2 && upRightIsUnreachable(myAgent.vision)) {
+                        } else if (i == 2 && !upRightIsReachable(myAgent.vision)) {
                             isAccesible = false;
-                        } else if (i == 6 && downLeftIsUnreachable(myAgent.vision)) {
+                        } else if (i == 6 && !downLeftIsReachable(myAgent.vision)) {
                             isAccesible = false;
-                        } else if (i == 8 && downRightIsUnreachable(myAgent.vision)) {
+                        } else if (i == 8 && !downRightIsReachable(myAgent.vision)) {
                             isAccesible = false;
                         }
 
@@ -94,32 +94,32 @@ public class ThinkObstacleBehaviour extends Behaviour {
     }
 
     /**
-     * Methods to check if a corner is not reacheable
+     * Methods to check if a corner is reacheable
      * @param adjacentTiles
-     * @return boolean (true = not reacheable, false = reacheable)
+     * @return boolean (true = reacheable, false = unreacheable)
      */
     // Up-left corner
-    private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-        return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) && 
-                adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE);
+    private boolean upLeftIsReachable (ArrayList<Tile> adjacentTiles) {
+        return adjacentTiles.get(1).isReacheable() || 
+                adjacentTiles.get(3).isReacheable();
     }
 
     // Up-right corner
-    private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-        return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) &&
-                adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE);
+    private boolean upRightIsReachable (ArrayList<Tile> adjacentTiles) {
+        return adjacentTiles.get(1).isReacheable() ||
+                adjacentTiles.get(5).isReacheable();
     }
 
     // Down-left corner
-    private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-        return adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE) &&
-                adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
+    private boolean downLeftIsReachable (ArrayList<Tile> adjacentTiles) {
+        return adjacentTiles.get(3).isReacheable() ||
+                adjacentTiles.get(7).isReacheable();
     }
 
     // Down-right corner
-    private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-        return adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE) &&
-                adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
+    private boolean downRightIsReachable (ArrayList<Tile> adjacentTiles) {
+        return adjacentTiles.get(5).isReacheable() ||
+                adjacentTiles.get(7).isReacheable();
     }
 
     /**

@@ -15,7 +15,7 @@ import jade.core.behaviours.Behaviour;
  */
 public class UpdatePositionBehaviour extends Behaviour{
     
-    // Private atribute to access the agent that use the behaviour
+    // Private atribute to access the agent that uses the behaviour
     private final ScoutAgent myAgent;
     
     public UpdatePositionBehaviour(ScoutAgent agent) {
@@ -37,7 +37,7 @@ public class UpdatePositionBehaviour extends Behaviour{
             // The agent update what is surrounding him
             myAgent.updateVision();
             
-            //If need resize AgentMap
+            //If needs it, resize AgentMap
             myAgent.updateResizeMap();        
             
             System.out.println("-------------------\n");
