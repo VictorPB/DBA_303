@@ -88,8 +88,8 @@ public class Launcher {
         
     }
     
-    public static void openMainWindow(Map map){
-        mainW = new MainWindow(map);
+    public static void openMainWindow(Map map, String mapName){
+        mainW = new MainWindow(map, mapName);
         mainW.setVisible(true);
     }
     
