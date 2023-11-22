@@ -7,12 +7,15 @@ package agent;
 import jade.core.behaviours.Behaviour;
 
 /**
- *
+ * @brief Class that makes the behaviour to check if an agent 
+ * has reached the target.
+ * 
  * @author carlos
  */
 public class HadFinishedBehaviour extends Behaviour{
     private final ScoutAgent myAgent;
     
+    // Private atribute to access the agent that use the behaviour
     public HadFinishedBehaviour(ScoutAgent agent) {
         this.myAgent = agent;
     }

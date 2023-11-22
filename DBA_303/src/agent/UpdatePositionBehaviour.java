@@ -9,11 +9,13 @@ import components.Tile;
 import jade.core.behaviours.Behaviour;
 
 /**
- *
+ * @brief Class that makes the behaviour to make the next move of an agent.
+ * 
  * @author carlos
  */
 public class UpdatePositionBehaviour extends Behaviour{
     
+    // Private atribute to access the agent that use the behaviour
     private final ScoutAgent myAgent;
     
     public UpdatePositionBehaviour(ScoutAgent agent) {
@@ -22,15 +24,17 @@ public class UpdatePositionBehaviour extends Behaviour{
     
     @Override
         public void action() {
-            myAgent.exploredArea.getTile(myAgent.agentPos).newVisit();  //informamos de paso por casilla
+            // The agent add a visit to the tile he is.
+            myAgent.exploredArea.getTile(myAgent.agentPos).newVisit();
             
-            //Actualizamos la posicion del agente en su mapa interno
+            // The agent actualizes his position on his internal map
             myAgent.agentPos = myAgent.agentPos.update(myAgent.nextAction);
             
             
-            //Informamos de la accion a sensores
+            // The sensor actualize the position of the agent
             Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(myAgent.nextAction));            
             
+            // The agent update what is surrounding him
             myAgent.updateVision();
             
             //If need resize AgentMap

@@ -36,13 +36,20 @@ public class ScoutAgent extends Agent{
     
     public ScoutAgent() {}
     
+    /**
+     * Method to get the internal map 
+     * @return the map that contains the explored area
+     */
     public Map getExploredArea(){
         return exploredArea;
     }
     
+    /**
+     * Method to initialize the internal map
+     * It also calls the UpdateVision for the first time
+     * @param targetRespectAgent 
+     */
     public void setMission(Position targetRespectAgent){
-        
-        
         // +2 -> una unidad por que al trabajar con la pos relativa, se empieza en 0
         //      y otra unidad para la vision del agente
         int rows = Math.abs(targetRespectAgent.getY()) + 2;
@@ -125,6 +132,10 @@ public class ScoutAgent extends Agent{
         updateVision();
     }
     
+    /**
+     * Method to set the values of the agent's adjacent tiles
+     * It calls the sensor to take the value tiles
+     */
     void updateVision(){
         
         vision = Sensor.getInstance().reveal();
@@ -166,6 +177,11 @@ public class ScoutAgent extends Agent{
     }
     
  
+    /**
+     * In setup we initialize the agent, we set the sensor
+     * and add to queue of Behaviours the actions that the
+     * agent needs
+     */
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");

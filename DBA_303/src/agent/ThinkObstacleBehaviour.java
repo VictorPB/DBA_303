@@ -11,11 +11,13 @@ import jade.core.behaviours.Behaviour;
 import java.util.ArrayList;
 
 /**
- *
+ * @brief Class that makes the behaviour to decide the next move of an agent.
+ * 
  * @author carlos
  */
 public class ThinkObstacleBehaviour extends Behaviour {
 
+    // Private atribute to access the agent that use the behaviour
     private final ScoutAgent myAgent;
     
     public ThinkObstacleBehaviour(ScoutAgent agent) {
@@ -31,11 +33,14 @@ public class ThinkObstacleBehaviour extends Behaviour {
             System.out.println("Agent: Actual agent " + myAgent.agentPos);
             System.out.println("Agent: Actual target " + myAgent.targetPos);
 
-            // Obtiene las casillas adyacentes con el sensor
+            // The agent takes the ajacents tiles with the sensor
             myAgent.vision = Sensor.getInstance().reveal();
 
 
-            // Evalua las casillas adyacentes y elige la mejor opción
+            // The agent checks the adjacents tiles and decides the best one
+            // by their values. The best one will be the tile whose score is lower.
+            // The score of a tile is calculated with the euclidean distance to
+            // the target plus the times the agent has visited the tile he's checking
             Action bestAction = null;
             double bestScore = Integer.MAX_VALUE;
             boolean isAccesible;
@@ -45,13 +50,12 @@ public class ThinkObstacleBehaviour extends Behaviour {
                 if (i!= 4) {
                     isAccesible = true;
                     Tile tile = myAgent.vision.get(i);
-
-                    // Obtiene la posicion del array i
                     Position nextPos = myAgent.agentPos.update(i);
 
-                    // Comprueba que la casilla no sea un obstáculo
+                    // It checks that the tile is reacheable
                     if(tile.isReacheable()) {
-                        // Comprobamos si las esquinas son accesibles
+                        // It checks if he is evaluating a corner
+                        // If it is a corner, it checks if it's not reacheable
                         if (i == 0 && upLeftIsUnreachable(myAgent.vision)) {
                             isAccesible = false;
                         } else if (i == 2 && upRightIsUnreachable(myAgent.vision)) {
@@ -62,9 +66,11 @@ public class ThinkObstacleBehaviour extends Behaviour {
                             isAccesible = false;
                         }
 
+                        // Finally, if the tile is reacheable, it calculates his score
                         if (isAccesible) {
                             double score = calculateScore(myAgent.agentPos, nextPos);
 
+                            // If the score is better, it saves it
                             if (score < bestScore) {
                                 bestScore = score;
                                 bestAction = Action.values()[i];
@@ -81,36 +87,50 @@ public class ThinkObstacleBehaviour extends Behaviour {
                 System.out.println("nextAction  " + myAgent.nextAction);
             } else {
                 System.out.print("Ninguna de las opciones posibles es la mejor.");
+                // TODO: Implement an exit failture
             }
 
         }
     }
 
-    // Métodos para comprobar si las esquinas son alcanzables
-    // Esquina superior izquierda
+    /**
+     * Methods to check if a corner is not reacheable
+     * @param adjacentTiles
+     * @return boolean (true = not reacheable, false = reacheable)
+     */
+    // Up-left corner
     private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
         return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) && 
                 adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE);
     }
 
-    // Esquina superior derecha
+    // Up-right corner
     private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
         return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) &&
                 adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE);
     }
 
-    // Esquina inferior izquierda
+    // Down-left corner
     private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
         return adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE) &&
                 adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
     }
 
-    // Esquina inferior derecha
+    // Down-right corner
     private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
         return adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE) &&
                 adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
     }
 
+    /**
+     * Method to calculate the score of the nextPos tile
+     * The score is the distance from the adjacent tile the agent is evaluating 
+     * to target multiplied by a constant plus the times the agent has visited 
+     * this adjacent tile multiplied by a constant.
+     * @param currentPos, it is the position of the agent
+     * @param nextPos, it is one adjacent tile to the agent
+     * @return the score for a tile
+     */
     private double calculateScore (Position currentPos, Position nextPos) {
        // TODO: Considerar la distancia al objetivo y el número de visitas 
        int deltaX = nextPos.getX() - myAgent.targetPos.getX();
