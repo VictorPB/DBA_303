@@ -50,8 +50,8 @@ public class UpdatePositionBehaviour extends Behaviour{
                     Tile t = myAgent.exploredArea.getTile(i, j);
                     if(at.equals(myAgent.agentPos))                          System.out.print("A");
                     else if (at.equals(myAgent.targetPos))                   System.out.print("X");
-                    else if (t.isType(Tile.TypeTile.EMPTY))         System.out.print("▯");
-                    else if (t.isType(Tile.TypeTile.UNREACHABLE))   System.out.print("▮");
+                    else if (t.isType(Tile.Type.EMPTY))         System.out.print("▯");
+                    else if (t.isType(Tile.Type.UNREACHABLE))   System.out.print("▮");
                     else                                                System.out.print("?");
                 }
                 System.out.println("");

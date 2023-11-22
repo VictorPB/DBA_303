@@ -30,7 +30,7 @@ public class HadFinishedBehaviour extends Behaviour{
         // If agent is on the target, we remove all the behaviours form queue
         // and call doDelete
         if(myAgent.targetReached){
-            for(Behaviour b :myAgent.comportamientosActivos){
+            for(Behaviour b : myAgent.activeBehaviours){
                 this.myAgent.removeBehaviour(b);
             }
             

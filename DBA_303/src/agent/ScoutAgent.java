@@ -207,11 +207,11 @@ public class ScoutAgent extends Agent {
         setMission(Sensor.getInstance().getTargetRespectAgent());
 
         Behaviour UIupdater = new updateUI_behaviour();
-        Behaviour thinker = new think_obstacle();
-        Behaviour updater = new update_position();
+        Behaviour thinker = new ThinkObstacleBehaviour(this);
+        Behaviour updater = new UpdatePositionBehaviour(this);
 
         this.addBehaviour(UIupdater); // TODO cambiar esto
-        this.addBehaviour(new had_finished());
+        this.addBehaviour(new HadFinishedBehaviour(this));
         this.addBehaviour(thinker);
         this.addBehaviour(updater);
 
