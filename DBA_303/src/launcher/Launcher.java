@@ -9,6 +9,10 @@ import jade.wrapper.StaleProxyException;
 
 import agent.ScoutAgent;
 import agent.Sensor;
+import components.Map;
+import gui.LauncherWindow;
+import gui.MainWindow;
+import jade.core.Agent;
 
 /**
  *
@@ -18,41 +22,92 @@ import agent.Sensor;
  * containers and agents.
  */
 public class Launcher {
-    public static void main(String[] args) throws StaleProxyException {
-        String host = "localhost";
-        String mainContName = "DBA_303";
-        String agentContName = "DBA_agent";
-        String agentName = "explorador";
+    
 
-        // Instance of runtime
-        jade.core.Runtime runtime = jade.core.Runtime.instance();
-
-        // main Container Profile
-        Profile mainProfile = new ProfileImpl();
-
+    
+    private static String host = "localhost";
+    private static String mainContName = "DBA_303";
+    private static String agentContName = "DBA_agent";
+    private static String agentName = "explorador";
+    
+    private static ContainerController mainContController;
+    private static Profile mainProfile = new ProfileImpl();
+    private static ContainerController agentContController;
+    private static Profile agentProfile = new ProfileImpl();
+    
+    private static jade.core.Runtime runtime = jade.core.Runtime.instance();
+    
+    private static Agent scoutAgent;
+    private static AgentController agentController;
+    
+    /// windows
+    private static LauncherWindow launcherW = new LauncherWindow();
+    private static MainWindow mainW;
+    
+    /**
+     * Initialize containers profiles
+     */
+    private static void initProfiles(){
         // mainProfile parameters
         mainProfile.setParameter(Profile.MAIN_HOST, host);
         mainProfile.setParameter(Profile.CONTAINER_NAME, mainContName);
-        
-        
-        // agent Profile
-        Profile agentProfile = new ProfileImpl();
 
         // agent Profile parameters
         agentProfile.setParameter(Profile.MAIN_HOST, host);
         agentProfile.setParameter(Profile.CONTAINER_NAME, agentContName);
-        
-        // main Container controller
-        ContainerController mainContController = runtime.createMainContainer(mainProfile);
-        
-        // agent container controller
-        ContainerController agentContController = runtime.createAgentContainer(agentProfile);
-        
-        // Creation of agent container controller
-        AgentController agentController = agentContController.createNewAgent(agentName,
-        ScoutAgent.class.getCanonicalName(), null);
-
-        // Start of agent
-        agentController.start();
     }
+    
+    /**
+     * Public method to create Scouter Agent
+     * for being called from the launcher window
+     */
+    public static void createScoutAgent(){
+        scoutAgent = new ScoutAgent();
+        try{
+            agentController = agentContController.acceptNewAgent("scoutter", scoutAgent);
+        }
+        catch(StaleProxyException e){
+            System.out.println(e);
+        }
+    }
+    
+    /**
+     * Public metho to start the Scouter agent
+     * for being called from the launcher window
+     */
+    public static void startScoutAgent(){
+        try{
+            agentController.start();
+        }
+        catch(StaleProxyException e){
+            System.out.println(e);
+        }
+    }
+    
+    public static void openMainWindow(Map map){
+        mainW = new MainWindow(map);
+        mainW.setVisible(true);
+    }
+    
+    /**************************************************************************/
+    /**
+     * Main
+     */
+    public static void main(String[] args) throws StaleProxyException {
+
+        // Instance of runtime
+        jade.core.Runtime runtime = jade.core.Runtime.instance();
+
+        // initialize main container and agent profiles
+        initProfiles();    
+        
+        // Create the containers
+        mainContController = runtime.createMainContainer(mainProfile);
+        agentContController = runtime.createAgentContainer(agentProfile);
+        
+        // Show the launcher window
+        launcherW.setVisible(true);
+
+    }
+                
 }

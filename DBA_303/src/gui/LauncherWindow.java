@@ -5,7 +5,6 @@
  */
 package gui;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.util.stream.Stream;
@@ -14,13 +13,13 @@ import javax.swing.event.ListSelectionEvent;
 import components.Map;
 import components.Position;
 import components.Tile;
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import launcher.Launcher;
 
 /**
  *
@@ -107,7 +106,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         
         // Add the origin icon
         panelTileList.get(originPos.getY() * rows + originPos.getX())
-                .add( 
+                .add(
                     new JLabel(AssetManager.getOriginIcon(16, 
                                 !selectedMap.getTile(originPos).isType(Tile.Type.UNREACHABLE)))
                 );
@@ -154,6 +153,38 @@ public class LauncherWindow extends javax.swing.JFrame {
         this.originColSpinner.addChangeListener(spinnerChListener);
         this.targetRowSpinner.addChangeListener(spinnerChListener);
         this.targetColSpinner.addChangeListener(spinnerChListener);
+        
+        this.acceptButton.addActionListener((e) -> {  runAgent(); });
+    }
+    
+    
+    
+    private void runAgent(){
+        // CHECK IF THE VALUES ARE CORRECT...
+        if(valid()){
+
+            // Creates and launch the agent
+            Launcher.createScoutAgent();
+            Launcher.startScoutAgent();
+
+            // call to the main window
+            Launcher.openMainWindow(selectedMap);
+            
+            // close the window
+            this.setVisible(false);
+        }
+    }
+    
+    private boolean valid(){
+        if(selectedMap != null){
+            boolean res = !targetPos.equals(originPos);
+            res &= selectedMap.getTile(originPos).isReacheable();
+            res &= selectedMap.getTile(targetPos).isReacheable();
+            return res;
+        }
+        else{
+            return false;
+        }
     }
     
     /**************************************************************************/
@@ -173,7 +204,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         mapSelection_Scroll = new javax.swing.JScrollPane();
         mapSelection_List = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        acceptButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -188,7 +219,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DBA 2023/24 - Grupo 303");
+        setTitle("DBA 2023/24 - P2 - Grupo 303");
         setResizable(false);
 
         DBATitle_Label.setFont(new java.awt.Font("Arial Black", 0, 14)); // NOI18N
@@ -196,11 +227,6 @@ public class LauncherWindow extends javax.swing.JFrame {
         DBATitle_Label.setText("Pantalla de Carga - DBA");
 
         numPract_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "P2 - Busqueda Objetivo", "P3 - Busqueda otro Agente" }));
-        numPract_ComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                numPract_ComboBoxActionPerformed(evt);
-            }
-        });
 
         mapSelection_Frame.setBackground(new java.awt.Color(102, 102, 102));
         mapSelection_Frame.setPreferredSize(new java.awt.Dimension(500, 220));
@@ -255,7 +281,7 @@ public class LauncherWindow extends javax.swing.JFrame {
                 .addGap(22, 22, 22))
         );
 
-        jButton1.setText("Iniciar");
+        acceptButton.setText("Iniciar");
 
         jLabel2.setText("Selección posiciones:");
 
@@ -346,7 +372,7 @@ public class LauncherWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
+                    .addComponent(acceptButton)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -369,7 +395,7 @@ public class LauncherWindow extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(mapSelection_Frame, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(acceptButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -377,10 +403,6 @@ public class LauncherWindow extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void numPract_ComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numPract_ComboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_numPract_ComboBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -419,7 +441,7 @@ public class LauncherWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Label DBATitle_Label;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton acceptButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
