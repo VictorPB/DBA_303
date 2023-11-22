@@ -69,15 +69,12 @@ public final class Sensor {
         return this.visitedPath;
     }
     
-    public void setAgentPosition (Position newAgentPosition) {
-        this.agentPosition = newAgentPosition;
-        this.visitedPath.add(new ActionPair(agentPosition, Action.IDLE));
-    }
-    
+
     public void setParameters (Map map, Position origin, Position target) {
         this.theMap = map;
         this.originPosition = origin;
         this.agentPosition = origin;
+        this.visitedPath.add(new ActionPair(this.agentPosition, Action.IDLE));
         this.targetPosition = target;
     }
     

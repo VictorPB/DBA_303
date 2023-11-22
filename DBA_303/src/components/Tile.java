@@ -73,7 +73,7 @@ public class Tile {
      * @return 
      */
     public boolean isReacheable(){
-        return this.type != Type.UNREACHABLE;
+        return this.type == Type.EMPTY;
     }
     
     /**

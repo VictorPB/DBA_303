@@ -24,7 +24,7 @@ public class HadFinishedBehaviour extends Behaviour{
     @Override
     public void action() {
         // Sensor checks if the agent position is equal to the target position
-        myAgent.targetReached = Sensor.getInstance().getAgentPosition().equals(Sensor.getInstance().getTargetPosition());
+        myAgent.targetReached = Sensor.getInstance().targetReached();
         System.out.println("");
         
         // If agent is on the target, we remove all the behaviours form queue
