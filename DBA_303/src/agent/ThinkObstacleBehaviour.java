@@ -27,15 +27,12 @@ public class ThinkObstacleBehaviour extends Behaviour {
     @Override
     public void action() {
         if(!myAgent.targetReached){
-            System.out.print("Evaluating next action in think_obstacle.\n");
-            System.out.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
-            System.out.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
-            System.out.println("Agent: Actual agent " + myAgent.agentPos);
-            System.out.println("Agent: Actual target " + myAgent.targetPos);
+            System.out.println("Evaluating...");
+            System.out.println("Ag_abs" + Sensor.getInstance().getAgentPosition() + 
+                    "   Target_abs"+Sensor.getInstance().getTargetPosition());
 
             // The agent takes the ajacents tiles with the sensor
             myAgent.vision = Sensor.getInstance().reveal();
-
 
             // The agent checks the adjacents tiles and decides the best one
             // by their values. The best one will be the tile whose score is lower.
@@ -50,7 +47,7 @@ public class ThinkObstacleBehaviour extends Behaviour {
                 if (i!= 4) {
                     isAccesible = true;
                     Tile tile = myAgent.vision.get(i);
-                    Position nextPos = myAgent.agentPos.update(i);
+                    Position nextPos = myAgent.agentPos.update(Action.fromValue(i));
 
                     // It checks that the tile is reacheable
                     if(tile.isReacheable()) {
@@ -80,13 +77,11 @@ public class ThinkObstacleBehaviour extends Behaviour {
                 }
             }
 
-            System.out.println("He salido del bucle \n\n");
-
             if (bestAction != null) {
                 myAgent.nextAction = bestAction;
                 System.out.println("nextAction  " + myAgent.nextAction);
             } else {
-                System.out.print("Ninguna de las opciones posibles es la mejor.");
+                System.out.println("Ninguna de las opciones posibles es la mejor.");
                 // TODO: Implement an exit failture
             }
 
@@ -132,18 +127,17 @@ public class ThinkObstacleBehaviour extends Behaviour {
      * @return the score for a tile
      */
     private double calculateScore (Position currentPos, Position nextPos) {
-       // TODO: Considerar la distancia al objetivo y el número de visitas 
-       int deltaX = nextPos.getX() - myAgent.targetPos.getX();
-       int deltaY = nextPos.getY() - myAgent.targetPos.getY();
 
        double distanceToTarget = nextPos.getEuclideTo(myAgent.targetPos);
        int visitCount = myAgent.exploredArea.getTile(nextPos.getY(), nextPos.getX()).getTimesVisited();
        double score = distanceToTarget*100 + visitCount*200;
 
-       System.out.println("- at["+myAgent.agentPos.getX()+","+myAgent.agentPos.getY()+"]" + 
-               " -> ["+nextPos.getX()+","+nextPos.getY()+"]*("+visitCount+")"+
-               "  --  d("+deltaX+","+deltaY+") = "+distanceToTarget+"  -  SCORE:"+score);
-       return score; // Ajustar parámetros
+//       //For debugging purposes
+//       System.out.println("- at["+myAgent.agentPos.getX()+","+myAgent.agentPos.getY()+"]" + 
+//               " -> ["+nextPos.getX()+","+nextPos.getY()+"]*("+visitCount+")"+
+//               "  --  d("+deltaX+","+deltaY+") = "+distanceToTarget+"  -  SCORE:"+score);
+
+       return score;
     }
 
     @Override

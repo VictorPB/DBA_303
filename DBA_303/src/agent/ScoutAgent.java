@@ -39,6 +39,8 @@ public class ScoutAgent extends Agent {
     Behaviour[] activeBehaviours;
 
     public ScoutAgent() {
+        this.exploredArea = new Map(3,3);
+        this.agentPos = new Position(1,1);
     }
 
     /**
@@ -65,78 +67,48 @@ public class ScoutAgent extends Agent {
      * @param targetRespectAgent
      */
     public void setMission(Position targetRespectAgent) {
-        // +2 -> una unidad por que al trabajar con la pos relativa, se empieza en 0
-        // y otra unidad para la vision del agente
-        int rows = Math.abs(targetRespectAgent.getY()) + 2;
-        int cols = Math.abs(targetRespectAgent.getX()) + 2;
 
-        if (rows < 3) {
-            rows = 3;
+        Position targetRelative = new Position(
+                this.agentPos.getX() + targetRespectAgent.getX(),
+                this.agentPos.getY() + targetRespectAgent.getY());
+        
+        // Resize columns
+        // to the left (if necesary)
+        while(targetRelative.getX() <0){
+            this.exploredArea.addColToBeggining();
+            targetRelative = targetRelative.update(Action.RIGHT);
+            this.agentPos = this.agentPos.update(Action.RIGHT);
         }
-
-        if (cols < 3) {
-            cols = 3;
+        // or to the right (if necesary)
+        while(targetRelative.getX() > this.exploredArea.getNumCols() -1 ){
+            this.exploredArea.addColToEnd();
         }
-
-        exploredArea = new Map(cols, rows);
-
-        System.out.println("TARGET_RESPECT_AGENT: " + targetRespectAgent);
-
-        // Set agent and target position
-        if (targetRespectAgent.getX() > 0) {
-
-            if (targetRespectAgent.getY() > 0) {
-                agentPos = new Position(1, 1);
-                targetPos = new Position(cols - 1, rows - 1);
-            }
-
-            if (targetRespectAgent.getY() < 0) {
-                agentPos = new Position(1, rows - 2);
-                targetPos = new Position(cols - 1, 0);
-            }
-
-            if (targetRespectAgent.getY() == 0) {
-                agentPos = new Position(1, 1);
-                targetPos = new Position(cols - 1, 1);
-            }
+        
+        // Resize rows
+        // above
+        while(targetRelative.getY() <0){
+            this.exploredArea.addRowToBeggining();
+            targetRelative = targetRelative.update(Action.DOWN);
+            this.agentPos = this.agentPos.update(Action.DOWN);
         }
-
-        if (targetRespectAgent.getX() < 0) {
-
-            if (targetRespectAgent.getY() > 0) {
-                agentPos = new Position(1, rows - 2);
-                targetPos = new Position(cols - 1, 0);
-            }
-
-            if (targetRespectAgent.getY() < 0) {
-                agentPos = new Position(cols - 2, rows - 2);
-                targetPos = new Position(0, 0);
-            }
-
-            if (targetRespectAgent.getY() == 0) {
-                agentPos = new Position(1, rows - 2);
-                targetPos = new Position(1, 0);
-            }
+        // below
+        while(targetRelative.getY() > this.exploredArea.getNumRows()-1){
+            this.exploredArea.addRowToEnd();
         }
+        
+        this.targetPos = targetRelative;
+        updateVision();
+        
+        System.out.println("CONFIGURATION FINISHES");
+        System.out.println("Agent"+this.agentPos);
+        System.out.println("Target: "+this.targetPos);
+    }
 
-        if (targetRespectAgent.getX() == 0) {
-
-            if (targetRespectAgent.getY() > 0) {
-                agentPos = new Position(1, 1);
-                targetPos = new Position(1, rows - 1);
-            }
-
-            if (targetRespectAgent.getY() < 0) {
-                agentPos = new Position(1, rows - 2);
-                targetPos = new Position(1, 0);
-            }
-
-            if (targetRespectAgent.getY() == 0) {
-                agentPos = new Position(1, 1);
-                targetPos = new Position(1, 1);
-            }
-        }
-
+    /**
+     * Private method to prin the internal map in the console
+     * for debugging purposes
+     */
+    private void printInternalMap(){
         exploredArea.getTile(agentPos).newVisit();
         for (int i = 0; i < exploredArea.getNumRows(); i++) {
             for (int j = 0; j < exploredArea.getNumCols(); j++) {
@@ -150,9 +122,8 @@ public class ScoutAgent extends Agent {
             }
             System.out.println("");
         }
-        updateVision();
     }
-
+    
     /**
      * Method to set the values of the agent's adjacent tiles
      * It calls the sensor to take the value tiles
@@ -160,12 +131,11 @@ public class ScoutAgent extends Agent {
     void updateVision() {
 
         vision = Sensor.getInstance().reveal();
-
         int indexVision = 0;
 
         for (int i = agentPos.getY() - 1; i <= agentPos.getY() + 1; i++) {
             for (int j = agentPos.getX() - 1; j <= agentPos.getX() + 1; j++) {
-                exploredArea.setTile(j, i, vision.get(indexVision));
+                exploredArea.setTile(i, j, vision.get(indexVision));
                 indexVision++;
             }
         }
@@ -192,7 +162,6 @@ public class ScoutAgent extends Agent {
         } else if (agentPos.getY() == exploredArea.getNumRows() - 1) {
             exploredArea.addRowToEnd();
         }
-
     }
 
     /**
@@ -206,7 +175,7 @@ public class ScoutAgent extends Agent {
 
         setMission(Sensor.getInstance().getTargetRespectAgent());
 
-        Behaviour UIupdater = new updateUI_behaviour();
+        Behaviour UIupdater = new updateUIBehaviour(this);
         Behaviour thinker = new ThinkObstacleBehaviour(this);
         Behaviour updater = new UpdatePositionBehaviour(this);
 
@@ -215,32 +184,11 @@ public class ScoutAgent extends Agent {
         this.addBehaviour(thinker);
         this.addBehaviour(updater);
 
-        activeBehaviours = new Behaviour[] {
-                UIupdater, thinker, updater
-        };
-
+        activeBehaviours = new Behaviour[] { UIupdater, thinker, updater };
     }
 
     @Override
     protected void takeDown() {
         System.out.println("Agent has reached the target. Terminating ScoutAgent...\n");
-    }
-
-    /**
-     * Behaviour that verify if the agent had reached the target
-     */
-    class updateUI_behaviour extends Behaviour {
-
-        @Override
-        public void action() {
-            Launcher.getMainWindow().updateAgentWithoutPath();
-            Launcher.getMainWindow().updateInternalMapView();
-        }
-
-        @Override
-        public boolean done() {
-            return targetReached;
-        }
-
     }
 }
