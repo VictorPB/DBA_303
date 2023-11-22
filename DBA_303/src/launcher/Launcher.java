@@ -10,6 +10,7 @@ import jade.wrapper.StaleProxyException;
 import agent.ScoutAgent;
 import agent.Sensor;
 import components.Map;
+import components.Position;
 import gui.LauncherWindow;
 import gui.MainWindow;
 import jade.core.Agent;
@@ -84,9 +85,18 @@ public class Launcher {
         }
     }
     
+    public static void configureAgent(Map map, Position origin, Position target){
+        Sensor.getInstance().setParameters(map, origin, target);
+        
+    }
+    
     public static void openMainWindow(Map map){
         mainW = new MainWindow(map);
         mainW.setVisible(true);
+    }
+    
+    public static MainWindow getMainWindow(){
+        return mainW;
     }
     
     /**************************************************************************/
