@@ -9,7 +9,6 @@ import jade.core.behaviours.Behaviour;
 import components.*;
 import java.util.ArrayList;
 import components.Map;
-import gui.MainWindow;
 import launcher.Launcher;
 
 /**
@@ -48,7 +47,8 @@ public class ScoutAgent extends Agent{
     public Map getExploredArea(){
         return exploredArea;
     }
-    
+    public Position getAgentRelPos(){return this.agentPos; }
+    public Position getTargetRelPos(){ return this.targetPos; }
     
     public void setMission(Position targetRespectAgent){
         
@@ -180,7 +180,6 @@ public class ScoutAgent extends Agent{
 
     }
     
- 
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
@@ -337,11 +336,10 @@ public class ScoutAgent extends Agent{
         @Override
         public void action() {
             
-            exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
-            
             //Actualizamos la posicion del agente en su mapa interno
             agentPos = agentPos.update(nextAction);
             
+            exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
             
             //Informamos de la accion a sensores
             Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(nextAction));            
@@ -391,6 +389,7 @@ public class ScoutAgent extends Agent{
         @Override
         public void action() {
             Launcher.getMainWindow().updateAgentWithoutPath();
+            Launcher.getMainWindow().updateInternalMapView();
         }
 
         @Override

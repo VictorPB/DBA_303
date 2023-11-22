@@ -23,9 +23,7 @@ import jade.core.Agent;
  * containers and agents.
  */
 public class Launcher {
-    
-
-    
+       
     private static String host = "localhost";
     private static String mainContName = "DBA_303";
     private static String agentContName = "DBA_agent";
@@ -95,9 +93,9 @@ public class Launcher {
         mainW.setVisible(true);
     }
     
-    public static MainWindow getMainWindow(){
-        return mainW;
-    }
+    public static MainWindow getMainWindow(){ return mainW; }
+    
+    public static Agent getAgent(){ return scoutAgent; }
     
     /**************************************************************************/
     /**
