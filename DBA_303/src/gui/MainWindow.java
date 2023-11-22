@@ -52,6 +52,10 @@ public class MainWindow extends javax.swing.JFrame {
         
     }
 
+    
+    /**
+     * Create the map view in the Main Map Frame
+     */
     private void createMapView(){
         int rows = this.map.getNumRows();
         int cols = this.map.getNumCols();
@@ -72,6 +76,9 @@ public class MainWindow extends javax.swing.JFrame {
         this.mainMap.updateUI();
     }
     
+    /**
+     * Updates the agent position 
+     */
     public void updateAgent(){
         clearAgentPath();
         
@@ -95,6 +102,33 @@ public class MainWindow extends javax.swing.JFrame {
             for(JPanel p: row)
                 p.removeAll();
     }
+    
+    
+    /**************************************************************************/
+    /*** update the agent in the main map *************************************/
+    // this is a temporal implementation
+    public void updateAgentWithoutPath(){
+        clearAgentPath();
+        
+        // temporal -> it access directly to sensors
+        Position agentPos = Sensor.getInstance().getAgentPosition();
+        Position targetPos = Sensor.getInstance().getTargetPosition();
+        
+        JPanel agentPanel = this.mainMapTilePanelArr.get(agentPos.getY()).get(agentPos.getX());
+        JPanel targetPanel = this.mainMapTilePanelArr.get(targetPos.getY()).get(targetPos.getX());
+        
+        agentPanel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
+        targetPanel.add(new JLabel(AssetManager.getTargetIcon(this.MapTileWidth, true)));
+        
+        this.mainMap.updateUI();
+    }
+    
+    
+    
+    
+    /**************************************************************************/
+    /**************************************************************************/
+    /**************************************************************************/
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -231,21 +265,21 @@ public class MainWindow extends javax.swing.JFrame {
         //</editor-fold>
 
         // TODO - detele 
-        Map myMap = new Map("mapWithDiagonalWall.txt");
-        Sensor.getInstance().setParameters( "mapWithDiagonalWall.txt", new Position(0,0), new Position(3,6));
-        Sensor.getInstance().setAgentPosition(new Position(0,0));
-        Sensor.getInstance().updatePosition(Action.DOWN);
-        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
-        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
-        Sensor.getInstance().updatePosition(Action.RIGHT);
+//        Map myMap = new Map("mapWithDiagonalWall.txt");
+//        Sensor.getInstance().setParameters( "mapWithDiagonalWall.txt", new Position(0,0), new Position(3,6));
+//        Sensor.getInstance().setAgentPosition(new Position(0,0));
+//        Sensor.getInstance().updatePosition(Action.DOWN);
+//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
+//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
+//        Sensor.getInstance().updatePosition(Action.RIGHT);
         
         
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainWindow(myMap).setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new MainWindow(myMap).setVisible(true);
+//            }
+//        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

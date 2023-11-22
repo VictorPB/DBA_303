@@ -165,10 +165,15 @@ public class LauncherWindow extends javax.swing.JFrame {
 
             // Creates and launch the agent
             Launcher.createScoutAgent();
-            Launcher.startScoutAgent();
-
+            
+            // set initial mision
+            Launcher.configureAgent(selectedMap, originPos, targetPos);
+            
             // call to the main window
             Launcher.openMainWindow(selectedMap);
+            
+            // start the agent
+            Launcher.startScoutAgent();
             
             // close the window
             this.setVisible(false);

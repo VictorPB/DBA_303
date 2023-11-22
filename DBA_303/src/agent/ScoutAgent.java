@@ -9,6 +9,8 @@ import jade.core.behaviours.Behaviour;
 import components.*;
 import java.util.ArrayList;
 import components.Map;
+import gui.MainWindow;
+import launcher.Launcher;
 
 /**
  *
@@ -16,21 +18,26 @@ import components.Map;
  */
 public class ScoutAgent extends Agent{
     
+    // Internal map (only explored area)
     Map exploredArea;
     
-    //Posicion del agente en según mapa interno
+    // Agent position relative to the internal map
     Position agentPos;
     
-    //Posición del destino segun mapa interno
+    // Target position relative to the internal map
     Position targetPos;
     
+    // Boolean value that controls if the agent had reached the target
     boolean targetReached;
     
+    // Internal storage of the last vision of the agent
     ArrayList<Tile> vision;
     
+    // Next action to be done
     Action nextAction;
     
-    Behaviour[] comportamientosActivos;
+    // List of behaviours added to the agent
+    Behaviour[] activeBehaviours;
 
     
     
@@ -41,6 +48,7 @@ public class ScoutAgent extends Agent{
     public Map getExploredArea(){
         return exploredArea;
     }
+    
     
     public void setMission(Position targetRespectAgent){
         
@@ -60,6 +68,7 @@ public class ScoutAgent extends Agent{
         
         exploredArea = new Map(cols, rows);
         
+        System.out.println("TARGET_RESPECT_AGENT: "+targetRespectAgent);
         
         //Set agent and target position 
         if(targetRespectAgent.getX() > 0){        
@@ -104,12 +113,12 @@ public class ScoutAgent extends Agent{
             
             if(targetRespectAgent.getY() > 0){
                 agentPos = new Position(1,1);
-                targetPos = new Position(cols-1,1);
+                targetPos = new Position(1,rows-1);
             }
             
             if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(cols-2,1);
-                targetPos = new Position(0,1);
+                agentPos = new Position(1,rows-2);
+                targetPos = new Position(1,0);
             }
             
             if(targetRespectAgent.getY() == 0){
@@ -120,8 +129,12 @@ public class ScoutAgent extends Agent{
         
         exploredArea.getTile(agentPos).newVisit();
         for(int i=0; i<exploredArea.getNumRows(); i++){
-            for(int j=0; j<exploredArea.getNumCols(); j++)
-                System.out.print(exploredArea.getTile(i, j).getTimesVisited());
+            for(int j=0; j<exploredArea.getNumCols(); j++){
+                Position p = new Position(j,i);
+                if(p.equals(agentPos))          System.out.print("A");
+                else if(p.equals(targetPos))    System.out.print("X");
+                else                               System.out.print("0");
+            }
             System.out.println("");
         }
         updateVision();
@@ -171,24 +184,21 @@ public class ScoutAgent extends Agent{
     @Override
     public void setup(){
         System.out.println("Hello! I'm ScoutAgent.\n");
-  
-        Sensor.getInstance().setParameters("mapWithDiagonalWall.txt", new Position(8,2), new Position(9,3));
-        
-        //Para iniciar el agente solo necesitamos que sensores nos indique la posicion relativa al objetivo
-        
+
         setMission(Sensor.getInstance().getTargetRespectAgent());
         
-        comportamientosActivos = new Behaviour[]{
-            new think_obstacle(),
-            new update_position()
-        };
-
-   
-        this.addBehaviour(new had_finished());
+        Behaviour UIupdater = new updateUI_behaviour();
+        Behaviour thinker = new think_obstacle();
+        Behaviour updater = new update_position();
         
-        for(Behaviour b : comportamientosActivos){
-            this.addBehaviour(b);
-        }   
+        this.addBehaviour(UIupdater); // TODO cambiar esto 
+        this.addBehaviour(new had_finished());
+        this.addBehaviour(thinker);
+        this.addBehaviour(updater);
+        
+        activeBehaviours = new Behaviour[]{
+            UIupdater, thinker, updater
+        };
         
     }
     
@@ -210,10 +220,14 @@ public class ScoutAgent extends Agent{
             if(!targetReached){
                 System.out.print("Evaluating next action in think_obstacle.\n");
 
-                System.out.println("Sensor: Actual agent " + Sensor.getInstance().getAgentPosition());
-                System.out.println("Sensor: Actual target " + Sensor.getInstance().getTargetPosition());
-                System.out.println("Agent: Actual agent " + agentPos);
-                System.out.println("Agent: Actual target " + targetPos);
+                
+                System.out.println("SENSOR (abs): Ag" + Sensor.getInstance().getAgentPosition() + "   G" + Sensor.getInstance().getTargetPosition() +
+                        "    delta ["+(Sensor.getInstance().getTargetPosition().getX() - Sensor.getInstance().getAgentPosition().getX())+","+
+                                (Sensor.getInstance().getTargetPosition().getY() - Sensor.getInstance().getAgentPosition().getY())+"]");
+                System.out.println("AGENT  (rel): Ag" + agentPos + "   G" + targetPos + 
+                        "    delta ["+(targetPos.getX() - agentPos.getX())+","+
+                                (targetPos.getY() - agentPos.getY())+"]");
+                
 
                 // Obtiene las casillas adyacentes con el sensor
                 vision = Sensor.getInstance().reveal();
@@ -368,6 +382,24 @@ public class ScoutAgent extends Agent{
         }
     }
     
+    
+    /**
+     *  Behaviour that verify if the agent had reached the target
+     */
+    class updateUI_behaviour extends Behaviour {
+
+        @Override
+        public void action() {
+            Launcher.getMainWindow().updateAgentWithoutPath();
+        }
+
+        @Override
+        public boolean done() {
+            return targetReached;
+        }
+        
+    } 
+    
     /**
      *  Behaviour that verify if the agent had reached the target
      */
@@ -378,7 +410,7 @@ public class ScoutAgent extends Agent{
             targetReached = Sensor.getInstance().getAgentPosition().equals(Sensor.getInstance().getTargetPosition());
             System.out.println("");
             if(targetReached){
-                for(Behaviour b :comportamientosActivos){
+                for(Behaviour b :activeBehaviours){
                     this.myAgent.removeBehaviour(b);
                 }
             }

@@ -148,7 +148,7 @@ public class Position {
 
     @Override
     public String toString() {
-        return "Posicion: X " + this.x + " Y " + this.y;
+        return "(" + this.x + "," + this.y+")";
     }
 
     

@@ -74,8 +74,8 @@ public final class Sensor {
         this.visitedPath.add(new ActionPair(agentPosition, Action.IDLE));
     }
     
-    public void setParameters (String map, Position origin, Position target) {
-        this.theMap = new Map (map);
+    public void setParameters (Map map, Position origin, Position target) {
+        this.theMap = map;
         this.originPosition = origin;
         this.agentPosition = origin;
         this.targetPosition = target;
