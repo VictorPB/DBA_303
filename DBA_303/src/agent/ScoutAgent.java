@@ -204,7 +204,7 @@ public class ScoutAgent extends Agent{
      *  Agente que piensa a dónde debe ir. 
      */
     class think_obstacle extends Behaviour{
-       
+
         @Override
         public void action() {
             if(!targetReached){
@@ -273,26 +273,26 @@ public class ScoutAgent extends Agent{
         // Métodos para comprobar si las esquinas son alcanzables
         // Esquina superior izquierda
         private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) && 
-                    adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE);
+            return adjacentTiles.get(1).isType(Tile.Type.UNREACHABLE) && 
+                    adjacentTiles.get(3).isType(Tile.Type.UNREACHABLE);
         }
         
         // Esquina superior derecha
         private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1).isType(Tile.TypeTile.UNREACHABLE) &&
-                    adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE);
+            return adjacentTiles.get(1).isType(Tile.Type.UNREACHABLE) &&
+                    adjacentTiles.get(5).isType(Tile.Type.UNREACHABLE);
         }
         
         // Esquina inferior izquierda
         private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(3).isType(Tile.TypeTile.UNREACHABLE) &&
-                    adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
+            return adjacentTiles.get(3).isType(Tile.Type.UNREACHABLE) &&
+                    adjacentTiles.get(7).isType(Tile.Type.UNREACHABLE);
         }
         
         // Esquina inferior derecha
         private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(5).isType(Tile.TypeTile.UNREACHABLE) &&
-                    adjacentTiles.get(7).isType(Tile.TypeTile.UNREACHABLE);
+            return adjacentTiles.get(5).isType(Tile.Type.UNREACHABLE) &&
+                    adjacentTiles.get(7).isType(Tile.Type.UNREACHABLE);
         }
         
         private double calculateScore (Position currentPos, Position nextPos) {
@@ -347,8 +347,8 @@ public class ScoutAgent extends Agent{
                     Tile t = exploredArea.getTile(i, j);
                     if(at.equals(agentPos))                          System.out.print("A");
                     else if (at.equals(targetPos))                   System.out.print("X");
-                    else if (t.isType(Tile.TypeTile.EMPTY))         System.out.print("▯");
-                    else if (t.isType(Tile.TypeTile.UNREACHABLE))   System.out.print("▮");
+                    else if (t.isType(Tile.Type.EMPTY))         System.out.print("▯");
+                    else if (t.isType(Tile.Type.UNREACHABLE))   System.out.print("▮");
                     else                                                System.out.print("?");
                 }
                 System.out.println("");

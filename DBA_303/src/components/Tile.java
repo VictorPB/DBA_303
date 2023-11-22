@@ -6,13 +6,13 @@
 package components;
 
 /**
- * @biref This class models each tile inside the Map. It may include(by now) only a 
- * reference value that represents if its accessible (empty) or not.
+ * @brief This class models each tile inside the Map.
  */
 public class Tile {
     
     /// internal representation
-    private TypeTile type;
+    private final Type type;
+    
     /// times visited
     private int timesVisited;
 
@@ -21,23 +21,30 @@ public class Tile {
      * @param value 
      */
     public Tile(int value) {
-        this.type = TypeTile.fromValue(value);
+        this.type = Type.fromValue(value);
         this.timesVisited = 0;
     }
     
-    public Tile(TypeTile type) {
+    /**
+     * Tile Contructor with the tile type
+     * @param type The tile type
+     */
+    public Tile(Type type) {
         this.type = type;
         this.timesVisited = 0;
     }
 
-    
     /**
      * Tile value getter
      * @return the typeValue representation
      */
     public int getVal() { return this.type.typeValue; }
     
-    public TypeTile getType() { return this.type; }
+    /**
+     * Gets the tile type 
+     * @return The TyleTipe enum
+     */
+    public Type getType() { return this.type; }
     
     /**
      * Tile times visited getter
@@ -45,37 +52,50 @@ public class Tile {
      */
     public int getTimesVisited() { return this.timesVisited; }
     
-    
+    /**
+     * Increments the visits counter
+     */
     public void newVisit(){
         this.timesVisited++;
     }
     
-    public boolean isType(TypeTile type){
+    /**
+     * Checks if a Tile is of a specific type
+     * @param type TileType to check about
+     * @return 
+     */
+    public boolean isType(Type type){
         return type == this.type;
     }
     
+    /**
+     * Checks if the tile is reacheable by an agent
+     * @return 
+     */
     public boolean isReacheable(){
-        return this.type != TypeTile.UNREACHABLE;
+        return this.type != Type.UNREACHABLE;
     }
     
-    public enum TypeTile {
+    /**
+     * Enum type to model the tile type
+     */
+    public enum Type {
         
-    // ENUM VALUES
         EMPTY(0), 
         UNREACHABLE(-1),
         UNKNOWN(-2);
         
         private final int typeValue;
 
-        private TypeTile(int value) {
+        private Type(int value) {
             this.typeValue = value;
         }
         
-        public static TypeTile fromValue(int value) {
-            TypeTile res = null;
-            if(value == 0)          res = TypeTile.EMPTY;
-            else if(value == -1)    res = TypeTile.UNREACHABLE;
-            else                    res = TypeTile.UNKNOWN;
+        public static Type fromValue(int value) {
+            Type res = null;
+            if(value == 0)          res = Type.EMPTY;
+            else if(value == -1)    res = Type.UNREACHABLE;
+            else                    res = Type.UNKNOWN;
             return res;
         }
     }
