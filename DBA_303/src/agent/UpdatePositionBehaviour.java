@@ -30,10 +30,8 @@ public class UpdatePositionBehaviour extends Behaviour{
             // The agent actualizes his position on his internal map
             myAgent.agentPos = myAgent.agentPos.update(myAgent.nextAction);
             
-            
             // The sensor actualize the position of the agent
-            Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(myAgent.nextAction));            
-            //Sensor.getInstance().updatePosition(myAgent.nextAction);
+            Sensor.getInstance().updatePosition(myAgent.nextAction);
             
             // The agent update what is surrounding him
             myAgent.updateVision();

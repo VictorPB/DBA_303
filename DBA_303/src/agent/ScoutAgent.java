@@ -215,10 +215,7 @@ public class ScoutAgent extends Agent {
         this.addBehaviour(thinker);
         this.addBehaviour(updater);
 
-        activeBehaviours = new Behaviour[] {
-                UIupdater, thinker, updater
-        };
-
+        activeBehaviours = new Behaviour[] { UIupdater, thinker, updater };
     }
 
     @Override
