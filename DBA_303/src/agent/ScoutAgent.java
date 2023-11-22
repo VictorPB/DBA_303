@@ -8,381 +8,226 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import components.*;
 import java.util.ArrayList;
-import components.Map;
+
 import launcher.Launcher;
 
 /**
  *
  * @author vipeba
  */
-public class ScoutAgent extends Agent{
-    
+public class ScoutAgent extends Agent {
+
     // Internal map (only explored area)
     Map exploredArea;
-    
+
     // Agent position relative to the internal map
     Position agentPos;
-    
+
     // Target position relative to the internal map
     Position targetPos;
-    
+
     // Boolean value that controls if the agent had reached the target
     boolean targetReached;
-    
+
     // Internal storage of the last vision of the agent
     ArrayList<Tile> vision;
-    
+
     // Next action to be done
     Action nextAction;
-    
+
     // List of behaviours added to the agent
     Behaviour[] activeBehaviours;
 
-    
-    
     public ScoutAgent() {
-    
     }
-    
-    public Map getExploredArea(){
+
+    /**
+     * Method to get the internal map
+     * 
+     * @return the map that contains the explored area
+     */
+    public Map getExploredArea() {
         return exploredArea;
     }
-    public Position getAgentRelPos(){return this.agentPos; }
-    public Position getTargetRelPos(){ return this.targetPos; }
-    
-    public void setMission(Position targetRespectAgent){
-        
-        
+
+    public Position getAgentRelPos() {
+        return this.agentPos;
+    }
+
+    public Position getTargetRelPos() {
+        return this.targetPos;
+    }
+
+    /**
+     * Method to initialize the internal map
+     * It also calls the UpdateVision for the first time
+     * 
+     * @param targetRespectAgent
+     */
+    public void setMission(Position targetRespectAgent) {
         // +2 -> una unidad por que al trabajar con la pos relativa, se empieza en 0
-        //      y otra unidad para la vision del agente
+        // y otra unidad para la vision del agente
         int rows = Math.abs(targetRespectAgent.getY()) + 2;
         int cols = Math.abs(targetRespectAgent.getX()) + 2;
-        
-        if(rows < 3){
+
+        if (rows < 3) {
             rows = 3;
         }
-        
-        if(cols < 3){
+
+        if (cols < 3) {
             cols = 3;
         }
-        
+
         exploredArea = new Map(cols, rows);
-        
-        System.out.println("TARGET_RESPECT_AGENT: "+targetRespectAgent);
-        
-        //Set agent and target position 
-        if(targetRespectAgent.getX() > 0){        
-            
-            if(targetRespectAgent.getY() > 0){
-                agentPos = new Position(1,1);
-                targetPos = new Position(cols-1,rows-1);
+
+        System.out.println("TARGET_RESPECT_AGENT: " + targetRespectAgent);
+
+        // Set agent and target position
+        if (targetRespectAgent.getX() > 0) {
+
+            if (targetRespectAgent.getY() > 0) {
+                agentPos = new Position(1, 1);
+                targetPos = new Position(cols - 1, rows - 1);
             }
-            
-            if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(1,rows-2);
-                targetPos = new Position(cols-1,0);
+
+            if (targetRespectAgent.getY() < 0) {
+                agentPos = new Position(1, rows - 2);
+                targetPos = new Position(cols - 1, 0);
             }
-            
-            if(targetRespectAgent.getY() == 0){
-                agentPos = new Position(1,1);
-                targetPos = new Position(cols-1,1);
+
+            if (targetRespectAgent.getY() == 0) {
+                agentPos = new Position(1, 1);
+                targetPos = new Position(cols - 1, 1);
             }
         }
-        
-        
-        if(targetRespectAgent.getX() < 0){        
-            
-            if(targetRespectAgent.getY() > 0){
-                agentPos = new Position(1, rows-2 );
-                targetPos = new Position(cols-1, 0);
+
+        if (targetRespectAgent.getX() < 0) {
+
+            if (targetRespectAgent.getY() > 0) {
+                agentPos = new Position(1, rows - 2);
+                targetPos = new Position(cols - 1, 0);
             }
-            
-            if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(cols-2,rows-2);
-                targetPos = new Position(0,0);
+
+            if (targetRespectAgent.getY() < 0) {
+                agentPos = new Position(cols - 2, rows - 2);
+                targetPos = new Position(0, 0);
             }
-            
-            if(targetRespectAgent.getY() == 0){
-                agentPos = new Position(1, rows-2);
+
+            if (targetRespectAgent.getY() == 0) {
+                agentPos = new Position(1, rows - 2);
                 targetPos = new Position(1, 0);
             }
         }
-        
-        
-        if(targetRespectAgent.getX() == 0){        
-            
-            if(targetRespectAgent.getY() > 0){
-                agentPos = new Position(1,1);
-                targetPos = new Position(1,rows-1);
+
+        if (targetRespectAgent.getX() == 0) {
+
+            if (targetRespectAgent.getY() > 0) {
+                agentPos = new Position(1, 1);
+                targetPos = new Position(1, rows - 1);
             }
-            
-            if(targetRespectAgent.getY() < 0){
-                agentPos = new Position(1,rows-2);
-                targetPos = new Position(1,0);
+
+            if (targetRespectAgent.getY() < 0) {
+                agentPos = new Position(1, rows - 2);
+                targetPos = new Position(1, 0);
             }
-            
-            if(targetRespectAgent.getY() == 0){
-                agentPos = new Position(1,1);
-                targetPos = new Position(1,1);
+
+            if (targetRespectAgent.getY() == 0) {
+                agentPos = new Position(1, 1);
+                targetPos = new Position(1, 1);
             }
         }
-        
+
         exploredArea.getTile(agentPos).newVisit();
-        for(int i=0; i<exploredArea.getNumRows(); i++){
-            for(int j=0; j<exploredArea.getNumCols(); j++){
-                Position p = new Position(j,i);
-                if(p.equals(agentPos))          System.out.print("A");
-                else if(p.equals(targetPos))    System.out.print("X");
-                else                               System.out.print("0");
+        for (int i = 0; i < exploredArea.getNumRows(); i++) {
+            for (int j = 0; j < exploredArea.getNumCols(); j++) {
+                Position p = new Position(j, i);
+                if (p.equals(agentPos))
+                    System.out.print("A");
+                else if (p.equals(targetPos))
+                    System.out.print("X");
+                else
+                    System.out.print("0");
             }
             System.out.println("");
         }
         updateVision();
     }
-    
-    void updateVision(){
-        
+
+    /**
+     * Method to set the values of the agent's adjacent tiles
+     * It calls the sensor to take the value tiles
+     */
+    void updateVision() {
+
         vision = Sensor.getInstance().reveal();
-              
+
         int indexVision = 0;
-        
-        for(int i = agentPos.getY()-1; i <= agentPos.getY()+1; i++){
-            for(int j = agentPos.getX()-1; j <= agentPos.getX()+1; j++){
+
+        for (int i = agentPos.getY() - 1; i <= agentPos.getY() + 1; i++) {
+            for (int j = agentPos.getX() - 1; j <= agentPos.getX() + 1; j++) {
                 exploredArea.setTile(j, i, vision.get(indexVision));
                 indexVision++;
-            }         
+            }
         }
     }
-    
+
     /**
      * Check if Agent Map (exploredArea) needs to be resized because
      * being in the border of the map.
      */
-    void updateResizeMap(){
+    void updateResizeMap() {
 
-        if(agentPos.getX() == 0){
+        if (agentPos.getX() == 0) {
             exploredArea.addColToBeggining();
-            agentPos  = agentPos.update(Action.RIGHT);
+            agentPos = agentPos.update(Action.RIGHT);
             targetPos = targetPos.update(Action.RIGHT);
-        }
-        else if(agentPos.getX() == exploredArea.getNumCols()-1){         //En ultima columna
+        } else if (agentPos.getX() == exploredArea.getNumCols() - 1) { // En ultima columna
             exploredArea.addColToEnd();
         }
-        
-        if( agentPos.getY() == 0){
+
+        if (agentPos.getY() == 0) {
             exploredArea.addRowToBeggining();
-            agentPos  = agentPos.update(Action.DOWN);
+            agentPos = agentPos.update(Action.DOWN);
             targetPos = targetPos.update(Action.DOWN);
-        }
-        else if(agentPos.getY() == exploredArea.getNumRows()-1){
+        } else if (agentPos.getY() == exploredArea.getNumRows() - 1) {
             exploredArea.addRowToEnd();
         }
 
     }
-    
+
+    /**
+     * In setup we initialize the agent, we set the sensor
+     * and add to queue of Behaviours the actions that the
+     * agent needs
+     */
     @Override
-    public void setup(){
+    public void setup() {
         System.out.println("Hello! I'm ScoutAgent.\n");
 
         setMission(Sensor.getInstance().getTargetRespectAgent());
-        
+
         Behaviour UIupdater = new updateUI_behaviour();
         Behaviour thinker = new think_obstacle();
         Behaviour updater = new update_position();
-        
-        this.addBehaviour(UIupdater); // TODO cambiar esto 
+
+        this.addBehaviour(UIupdater); // TODO cambiar esto
         this.addBehaviour(new had_finished());
         this.addBehaviour(thinker);
         this.addBehaviour(updater);
-        
-        activeBehaviours = new Behaviour[]{
-            UIupdater, thinker, updater
+
+        activeBehaviours = new Behaviour[] {
+                UIupdater, thinker, updater
         };
-        
+
     }
-    
-    
+
     @Override
-    protected void takeDown(){
-        System.out.println("Agent may have reached the target. Terminating ScoutAgent...\n");
+    protected void takeDown() {
+        System.out.println("Agent has reached the target. Terminating ScoutAgent...\n");
     }
-    
 
-    
     /**
-     *  Agente que piensa a dónde debe ir. 
-     */
-    class think_obstacle extends Behaviour{
-
-        @Override
-        public void action() {
-            if(!targetReached){
-                System.out.print("Evaluating next action in think_obstacle.\n");
-
-                
-                System.out.println("SENSOR (abs): Ag" + Sensor.getInstance().getAgentPosition() + "   G" + Sensor.getInstance().getTargetPosition() +
-                        "    delta ["+(Sensor.getInstance().getTargetPosition().getX() - Sensor.getInstance().getAgentPosition().getX())+","+
-                                (Sensor.getInstance().getTargetPosition().getY() - Sensor.getInstance().getAgentPosition().getY())+"]");
-                System.out.println("AGENT  (rel): Ag" + agentPos + "   G" + targetPos + 
-                        "    delta ["+(targetPos.getX() - agentPos.getX())+","+
-                                (targetPos.getY() - agentPos.getY())+"]");
-                
-
-                // Obtiene las casillas adyacentes con el sensor
-                vision = Sensor.getInstance().reveal();
-
-
-                // Evalua las casillas adyacentes y elige la mejor opción
-                Action bestAction = null;
-                double bestScore = Integer.MAX_VALUE;
-                boolean isAccesible;
-
-                for (int i=0; i < vision.size(); i++) {
-
-                    if (i!= 4) {
-                        isAccesible = true;
-                        Tile tile = vision.get(i);
-
-                        // Obtiene la posicion del array i
-                        Position nextPos = agentPos.update(i);
-
-                        // Comprueba que la casilla no sea un obstáculo
-                        if(tile.isReacheable()) {
-                            // Comprobamos si las esquinas son accesibles
-                            if (i == 0 && upLeftIsUnreachable(vision)) {
-                                isAccesible = false;
-                            } else if (i == 2 && upRightIsUnreachable(vision)) {
-                                isAccesible = false;
-                            } else if (i == 6 && downLeftIsUnreachable(vision)) {
-                                isAccesible = false;
-                            } else if (i == 8 && downRightIsUnreachable(vision)) {
-                                isAccesible = false;
-                            }
-
-                            if (isAccesible) {
-                                double score = calculateScore(agentPos, nextPos);
-
-                                if (score < bestScore) {
-                                    bestScore = score;
-                                    bestAction = Action.values()[i];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                System.out.println("He salido del bucle \n\n");
-
-                if (bestAction != null) {
-                    nextAction = bestAction;
-                    System.out.println("nextAction  " + nextAction);
-                } else {
-                    System.out.print("Ninguna de las opciones posibles es la mejor.");
-                }
-            
-            }
-        }
-        
-        // Métodos para comprobar si las esquinas son alcanzables
-        // Esquina superior izquierda
-        private boolean upLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1).isType(Tile.Type.UNREACHABLE) && 
-                    adjacentTiles.get(3).isType(Tile.Type.UNREACHABLE);
-        }
-        
-        // Esquina superior derecha
-        private boolean upRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(1).isType(Tile.Type.UNREACHABLE) &&
-                    adjacentTiles.get(5).isType(Tile.Type.UNREACHABLE);
-        }
-        
-        // Esquina inferior izquierda
-        private boolean downLeftIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(3).isType(Tile.Type.UNREACHABLE) &&
-                    adjacentTiles.get(7).isType(Tile.Type.UNREACHABLE);
-        }
-        
-        // Esquina inferior derecha
-        private boolean downRightIsUnreachable (ArrayList<Tile> adjacentTiles) {
-            return adjacentTiles.get(5).isType(Tile.Type.UNREACHABLE) &&
-                    adjacentTiles.get(7).isType(Tile.Type.UNREACHABLE);
-        }
-        
-        private double calculateScore (Position currentPos, Position nextPos) {
-           // TODO: Considerar la distancia al objetivo y el número de visitas 
-           int deltaX = nextPos.getX() - targetPos.getX();
-           int deltaY = nextPos.getY() - targetPos.getY();
-           
-           double distanceToTarget = nextPos.getEuclideTo(targetPos);
-           int visitCount = exploredArea.getTile(nextPos.getY(), nextPos.getX()).getTimesVisited();
-           double score = distanceToTarget*100 + visitCount*200;
-           
-           System.out.println("- at["+agentPos.getX()+","+agentPos.getY()+"]" + 
-                   " -> ["+nextPos.getX()+","+nextPos.getY()+"]*("+visitCount+")"+
-                   "  --  d("+deltaX+","+deltaY+") = "+distanceToTarget+"  -  SCORE:"+score);
-           return score; // Ajustar parámetros
-        }
-        
-        @Override
-        public boolean done() {
-            return targetReached;
-        }
-    }
-    
-    /**
-     * Behaviour that update the position of the agent
-     */
-    class update_position extends Behaviour{
-        @Override
-        public void action() {
-            
-            //Actualizamos la posicion del agente en su mapa interno
-            agentPos = agentPos.update(nextAction);
-            
-            exploredArea.getTile(agentPos).newVisit();  //informamos de paso por casilla
-            
-            //Informamos de la accion a sensores
-            Sensor.getInstance().setAgentPosition(Sensor.getInstance().getAgentPosition().update(nextAction));            
-            
-            updateVision();
-            
-            //If need resize AgentMap
-            updateResizeMap();        
-            
-            System.out.println("-------------------\n");
-            
-            // this may show in console what the agent know about the map
-            // it position and the target
-            for(int i=0; i<exploredArea.getNumRows(); i++){
-                for(int j=0; j<exploredArea.getNumCols(); j++){
-                    Position at = new Position(j,i);
-                    Tile t = exploredArea.getTile(i, j);
-                    if(at.equals(agentPos))                          System.out.print("A");
-                    else if (at.equals(targetPos))                   System.out.print("X");
-                    else if (t.isType(Tile.Type.EMPTY))         System.out.print("▯");
-                    else if (t.isType(Tile.Type.UNREACHABLE))   System.out.print("▮");
-                    else                                                System.out.print("?");
-                }
-                System.out.println("");
-            }
-                       
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-            }
-            
-        }
-        
-        @Override
-        public boolean done() {
-            return targetReached;
-        }
-    }
-    
-    
-    /**
-     *  Behaviour that verify if the agent had reached the target
+     * Behaviour that verify if the agent had reached the target
      */
     class updateUI_behaviour extends Behaviour {
 
@@ -396,29 +241,6 @@ public class ScoutAgent extends Agent{
         public boolean done() {
             return targetReached;
         }
-        
-    } 
-    
-    /**
-     *  Behaviour that verify if the agent had reached the target
-     */
-    class had_finished extends Behaviour {
 
-        @Override
-        public void action() {
-            targetReached = Sensor.getInstance().getAgentPosition().equals(Sensor.getInstance().getTargetPosition());
-            System.out.println("");
-            if(targetReached){
-                for(Behaviour b :activeBehaviours){
-                    this.myAgent.removeBehaviour(b);
-                }
-            }
-        }
-
-        @Override
-        public boolean done() {
-            return targetReached;
-        }
-        
-    }  
+    }
 }
