@@ -79,7 +79,7 @@ public class LauncherWindow extends javax.swing.JFrame {
             for(int j=0; j<cols; j++){
                 Tile tile = selectedMap.getTile(i,j);
                 // add the tile to the panel
-                JPanel panelTile = AssetManager.getPreviewTilePanel(tile);
+                JPanel panelTile = AssetManager.getTilePanel(tile.getType());
                 panelTileList.add(panelTile);
                 this.mapPreview.add(panelTile);
             }

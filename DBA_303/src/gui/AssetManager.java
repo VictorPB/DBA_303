@@ -19,6 +19,11 @@ public class AssetManager {
     static final Color COL_WALL = Color.decode("#003060");
     static final Color COL_UNKNOWN = Color.decode("#CAD1D9");
     
+    static final Color COL_MIND_BASE = Color.decode("#2B2B2B");
+    static final Color COL_MIND_FREE = Color.decode("#EFEDF0");
+    static final Color COL_MIND_WALL = Color.decode("#9c4d3d");
+    static final Color COL_MIND_UNKN = Color.decode("#898989");
+            
     static private final ImageIcon originValid = new ImageIcon("assets/icon_home_valid.png");
     static private final ImageIcon originNotValid = new ImageIcon("assets/icon_home_not_valid.png");
     static private final ImageIcon targetValid = new ImageIcon("assets/icon_target_valid.png");
@@ -55,10 +60,10 @@ public class AssetManager {
     }
     
 
-    static JPanel getPreviewTilePanel(Tile tile){
+    static JPanel getTilePanel(Tile.Type type){
 
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
-        switch (tile.getType()) {
+        switch (type) {
                     case EMPTY: 
                         panelTile.setBackground(COL_FREE);
                         break;
@@ -72,20 +77,22 @@ public class AssetManager {
         return panelTile;
     }
     
-    static JPanel getTilePanel(Tile tile, int dim){
-        JPanel panelTile = new JPanel();
-        switch (tile.getType()) {
+    static JPanel getMentalTilePanel(Tile.Type type){
+        JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
+        switch (type) {
                     case EMPTY: 
-                        panelTile.setBackground(COL_FREE);
+                        panelTile.setBackground(COL_MIND_FREE);
                         break;
                     case UNREACHABLE:
-                        panelTile.setBackground(COL_WALL);
+                        panelTile.setBackground(COL_MIND_WALL);
                         break;
                     case UNKNOWN:
-                        panelTile.setBackground(COL_UNKNOWN);
+                        panelTile.setBackground(COL_MIND_UNKN);
+                        break;
+                    default:
+                        panelTile.setBackground(COL_MIND_BASE);
                         break;
                 }
-        panelTile.setBounds(0,0,dim,dim);
         return panelTile;
     }
     

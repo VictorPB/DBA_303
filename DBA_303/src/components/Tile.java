@@ -83,7 +83,8 @@ public class Tile {
         
         EMPTY(0), 
         UNREACHABLE(-1),
-        UNKNOWN(-2);
+        UNKNOWN(-2),
+        OTHER(-3);
         
         private final int typeValue;
 
