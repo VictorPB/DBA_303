@@ -25,6 +25,7 @@ class updateUIBehaviour extends Behaviour {
     public void action() {
         Launcher.getMainWindow().updateAgentWithoutPath();
         Launcher.getMainWindow().updateInternalMapView();
+        Launcher.getMainWindow().updateActionList();
     }
 
     @Override

@@ -113,7 +113,12 @@ public final class Sensor {
         if(theMap.getTile(newPosition.getY(),newPosition.getX()).isType(Tile.Type.EMPTY)){
             this.agentPosition = newPosition;
             this.visitedPath.get(this.visitedPath.size()-1).a = action;
-            this.visitedPath.add(new ActionPair(newPosition, Action.IDLE));
+            if(targetReached()){
+                this.visitedPath.add(new ActionPair(newPosition, Action.END));
+            }
+            else{
+                this.visitedPath.add(new ActionPair(newPosition, Action.IDLE));
+            }
             return true;
         }
         else{
@@ -132,7 +137,7 @@ public final class Sensor {
     /**
      * Method to check if the agent has reached the goal
      */
-    boolean targetReached(){
+    public boolean targetReached(){
         return agentPosition.equals(targetPosition);
     }
     
