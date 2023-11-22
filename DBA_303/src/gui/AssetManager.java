@@ -54,9 +54,11 @@ public class AssetManager {
         return lbl;
     }
     
-    static JPanel getPreviewTilePanel(Tile tileType){
+
+    static JPanel getPreviewTilePanel(Tile tile){
+
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
-        switch (tileType) {
+        switch (tile.getType()) {
                     case EMPTY: 
                         panelTile.setBackground(COL_FREE);
                         break;
@@ -70,9 +72,9 @@ public class AssetManager {
         return panelTile;
     }
     
-    static JPanel getTilePanel(Tile tileType, int dim){
+    static JPanel getTilePanel(Tile tile, int dim){
         JPanel panelTile = new JPanel();
-        switch (tileType) {
+        switch (tile.getType()) {
                     case EMPTY: 
                         panelTile.setBackground(COL_FREE);
                         break;

@@ -77,6 +77,7 @@ public final class Sensor {
     public void setParameters (String map, Position origin, Position target) {
         this.theMap = new Map (map);
         this.originPosition = origin;
+        this.agentPosition = origin;
         this.targetPosition = target;
     }
     
@@ -95,7 +96,7 @@ public final class Sensor {
                 // if the position is out of the map bounds, it adds an
                 // unreachable tile. otherwise it adds the source tile.
                 if(i<0 || i>=theMap.getNumRows() || j<0 || j>=theMap.getNumCols()){
-                    result.add(Tile.UNREACHABLE);
+                    result.add(new Tile(Tile.Type.UNREACHABLE));
                 }
                 else{
                     result.add(theMap.getTile(i, j));
@@ -112,7 +113,7 @@ public final class Sensor {
      */
     public boolean updatePosition(Action action){
         Position newPosition = this.agentPosition.update(action);
-        if(theMap.getTile(newPosition.getY(),newPosition.getX()) == Tile.EMPTY){
+        if(theMap.getTile(newPosition.getY(),newPosition.getX()).isType(Tile.Type.EMPTY)){
             this.agentPosition = newPosition;
             this.visitedPath.get(this.visitedPath.size()-1).a = action;
             this.visitedPath.add(new ActionPair(newPosition, Action.IDLE));
@@ -123,6 +124,13 @@ public final class Sensor {
         }
     }
     
+    
+    Position getTargetRespectAgent(){
+        return new Position(
+            targetPosition.getX() - originPosition.getX(),
+            targetPosition.getY() - originPosition.getY()
+        );
+    }
     
     /**
      * Method to check if the agent has reached the goal

@@ -18,19 +18,10 @@ public class Map {
     /// The map matrix
     private ArrayList<ArrayList<Tile>> board;
     
-    /// NumCols (cols dimension)
-    private int cols;
-    
-    /// Number of rows (rows dimension);
-    private int rows;
-    
     /**
      * Default constructor
      */
-    
     public Map() {
-        this.cols = 0;
-        this.rows = 0;
         this.board = new ArrayList<>();
     }
     
@@ -40,13 +31,12 @@ public class Map {
      * @param rows Map rows dimension (number of rows)
      */
     public Map(int cols, int rows){
-        this.cols = cols;
-        this.rows = rows;
+
         this.board = new ArrayList<>();
         for(int i=0; i<rows; i++){
             ArrayList<Tile> row = new ArrayList<>();
             for(int j=0; j<cols; j++){
-                row.add(Tile.UNKNOWN);
+                row.add(new Tile(Tile.Type.UNKNOWN));
             }
             this.board.add(row);
         }
@@ -59,8 +49,6 @@ public class Map {
      */
     public Map(String mapname){
         this.board = readMapFromFile(mapname);
-        this.cols = this.board.size();
-        this.rows = this.board.get(0).size();
     }
     
     /** PRIVATE UTIL METHODS **************************************************/
@@ -92,7 +80,7 @@ public class Map {
                 ArrayList<Tile> row = new ArrayList<>();
                 if(bufferLine!= null){
                     for(String c: bufferLine.split("\t")){
-                        row.add(Tile.fromValue(Integer.parseInt(c)));
+                        row.add(new Tile(Integer.parseInt(c)));
                     }
                     tempBoard.add(row);
                 }
@@ -121,13 +109,18 @@ public class Map {
     /**
      * Gets the number of rows of the map
      */
-    public int getNumRows() { return rows; };
+    public int getNumRows() { return this.board.size(); };
     
     
     /**
      * Gets the number of columns of the map
      */
-    public int getNumCols() { return cols; };
+    public int getNumCols() { 
+        if(getNumRows()==0)
+            return 0;
+        else
+            return this.board.get(0).size(); 
+    };
     
     /** SETTERS ***************************************************************/
     
@@ -162,7 +155,31 @@ public class Map {
         return this.board.get(p.getY()).get(p.getX());
     }
             
+    /** USEFUL ****************************************************************/
     
+    public void addRowToEnd(){
+        ArrayList<Tile> newRow = new ArrayList<>();
+        for(int i=0; i<getNumCols(); i++)  
+            newRow.add(new Tile(Tile.Type.UNKNOWN));
+        this.board.add(newRow);
+    }
+    
+    public void addRowToBeggining(){
+        ArrayList<Tile> newRow = new ArrayList<>();
+        for(int i=0; i<getNumCols(); i++)  
+            newRow.add(new Tile(Tile.Type.UNKNOWN));
+        this.board.add(0,newRow);
+    }
+    
+    public void addColToEnd(){
+        for(ArrayList r : this.board)
+            r.add(new Tile(Tile.Type.UNKNOWN));
+    }
+    
+    public void addColToBeggining(){
+        for(ArrayList r : this.board)
+            r.add(0, new Tile(Tile.Type.UNKNOWN));
+    }
     
     /**************************************************************************/
 
@@ -171,8 +188,9 @@ public class Map {
         String res = "";
         for(ArrayList<Tile> row : this.board){
             for(Tile c: row){
-                if(c == Tile.EMPTY)             res+="▯";
-                else if(c== Tile.UNREACHABLE)   res+="▮";
+                if(c.isType(Tile.Type.EMPTY))               res+="▯";
+                else if(c.isType(Tile.Type.UNREACHABLE))    res+="▮";
+                else if(c.isType(Tile.Type.UNKNOWN))        res+="?";
             }
             res +="\n";
         }
