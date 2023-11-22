@@ -206,7 +206,7 @@ public class ScoutAgent extends Agent {
 
         setMission(Sensor.getInstance().getTargetRespectAgent());
 
-        Behaviour UIupdater = new updateUI_behaviour();
+        Behaviour UIupdater = new updateUIBehaviour(this);
         Behaviour thinker = new ThinkObstacleBehaviour(this);
         Behaviour updater = new UpdatePositionBehaviour(this);
 
@@ -224,23 +224,5 @@ public class ScoutAgent extends Agent {
     @Override
     protected void takeDown() {
         System.out.println("Agent has reached the target. Terminating ScoutAgent...\n");
-    }
-
-    /**
-     * Behaviour that verify if the agent had reached the target
-     */
-    class updateUI_behaviour extends Behaviour {
-
-        @Override
-        public void action() {
-            Launcher.getMainWindow().updateAgentWithoutPath();
-            Launcher.getMainWindow().updateInternalMapView();
-        }
-
-        @Override
-        public boolean done() {
-            return targetReached;
-        }
-
     }
 }
