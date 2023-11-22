@@ -25,7 +25,6 @@ public class HadFinishedBehaviour extends Behaviour{
     public void action() {
         // Sensor checks if the agent position is equal to the target position
         myAgent.targetReached = Sensor.getInstance().targetReached();
-        System.out.println("");
         
         // If agent is on the target, we remove all the behaviours form queue
         // and call doDelete
@@ -33,7 +32,6 @@ public class HadFinishedBehaviour extends Behaviour{
             for(Behaviour b : myAgent.activeBehaviours){
                 this.myAgent.removeBehaviour(b);
             }
-            
             myAgent.doDelete();
         }
     }

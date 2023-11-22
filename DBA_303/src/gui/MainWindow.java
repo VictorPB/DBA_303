@@ -170,7 +170,30 @@ public class MainWindow extends javax.swing.JFrame {
         this.mainMap.updateUI();
     }
     
-    
+    public void updateActionList(){
+        
+        Position origin = Sensor.getInstance().getOriginPosition();
+        Position target = Sensor.getInstance().getTargetPosition();
+        
+        String log = "Configurado Agente:\n"
+                + "   - PosInicial: "+origin+"\n"
+                + "   - PosDestino: "+target+"\n\n";
+        for(Sensor.ActionPair ap: Sensor.getInstance().getAgentVisitedPath()){
+            log += ap.getPos();
+            if(ap.getAct() == Action.END)
+                log += "   ENDS";
+            else if(ap.getAct()!= Action.IDLE)
+                log += "   act: " + ap.getAct().name();
+            log += "\n";
+        }
+        if(Sensor.getInstance().targetReached()){
+            log+="\nOBJETIVO ALCANZADO!!!\n";
+            log += "   en "+Sensor.getInstance().getAgentVisitedPath().size()+" movimientos\n";
+                    
+        }
+        this.logTextArea.setText(log);
+        this.logTextArea.updateUI();
+    }
     
     
     /**************************************************************************/
