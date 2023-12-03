@@ -14,8 +14,8 @@ Repositorio del grupo de trabajo 303 de la asignatura DBA, ETSIIT, UGR
 
 * [Integrantes](#Integrantes.)
 * [Recursos Externos](#recursos-externos)
-* [PRÁCTICA 2](#PRÁCTICA-2.-Movimiento-de-una-agente-en-un-mundo-bidimensional)
-* [PRÁCTICA 3]
+* [PRÁCTICA 2](#práctica-2-movimiento-de-una-agente-en-un-mundo-bidimensional-practica-2)
+* [PRÁCTICA 3](#práctica-3-comunicación-entre-agentes-practica-3)
 
 ***
 
@@ -90,6 +90,7 @@ Se deben resolver, como mínimo, los siguientes mapas:
 
 + [Enunciado](/docs/DBA_P3_Enunciado.pdf)
 + [Tutorial de Comunicación](/docs/DBA_P3_TutorialComunicacion.pdf)
+
 
 ### Estado final de la entrega
 
