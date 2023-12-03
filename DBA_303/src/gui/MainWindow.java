@@ -195,7 +195,6 @@ public class MainWindow extends javax.swing.JFrame {
                     
         }
         this.logTextArea.setText(log);
-        this.logTextArea.updateUI();
         this.logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
     }
     
