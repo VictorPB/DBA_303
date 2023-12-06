@@ -4,6 +4,10 @@
  */
 package agent;
 
+import agent.behaviours.ThinkObstacleBehaviour;
+import agent.behaviours.UpdateUIBehaviour;
+import agent.behaviours.HadFinishedBehaviour;
+import agent.behaviours.UpdatePositionBehaviour;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import components.*;
@@ -59,7 +63,47 @@ public class ScoutAgent extends Agent {
     public Position getTargetRelPos() {
         return this.targetPos;
     }
-
+    
+    public boolean isTargetReached() {
+        return this.targetReached;
+    }
+    
+    public void setTargetReached(boolean reached) {
+        this.targetReached = reached;
+    }
+    
+    public Position getAgentPos(){
+        return agentPos;
+    }
+    
+    public Position getTargetPos(){
+        return targetPos;
+    }
+    
+    public Action getNextAction(){
+        return nextAction;
+    }
+    
+    public void setNextAction(Action act){
+        this.nextAction = act;
+    }
+    
+    public void setAgentPos(Position pos){
+        agentPos = pos;
+    }
+    
+    public ArrayList<Tile> getVision(){
+        return vision;
+    }
+    
+    public void setVision(ArrayList<Tile> vis){
+        vision = vis;
+    }
+    
+    public Behaviour[] getActiveBehaviours(){
+        return activeBehaviours;
+    }
+    
     /**
      * Method to initialize the internal map
      * It also calls the UpdateVision for the first time
@@ -128,7 +172,7 @@ public class ScoutAgent extends Agent {
      * Method to set the values of the agent's adjacent tiles
      * It calls the sensor to take the value tiles
      */
-    void updateVision() {
+    public void updateVision() {
 
         vision = Sensor.getInstance().reveal();
         int indexVision = 0;
@@ -145,7 +189,7 @@ public class ScoutAgent extends Agent {
      * Check if Agent Map (exploredArea) needs to be resized because
      * being in the border of the map.
      */
-    void updateResizeMap() {
+    public void updateResizeMap() {
 
         if (agentPos.getX() == 0) {
             exploredArea.addColToBeggining();
@@ -175,7 +219,7 @@ public class ScoutAgent extends Agent {
 
         setMission(Sensor.getInstance().getTargetRespectAgent());
 
-        Behaviour UIupdater = new updateUIBehaviour(this);
+        Behaviour UIupdater = new UpdateUIBehaviour(this);
         Behaviour thinker = new ThinkObstacleBehaviour(this);
         Behaviour updater = new UpdatePositionBehaviour(this);
 

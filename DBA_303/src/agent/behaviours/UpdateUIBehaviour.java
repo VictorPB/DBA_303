@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package agent;
+package agent.behaviours;
 
+import agent.ScoutAgent;
 import jade.core.behaviours.Behaviour;
 import launcher.Launcher;
 
@@ -12,12 +13,12 @@ import launcher.Launcher;
  * @author carlos
  * 
  */
-class updateUIBehaviour extends Behaviour {
+public class UpdateUIBehaviour extends Behaviour {
 
     // Private atribute to access the agent that uses the behaviour
     private final ScoutAgent myAgent;
     
-    public updateUIBehaviour(ScoutAgent agent) {
+    public UpdateUIBehaviour(ScoutAgent agent) {
         this.myAgent = agent;
     }
     
@@ -30,7 +31,7 @@ class updateUIBehaviour extends Behaviour {
 
     @Override
     public boolean done() {
-        return myAgent.targetReached;
+        return myAgent.isTargetReached();
     }
 
 }
