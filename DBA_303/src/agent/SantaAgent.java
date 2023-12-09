@@ -12,7 +12,6 @@ import jade.lang.acl.ACLMessage;
 import components.*;
 import java.util.ArrayList;
 import java.util.Random;
-import javax.naming.CommunicationException;
 
 
 /**
@@ -89,7 +88,7 @@ public class SantaAgent extends Agent{
                         }
                     }
                     else{
-                        ACLMessage resp = msg.createReply(ACLMessage.FAILURE);
+                        ACLMessage resp = msg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Santa: Recibido mensaje inesperado\n");
                     }
