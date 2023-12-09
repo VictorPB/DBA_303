@@ -112,6 +112,7 @@ public class Position {
      * Y position setter
      */
     public void setY(int y) { this.y = y; }
+    
 
     @Override
     public boolean equals(Object obj) {

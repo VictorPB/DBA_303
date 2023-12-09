@@ -20,6 +20,7 @@ public class Reindeer {
     /// Position of the reindeer in the map
     private Position pos;
     
+    
     /**
      * Reindeer Constructor by the representation value
      * @param value
@@ -40,6 +41,9 @@ public class Reindeer {
         this.pos = new Position(1,1);
     }
     
+    
+    /** GETTERS ***************************************************************/
+
     /**
      * Reindeer name getter
      * @return the reindeer name
@@ -58,6 +62,9 @@ public class Reindeer {
      */
     public Position getPosition() { return this.pos; }
     
+    
+    /** SETTERS ***************************************************************/
+    
     /**
      * Reindeer state setter
      * 
@@ -74,6 +81,8 @@ public class Reindeer {
         this.pos = pos; 
     }
     
+    
+    /**************************************************************************/
     
     /**
      * Enum all Santa's lost reindeers 
@@ -138,9 +147,43 @@ public class Reindeer {
      * Enum reindeer states
      */
     public enum State {
-        UNKNOWN,        // When Elf hasn't talk with Rudolph yet
-        KNOWN,          // When Sensor doesn't know the reindeer pos
-        CURRENT,        // When Sensor knows the reindeer pos
-        FOUND,          // It has been found, so it dissappears from the map
+        UNKNOWN(0),        // When Elf hasn't talk with Rudolph yet
+        KNOWN(1),          // When Sensor doesn't know the reindeer pos
+        CURRENT(2),        // When Sensor knows the reindeer pos
+        FOUND(3);          // It has been found, so it dissappears from the map
+        
+        
+        private final int stateValue;
+
+        private State(int value) {
+            this.stateValue = value;
+        }
+        
+        public static State fromValue(int value) {
+            State res = null;
+            switch (value) {
+                case 0:
+                    res = State.UNKNOWN;
+                    break;
+                case 1:
+                    res = State.KNOWN;
+                    break;
+                case 2:
+                    res = State.CURRENT;
+                    break;
+                case 3:
+                    res = State.FOUND;
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            
+            return res;
+        }
+
+        @Override
+        public String toString() {
+            return Integer.toString(stateValue);
+        }
     }
 }
