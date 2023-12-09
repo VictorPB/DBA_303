@@ -24,7 +24,7 @@ import launcher.Launcher;
  *
  * @author JorgeBG
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainWindowP2 extends javax.swing.JFrame {
 
     Map map;
     String mapStringName;
@@ -36,7 +36,7 @@ public class MainWindow extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow with a Map as argument
      */
-    public MainWindow(Map map, String mapName) {
+    public MainWindowP2(Map map, String mapName) {
         initComponents();
         
         // set the internal map and the name to the title
@@ -224,9 +224,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DBA 2023/24 - P2 - Grupo 303");
-        setMaximumSize(new java.awt.Dimension(830, 630));
         setMinimumSize(new java.awt.Dimension(830, 630));
-        setPreferredSize(new java.awt.Dimension(830, 630));
         setResizable(false);
         setSize(new java.awt.Dimension(830, 630));
 
@@ -347,13 +345,13 @@ public class MainWindow extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindowP2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindowP2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindowP2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindowP2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -371,6 +369,24 @@ public class MainWindow extends javax.swing.JFrame {
 //        java.awt.EventQueue.invokeLater(new Runnable() {
 //            public void run() {
 //                new MainWindow(myMap).setVisible(true);
+//            }
+//        });
+        //</editor-fold>
+
+        // TODO - detele 
+//        Map myMap = new Map("mapWithDiagonalWall.txt");
+//        Sensor.getInstance().setParameters( "mapWithDiagonalWall.txt", new Position(0,0), new Position(3,6));
+//        Sensor.getInstance().setAgentPosition(new Position(0,0));
+//        Sensor.getInstance().updatePosition(Action.DOWN);
+//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
+//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
+//        Sensor.getInstance().updatePosition(Action.RIGHT);
+        
+        
+        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new MainWindowP2(myMap).setVisible(true);
 //            }
 //        });
     }

@@ -14,7 +14,7 @@ import agent.Sensor;
 import components.Map;
 import components.Position;
 import gui.LauncherWindow;
-import gui.MainWindow;
+import gui.MainWindowP2;
 import jade.core.Agent;
 
 // P3
@@ -47,7 +47,7 @@ public class Launcher {
     
     /// windows
     private static LauncherWindow launcherW = new LauncherWindow();
-    private static MainWindow mainW;
+    private static MainWindowP2 mainW;
     
     /**
      * Initialize containers profiles
@@ -95,11 +95,11 @@ public class Launcher {
     }
     
     public static void openMainWindow(Map map, String mapName){
-        mainW = new MainWindow(map, mapName);
+        mainW = new MainWindowP2(map, mapName);
         mainW.setVisible(true);
     }
     
-    public static MainWindow getMainWindow(){ return mainW; }
+    public static MainWindowP2 getMainWindow(){ return mainW; }
     
     public static Agent getAgent(){ return scoutAgent; }
     
