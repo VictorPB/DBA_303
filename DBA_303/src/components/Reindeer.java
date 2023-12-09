@@ -21,7 +21,17 @@ public class Reindeer {
     private Position pos;
     
     /**
-     * Reindeer Constructor
+     * Reindeer Constructor by the representation value
+     * @param value
+     */
+    public Reindeer(int value) {
+        this.name = Name.fromValue(value);
+        this.state = State.UNKNOWN;
+        this.pos = new Position(1,1);
+    }
+    
+    /**
+     * Reindeer Constructor by the reindeer name
      * @param name The reindeer name
      */
     public Reindeer(Name name) {
@@ -69,14 +79,59 @@ public class Reindeer {
      * Enum all Santa's lost reindeers 
      */
     public enum Name {
-        BLITZEN,
-        COMET,
-        CUPIDO,
-        DANCER,
-        DASHER,
-        DONNER,
-        PRANCER,
-        VIXEN
+        BLITZEN(0),
+        COMET(1),
+        CUPIDO(2),
+        DANCER(3),
+        DASHER(4),
+        DONNER(5),
+        PRANCER(6),
+        VIXEN(7);
+        
+        private final int nameValue;
+
+        private Name(int value) {
+            this.nameValue = value;
+        }
+        
+        public static Name fromValue(int value) {
+            Name res = null;
+            switch (value) {
+                case 0:
+                    res = Name.BLITZEN;
+                    break;
+                case 1:
+                    res = Name.COMET;
+                    break;
+                case 2:
+                    res = Name.CUPIDO;
+                    break;
+                case 3:
+                    res = Name.DANCER;
+                    break;
+                case 4:
+                    res = Name.DASHER;
+                    break;
+                case 5:
+                    res = Name.DONNER;
+                    break;
+                case 6:
+                    res = Name.PRANCER;
+                    break;
+                case 7:
+                    res = Name.VIXEN;
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            
+            return res;
+        }
+
+        @Override
+        public String toString() {
+            return Integer.toString(nameValue);
+        }
     }
     
     /**
