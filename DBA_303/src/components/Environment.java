@@ -16,19 +16,24 @@ import java.util.ArrayList;
 public class Environment {
     /// The lost reindeers array
     private ArrayList<Reindeer> reindeers;
+    /// Number of reindeers. It corresponds to the number of enum
+    /// constant the Reindeer.Name enum has
+    private final int numReindeers = 8;
     
     private Map theMap;
     
-    private final int numReindeers = 8;
+    private Position elfPosition;
+    
+    private Position santaPosition;
+    
+    private Position rudolphPosition;
     
     /**
      * Constructor with the map
      * 
-     * It initialize Reindeers array
+     * It initializes the environment, the reindeers array and the agents position
      */
-    public Environment(Map map){
-        this.theMap = map;
-        
+    public Environment(){
         this.reindeers = new ArrayList<>();
         
         for(int i=0; i<numReindeers; i++){
@@ -41,15 +46,49 @@ public class Environment {
     /** GETTERS ***************************************************************/
 
     /**
-     * Gets a reindeer by his position on array
-     * @param pos the position in array
+     * Gets a reindeer by his index on array
+     * @param index the position in array
      */
-    public Reindeer getReindeer(int pos) {
-        return reindeers.get(pos);
+    public Reindeer getReindeer(int index) {
+        return reindeers.get(index);
+    };
+    
+    /**
+     * Gets the santa agent position
+     */
+    public Position getSantaPosition() {
+        return this.santaPosition;
+    };
+    
+    /**
+     * Gets the rudolph agent position
+     */
+    public Position getRudolphPosition() {
+        return this.rudolphPosition;
+    };
+    
+    /**
+     * Gets the elf agent position
+     */
+    public Position getElfPosition() {
+        return this.elfPosition;
     };
     
     /** SETTERS ***************************************************************/
 
+    /**
+     * Sets the map and agents position
+     * @param map the map
+     * @param rudolphPosition the rudolph agent position
+     */
+    public void setParameters (Map map, Position rudolphPosition) {
+        this.theMap = map;
+        
+        this.rudolphPosition = rudolphPosition;
+        this.santaPosition = new Position(2,1);
+        this.elfPosition = new Position(3,1);
+    }
+    
     /**
      * Sets a reindeer by his position in the array
      * @param index the position on the array
@@ -106,8 +145,23 @@ public class Environment {
      * it means, the tile in map is empty, there's no agent there
      */
     private boolean legalPos (Position pos) {
-        return this.theMap.getTile(pos).isReacheable(); // Comprobar tambien que no esta santa, rudolph u otro reno 
-                                                          // ( ¿la casa de santa será directamente unreacheable? )
+        return this.theMap.getTile(pos).isReacheable() && !isReindeerInTile(pos); // Comprobar tambien que no esta santa, rudolph
+    }
+    
+    /**
+     * Method that checks if a position has a reindeer
+     * @param pos The postion to check
+     */
+    private boolean isReindeerInTile (Position pos) {
+        boolean isIn = false;
+        
+        for (int i = 0; i < this.reindeers.size() && !isIn; i++) {
+            if (getReindeer( i).getPosition() == pos) {
+                isIn = true;
+            }
+        }
+        
+        return isIn;
     }
     
     
