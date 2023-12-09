@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package agent;
+package agent.behaviours;
 
+import agent.ScoutAgent;
+import agent.Sensor;
 import jade.core.behaviours.Behaviour;
 
 /**
@@ -24,12 +26,12 @@ public class HadFinishedBehaviour extends Behaviour{
     @Override
     public void action() {
         // Sensor checks if the agent position is equal to the target position
-        myAgent.targetReached = Sensor.getInstance().targetReached();
+        myAgent.setTargetReached(Sensor.getInstance().targetReached());
         
         // If agent is on the target, we remove all the behaviours form queue
         // and call doDelete
-        if(myAgent.targetReached){
-            for(Behaviour b : myAgent.activeBehaviours){
+        if(myAgent.isTargetReached()){
+            for(Behaviour b : myAgent.getActiveBehaviours()){
                 this.myAgent.removeBehaviour(b);
             }
             myAgent.doDelete();
@@ -38,6 +40,6 @@ public class HadFinishedBehaviour extends Behaviour{
 
     @Override
     public boolean done() {
-        return myAgent.targetReached;
+        return myAgent.isTargetReached();
     }
 }

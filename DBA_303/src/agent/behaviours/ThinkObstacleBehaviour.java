@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package agent;
+package agent.behaviours;
 
+import agent.ScoutAgent;
+import agent.Sensor;
 import components.Action;
 import components.Position;
 import components.Tile;
@@ -26,13 +28,13 @@ public class ThinkObstacleBehaviour extends Behaviour {
     
     @Override
     public void action() {
-        if(!myAgent.targetReached){
+        if(!myAgent.isTargetReached()){
             System.out.println("Evaluating...");
             System.out.println("Ag_abs" + Sensor.getInstance().getAgentPosition() + 
                     "   Target_abs"+Sensor.getInstance().getTargetPosition());
 
             // The agent takes the ajacents tiles with the sensor
-            myAgent.vision = Sensor.getInstance().reveal();
+            myAgent.setVision(Sensor.getInstance().reveal());
 
             // The agent checks the adjacents tiles and decides the best one
             // by their values. The best one will be the tile whose score is lower.
@@ -42,30 +44,30 @@ public class ThinkObstacleBehaviour extends Behaviour {
             double bestScore = Integer.MAX_VALUE;
             boolean isAccesible;
 
-            for (int i=0; i < myAgent.vision.size(); i++) {
+            for (int i=0; i < myAgent.getVision().size(); i++) {
 
                 if (i!= 4) {
                     isAccesible = true;
-                    Tile tile = myAgent.vision.get(i);
-                    Position nextPos = myAgent.agentPos.update(Action.fromValue(i));
+                    Tile tile = myAgent.getVision().get(i);
+                    Position nextPos = myAgent.getAgentPos().update(Action.fromValue(i));
 
                     // It checks that the tile is reacheable
                     if(tile.isReacheable()) {
                         // It checks if he is evaluating a corner
                         // If it is a corner, it checks if it's not reacheable
-                        if (i == 0 && !upLeftIsReachable(myAgent.vision)) {
+                        if (i == 0 && !upLeftIsReachable(myAgent.getVision())) {
                             isAccesible = false;
-                        } else if (i == 2 && !upRightIsReachable(myAgent.vision)) {
+                        } else if (i == 2 && !upRightIsReachable(myAgent.getVision())) {
                             isAccesible = false;
-                        } else if (i == 6 && !downLeftIsReachable(myAgent.vision)) {
+                        } else if (i == 6 && !downLeftIsReachable(myAgent.getVision())) {
                             isAccesible = false;
-                        } else if (i == 8 && !downRightIsReachable(myAgent.vision)) {
+                        } else if (i == 8 && !downRightIsReachable(myAgent.getVision())) {
                             isAccesible = false;
                         }
 
                         // Finally, if the tile is reacheable, it calculates his score
                         if (isAccesible) {
-                            double score = calculateScore(myAgent.agentPos, nextPos);
+                            double score = calculateScore(myAgent.getAgentPos(), nextPos);
 
                             // If the score is better, it saves it
                             if (score < bestScore) {
@@ -78,8 +80,8 @@ public class ThinkObstacleBehaviour extends Behaviour {
             }
 
             if (bestAction != null) {
-                myAgent.nextAction = bestAction;
-                System.out.println("nextAction  " + myAgent.nextAction);
+                myAgent.setNextAction(bestAction);
+                System.out.println("nextAction  " + myAgent.getNextAction());
             } else {
                 System.out.println("Ninguna de las opciones posibles es la mejor.");
                 // TODO: Implement an exit failture
@@ -128,8 +130,8 @@ public class ThinkObstacleBehaviour extends Behaviour {
      */
     private double calculateScore (Position currentPos, Position nextPos) {
 
-       double distanceToTarget = nextPos.getEuclideTo(myAgent.targetPos);
-       int visitCount = myAgent.exploredArea.getTile(nextPos.getY(), nextPos.getX()).getTimesVisited();
+       double distanceToTarget = nextPos.getEuclideTo(myAgent.getTargetPos());
+       int visitCount = myAgent.getExploredArea().getTile(nextPos.getY(), nextPos.getX()).getTimesVisited();
        double score = distanceToTarget*100 + visitCount*200;
 
 //       //For debugging purposes
@@ -142,6 +144,6 @@ public class ThinkObstacleBehaviour extends Behaviour {
 
     @Override
     public boolean done() {
-        return myAgent.targetReached;
+        return myAgent.isTargetReached();
     }
 }

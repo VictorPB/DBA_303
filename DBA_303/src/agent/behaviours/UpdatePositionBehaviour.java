@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package agent;
+package agent.behaviours;
 
+import agent.ScoutAgent;
+import agent.Sensor;
 import components.Position;
 import components.Tile;
 import jade.core.behaviours.Behaviour;
@@ -25,13 +27,13 @@ public class UpdatePositionBehaviour extends Behaviour{
     @Override
         public void action() {
             // The agent add a visit to the tile he is.
-            myAgent.exploredArea.getTile(myAgent.agentPos).newVisit();
+            myAgent.getExploredArea().getTile(myAgent.getAgentPos()).newVisit();
             
             // The agent actualizes his position on his internal map
-            myAgent.agentPos = myAgent.agentPos.update(myAgent.nextAction);
+            myAgent.setAgentPos(myAgent.getAgentPos().update(myAgent.getNextAction()));
             
             // The sensor actualize the position of the agent
-            Sensor.getInstance().updatePosition(myAgent.nextAction);
+            Sensor.getInstance().updatePosition(myAgent.getNextAction());
             
             //If needs it, resize AgentMap
             myAgent.updateResizeMap(); 
@@ -41,12 +43,12 @@ public class UpdatePositionBehaviour extends Behaviour{
             
             // this may show in console what the agent know about the map
             // it position and the target
-            for(int i=0; i<myAgent.exploredArea.getNumRows(); i++){
-                for(int j=0; j<myAgent.exploredArea.getNumCols(); j++){
+            for(int i=0; i<myAgent.getExploredArea().getNumRows(); i++){
+                for(int j=0; j<myAgent.getExploredArea().getNumCols(); j++){
                     Position at = new Position(j,i);
-                    Tile t = myAgent.exploredArea.getTile(i, j);
-                    if(at.equals(myAgent.agentPos))                          System.out.print("A");
-                    else if (at.equals(myAgent.targetPos))                   System.out.print("X");
+                    Tile t = myAgent.getExploredArea().getTile(i, j);
+                    if(at.equals(myAgent.getAgentPos()))                          System.out.print("A");
+                    else if (at.equals(myAgent.getTargetPos()))                   System.out.print("X");
                     else if (t.isType(Tile.Type.EMPTY))         System.out.print("▯");
                     else if (t.isType(Tile.Type.UNREACHABLE))   System.out.print("▮");
                     else                                                System.out.print("?");
@@ -67,6 +69,6 @@ public class UpdatePositionBehaviour extends Behaviour{
         
         @Override
         public boolean done() {
-            return myAgent.targetReached;
+            return myAgent.isTargetReached();
         }
 }
