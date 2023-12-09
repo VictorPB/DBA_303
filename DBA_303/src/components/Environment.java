@@ -90,15 +90,11 @@ public class Environment {
         int n = this.theMap.getNumCols();
         int m = this.theMap.getNumRows();
         
-        Position pos = new Position (-1, -1);
+        Position pos;
         
         for (int i = 0; i < numReindeers; i++) {
             do {
-                randomX = (int) (Math.random() * n) +1;
-                randomY = (int) (Math.random() * m) +1;
-                
-                pos.setX(randomX);
-                pos.setY(randomY);
+                pos = new Position ((int) (Math.random() * n) +1,(int) (Math.random() * m) +1);
             } while (!legalPos(pos));
             
             getReindeer(i).setPosition(pos);

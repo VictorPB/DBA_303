@@ -99,20 +99,7 @@ public class Position {
      * Y position getter
      */
     public int getY() { return this.y; }
-    
-    
-    /** SETTERS ***************************************************************/
-
-    /**
-     * X position setter
-     */
-    public void setX(int x) { this.x = x; }
-    
-    /**
-     * Y position setter
-     */
-    public void setY(int y) { this.y = y; }
-    
+       
 
     @Override
     public boolean equals(Object obj) {
