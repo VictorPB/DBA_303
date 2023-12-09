@@ -1,6 +1,7 @@
 
 package launcher;
 
+
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.wrapper.AgentController;
@@ -8,12 +9,17 @@ import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
 import agent.ScoutAgent;
+
 import agent.Sensor;
 import components.Map;
 import components.Position;
 import gui.LauncherWindow;
 import gui.MainWindow;
 import jade.core.Agent;
+
+// P3
+import agent.ElfAgent;
+import agent.SantaAgent;
 
 /**
  *
@@ -114,7 +120,21 @@ public class Launcher {
         agentContController = runtime.createAgentContainer(agentProfile);
         
         // Show the launcher window
-        launcherW.setVisible(true);
+//        launcherW.setVisible(true);
+
+        // TODO change with the UI
+        // previous steps for the P3
+        Agent elfAgent = new ElfAgent();
+        Agent santaAgent = new SantaAgent();
+        try{
+            AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
+            AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
+            santaController.start();
+            elfController.start();
+        }
+        catch(StaleProxyException e){
+            System.out.println(e);
+        }
 
     }
                 
