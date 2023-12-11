@@ -125,7 +125,6 @@ public class Environment {
      * for each reindeer
      */
     private void generateLostReindeers () {
-        int randomX, randomY;
         int n = this.theMap.getNumCols();
         int m = this.theMap.getNumRows();
         
@@ -145,7 +144,9 @@ public class Environment {
      * it means, the tile in map is empty, there's no agent there
      */
     private boolean legalPos (Position pos) {
-        return this.theMap.getTile(pos).isReacheable() && !isReindeerInTile(pos); // Comprobar tambien que no esta santa, rudolph
+        return this.theMap.getTile(pos).isReacheable() && 
+                !isReindeerInTile(pos) && !isSantaInTile(pos) 
+                && !isRudolphInTile(pos);
     }
     
     /**
@@ -162,6 +163,22 @@ public class Environment {
         }
         
         return isIn;
+    }
+    
+    /**
+     * Method that checks if Santa agent is in the position
+     * @param pos The postion to check
+     */
+    private boolean isSantaInTile (Position pos) {        
+        return this.santaPosition == pos;
+    }
+    
+    /**
+     * Method that checks if Santa agent is in the position
+     * @param pos The postion to check
+     */
+    private boolean isRudolphInTile (Position pos) {        
+        return this.rudolphPosition == pos;
     }
     
     
