@@ -99,6 +99,7 @@ public class Position {
      * Y position getter
      */
     public int getY() { return this.y; }
+       
 
     @Override
     public boolean equals(Object obj) {
