@@ -39,21 +39,6 @@ public class MainWindowP3 extends javax.swing.JFrame {
     public MainWindowP3(Map map, String mapName) {
         initComponents();
         
-        // set the internal map and the name to the title
-        this.map = map;
-        this.mapName.setText(mapName);
-        
-        // init the main map tile array
-        int rows = this.map.getNumRows();
-        int cols = this.map.getNumCols();
-        
-        // calculate the tile dimension to be used to draw the agent
-        this.MapTileWidth = (int)(this.mainMap.getWidth()/cols);
-        
-        // creates the tile array for be used to draw the agent path and draw
-        createMapView();
-               
-        updateAgent();
         
         this.mainMap.updateUI();
         
@@ -87,44 +72,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         this.mainMap.updateUI();
     }
     
-    public void updateInternalMapView(){
-        Map mindMap = ((ScoutAgent)Launcher.getAgent()).getExploredArea();
-        int rows = mindMap.getNumRows();
-        int cols = mindMap.getNumCols();
-        int size = Math.max(rows, cols);
-        int tileSize = 250/Math.max(rows, cols)-1;
-        
-        this.agentMentalMap.removeAll();
-        
-        //Create new grid
-        GridLayout gridLayout = new GridLayout(size,size, 1,1);
-        this.agentMentalMap.setLayout(gridLayout);
-        
-        // Complete a squared map
-        for(int i=0; i<size; i++){
-            for(int j=0; j<size; j++){
-                if(i<rows && j<cols){
-                    ScoutAgent agent = ((ScoutAgent)Launcher.getAgent());
-                    Position talePos = new Position(j, i);
-                    JPanel miniTale = AssetManager.getMentalTilePanel(mindMap.getTile(talePos).getType());
 
-                    if(talePos.equals(agent.getAgentRelPos())){
-                        miniTale.add( new JLabel(AssetManager.getAgentCurrentIcon(tileSize)));
-                    }
-                    else if(talePos.equals(agent.getTargetRelPos())){
-                        miniTale.add( new JLabel(AssetManager.getTargetIcon(tileSize, true)));
-                    }
-                    this.agentMentalMap.add(miniTale);
-                }
-                else{
-                    JPanel minitale = AssetManager.getMentalTilePanel(Tile.Type.OTHER);
-                    this.agentMentalMap.add(minitale);
-                }
-            }
-        }
-        this.agentMentalMap.updateUI();
-        
-    }
     
     /**
      * Updates the agent position 
@@ -175,27 +123,6 @@ public class MainWindowP3 extends javax.swing.JFrame {
     
     public void updateActionList(){
         
-        Position origin = Sensor.getInstance().getOriginPosition();
-        Position target = Sensor.getInstance().getTargetPosition();
-        
-        String log = "Configurado Agente:\n"
-                + "   - PosInicial: "+origin+"\n"
-                + "   - PosDestino: "+target+"\n\n";
-        for(Sensor.ActionPair ap: Sensor.getInstance().getAgentVisitedPath()){
-            log += ap.getPos();
-            if(ap.getAct() == Action.END)
-                log += "   ENDS";
-            else if(ap.getAct()!= Action.IDLE)
-                log += "   act: " + ap.getAct().name();
-            log += "\n";
-        }
-        if(Sensor.getInstance().targetReached()){
-            log+="\nOBJETIVO ALCANZADO!!!\n";
-            log += "   en "+Sensor.getInstance().getAgentVisitedPath().size()+" movimientos\n";
-                    
-        }
-        this.logTextArea.setText(log);
-        this.logTextArea.setCaretPosition(logTextArea.getDocument().getLength());
     }
     
     
@@ -213,14 +140,9 @@ public class MainWindowP3 extends javax.swing.JFrame {
     private void initComponents() {
 
         mainMap = new javax.swing.JPanel();
-        agentMentalMap = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        logTextArea = new javax.swing.JTextArea();
         closeBtn = new javax.swing.JButton();
         mainMapTitle = new javax.swing.JLabel();
-        mentalMapTitle = new javax.swing.JLabel();
-        logTextTitle = new javax.swing.JLabel();
-        mapName = new javax.swing.JLabel();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DBA 2023/24 - P2 - Grupo 303");
@@ -241,44 +163,10 @@ public class MainWindowP3 extends javax.swing.JFrame {
             .addGap(0, 500, Short.MAX_VALUE)
         );
 
-        agentMentalMap.setBackground(new java.awt.Color(43, 43, 43));
-        agentMentalMap.setMaximumSize(new java.awt.Dimension(250, 250));
-        agentMentalMap.setMinimumSize(new java.awt.Dimension(250, 250));
-        agentMentalMap.setPreferredSize(new java.awt.Dimension(250, 250));
-
-        javax.swing.GroupLayout agentMentalMapLayout = new javax.swing.GroupLayout(agentMentalMap);
-        agentMentalMap.setLayout(agentMentalMapLayout);
-        agentMentalMapLayout.setHorizontalGroup(
-            agentMentalMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        agentMentalMapLayout.setVerticalGroup(
-            agentMentalMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setAutoscrolls(true);
-        jScrollPane1.setRowHeaderView(null);
-        jScrollPane1.setViewportView(null);
-
-        logTextArea.setEditable(false);
-        logTextArea.setColumns(20);
-        logTextArea.setRows(5);
-        jScrollPane1.setViewportView(logTextArea);
-
         closeBtn.setText("Cerrar");
 
         mainMapTitle.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        mainMapTitle.setText("Mapa principal");
-
-        mentalMapTitle.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        mentalMapTitle.setText("Mapa interno mental del agente:");
-
-        logTextTitle.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        logTextTitle.setText("Log acciones");
-
-        mapName.setFont(new java.awt.Font("Arial", 2, 12)); // NOI18N
-        mapName.setText("nombremapa");
+        mainMapTitle.setText("Mapa");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -287,39 +175,25 @@ public class MainWindowP3 extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(mainMapTitle)
-                        .addGap(27, 27, 27)
-                        .addComponent(mapName)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                        .addComponent(closeBtn)
-                        .addComponent(agentMentalMap, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(mentalMapTitle)
-                    .addComponent(logTextTitle))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(206, 206, 206)
+                        .addComponent(closeBtn))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(176, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mentalMapTitle)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(mainMapTitle)
-                        .addComponent(mapName)))
+                .addComponent(mainMapTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(agentMentalMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(logTextTitle)
-                        .addGap(4, 4, 4)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(closeBtn)
                 .addGap(16, 16, 16))
@@ -392,14 +266,9 @@ public class MainWindowP3 extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel agentMentalMap;
     private javax.swing.JButton closeBtn;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea logTextArea;
-    private javax.swing.JLabel logTextTitle;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel mainMap;
     private javax.swing.JLabel mainMapTitle;
-    private javax.swing.JLabel mapName;
-    private javax.swing.JLabel mentalMapTitle;
     // End of variables declaration//GEN-END:variables
 }
