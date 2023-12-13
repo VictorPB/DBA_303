@@ -33,7 +33,11 @@ public class Environment {
      * 
      * It initializes the environment, the reindeers array and the agents position
      */
-    public Environment(){
+    public Environment(Map map){
+        /// Initialize the agents position before the reindeers position
+        /// because generateLostReindeers will check agents position
+        this.setParameters(map);
+        
         this.reindeers = new ArrayList<>();
         
         for(int i=0; i<numReindeers; i++){
@@ -74,6 +78,13 @@ public class Environment {
         return this.elfPosition;
     };
     
+    /**
+     *  Gets the number of reindeers (size) in reindeers array
+     */
+    public int getNumberReindeers () {
+        return this.reindeers.size();
+    }
+    
     /** SETTERS ***************************************************************/
 
     /**
@@ -81,10 +92,10 @@ public class Environment {
      * @param map the map
      * @param rudolphPosition the rudolph agent position
      */
-    public void setParameters (Map map, Position rudolphPosition) {
+    public void setParameters (Map map) {
         this.theMap = map;
         
-        this.rudolphPosition = rudolphPosition;
+        initRudolphPos();
         this.santaPosition = new Position(2,1);
         this.elfPosition = new Position(3,1);
     }
@@ -121,6 +132,22 @@ public class Environment {
     /** PRIVATE UTIL METHODS **************************************************/
 
     /**
+     * Method that initialize rudolph position with a random position
+     * 
+     * Initialize rudolph in a range where the X is a value between 
+     * Map.cols/3 and (Map.cols*2)/3 and the Y is a value between
+     * Map.rows/3 and /(Map.rows*2)/3
+    */
+    void initRudolphPos () {
+        int n = this.theMap.getNumCols()/3;
+        int m = this.theMap.getNumRows()/3;
+        
+        do {
+            this.rudolphPosition = new Position ((int) (Math.random() * (n*2-n+1)+n),(int) (Math.random() * (m*2-m+1)) +m);        
+        } while (!this.theMap.getTile(getRudolphPosition()).isReacheable());
+    }
+    
+    /**
      * Method that initialize reindeers array with a random position
      * for each reindeer
      */
@@ -132,7 +159,7 @@ public class Environment {
         
         for (int i = 0; i < numReindeers; i++) {
             do {
-                pos = new Position ((int) (Math.random() * n) +1,(int) (Math.random() * m) +1);
+                pos = new Position ((int) (Math.random() * n),(int) (Math.random() * m));
             } while (!legalPos(pos));
             
             getReindeer(i).setPosition(pos);
@@ -157,7 +184,7 @@ public class Environment {
         boolean isIn = false;
         
         for (int i = 0; i < this.reindeers.size() && !isIn; i++) {
-            if (getReindeer( i).getPosition() == pos) {
+            if (getReindeer( i).getPosition().equals(pos)) {
                 isIn = true;
             }
         }
@@ -170,15 +197,15 @@ public class Environment {
      * @param pos The postion to check
      */
     private boolean isSantaInTile (Position pos) {        
-        return this.santaPosition == pos;
+        return this.santaPosition.equals(pos);
     }
     
     /**
-     * Method that checks if Santa agent is in the position
+     * Method that checks if Rudolph agent is in the position
      * @param pos The postion to check
      */
     private boolean isRudolphInTile (Position pos) {        
-        return this.rudolphPosition == pos;
+        return this.rudolphPosition.equals(pos);
     }
     
     
@@ -188,8 +215,27 @@ public class Environment {
     public String toString() {
         String res = "";
         for(Reindeer reindeer : this.reindeers){
-            
+            /// Implements if neccesary
         }
         return res;
+    }
+    
+    
+    /**************************************************************************/
+    public static void main(String args[]){
+        
+        Map map = new Map("mapWithDiagonalWall.txt");
+        System.out.println("Generating new random position for agents...");
+        Environment env = new Environment(map);
+        
+        System.out.println(map.toString());
+        
+        System.out.println("Santa pos ---------" + env.getSantaPosition() + "\n\n");
+        System.out.println("Elf pos ---------" + env.getElfPosition()+ "\n\n");
+        System.out.println("Rudolph pos ---------" + env.getRudolphPosition() + "\n\n");
+        
+        for (int i = 0; i < env.getNumberReindeers(); i++) {
+            System.out.println("Reindeer " + env.getReindeer(i).getName().name() + " number " + i + " pos ---------" + env.getReindeer(i).getPosition() + "\n\n");
+        }
     }
 }
