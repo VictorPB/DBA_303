@@ -14,6 +14,10 @@ import java.util.ArrayList;
  * @author carlos
  */
 public class Environment {
+    
+    // Static variable that save the only instance of the Singleton
+    private static Environment instance = new Environment();
+    
     /// The lost reindeers array
     private ArrayList<Reindeer> reindeers;
     /// Number of reindeers. It corresponds to the number of enum
@@ -33,18 +37,20 @@ public class Environment {
      * 
      * It initializes the environment, the reindeers array and the agents position
      */
-    public Environment(Map map){
-        /// Initialize the agents position before the reindeers position
-        /// because generateLostReindeers will check agents position
-        this.setParameters(map);
-        
+    private Environment(){
         this.reindeers = new ArrayList<>();
         
         for(int i=0; i<numReindeers; i++){
             reindeers.add(new Reindeer(i));
         }
+    }
         
-        generateLostReindeers();
+    /**
+     *  Gets the instance of Environment
+     * @return the instance of the singleton
+     */
+    public static Environment getInstance(){
+        return instance;
     }
     
     /** GETTERS ***************************************************************/
@@ -88,7 +94,7 @@ public class Environment {
     /** SETTERS ***************************************************************/
 
     /**
-     * Sets the map and agents position
+     * Sets the map, agents position and initialize reindeers
      * @param map the map
      * @param rudolphPosition the rudolph agent position
      */
@@ -96,8 +102,10 @@ public class Environment {
         this.theMap = map;
         
         initRudolphPos();
-        this.santaPosition = new Position(2,1);
-        this.elfPosition = new Position(3,1);
+        this.santaPosition = new Position(1,2);
+        this.elfPosition = new Position(1,3);
+        
+        generateLostReindeers();
     }
     
     /**
@@ -225,17 +233,25 @@ public class Environment {
     public static void main(String args[]){
         
         Map map = new Map("mapWithDiagonalWall.txt");
-        System.out.println("Generating new random position for agents...");
-        Environment env = new Environment(map);
+        System.out.println("Generating new Environment...");
         
-        System.out.println(map.toString());
+        Environment.getInstance().setParameters(map);
         
-        System.out.println("Santa pos ---------" + env.getSantaPosition() + "\n\n");
-        System.out.println("Elf pos ---------" + env.getElfPosition()+ "\n\n");
-        System.out.println("Rudolph pos ---------" + env.getRudolphPosition() + "\n\n");
-        
-        for (int i = 0; i < env.getNumberReindeers(); i++) {
-            System.out.println("Reindeer " + env.getReindeer(i).getName().name() + " number " + i + " pos ---------" + env.getReindeer(i).getPosition() + "\n\n");
+        // this may show in console what the agent know about the map
+        // it position and the target
+        for(int i=0; i<Environment.getInstance().theMap.getNumRows(); i++){
+            for(int j=0; j<Environment.getInstance().theMap.getNumCols(); j++){
+                Position at = new Position(j,i);
+                Tile t = Environment.getInstance().theMap.getTile(i, j);
+                if(at.equals(Environment.getInstance().getElfPosition()))                           System.out.print("E");
+                else if (at.equals(Environment.getInstance().getRudolphPosition()))                 System.out.print("R");
+                else if (at.equals(Environment.getInstance().getSantaPosition()))                   System.out.print("S");
+                else if (Environment.getInstance().isReindeerInTile(at))                            System.out.print("D");
+                else if (t.isType(Tile.Type.EMPTY))                                                 System.out.print("▯");
+                else if (t.isType(Tile.Type.UNREACHABLE))                                           System.out.print("▮");
+                else                                                                                    System.out.print("?");
+            }
+            System.out.println("");
         }
     }
 }
