@@ -71,25 +71,26 @@ public class SantaAgent extends Agent{
         
         @Override
         public void action(){
+            ACLMessage lastMsg = myAgent.blockingReceive();
+
             switch (state) {
                 case 0:
-                    ACLMessage msg = myAgent.blockingReceive();
-                    if(msg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
+                    if(lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         System.out.println("Santa: Recibido un propose!!");
                         if(radomElfAprove()){
-                            ACLMessage resp = msg.createReply(ACLMessage.ACCEPT_PROPOSAL);
+                            ACLMessage resp = lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
                             // TODO Añadir los mensajes con la dirección de Rudolf
                             resp.setContent(CommManager.CONV_ID_RUDOLF);
                             myAgent.send(resp);
                         }
                         else{
-                            ACLMessage resp = msg.createReply(ACLMessage.REJECT_PROPOSAL);
+                            ACLMessage resp = lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
                             System.out.println("Santa: Elf REJECTED\n");
                             this.myAgent.send(resp);
                         }
                     }
                     else{
-                        ACLMessage resp = msg.createReply(ACLMessage.UNKNOWN);
+                        ACLMessage resp = lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Santa: Recibido mensaje inesperado\n");
                     }
@@ -97,14 +98,13 @@ public class SantaAgent extends Agent{
                     break;
                 
                 case 1:
-                    ACLMessage locationRequest = myAgent.blockingReceive();
-                    if(locationRequest.getConversationId().equals(CommManager.CONV_ID_SANTA)){
+                    if(lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         System.out.println("Santa: Recibido un mensaje 2!!");
                         
                         // TODO: Obtener ubicación de Santa
                         String santaLocation = "";
                         
-                        ACLMessage locationResponse = locationRequest.createReply();
+                        ACLMessage locationResponse = lastMsg.createReply();
 
                         locationResponse.setPerformative(ACLMessage.INFORM);
                         locationResponse.setContent(santaLocation);
@@ -114,18 +114,17 @@ public class SantaAgent extends Agent{
                         System.out.println("Santa: Enviando ubicación: " + santaLocation);
                     }
                     else{
-                        ACLMessage resp = locationRequest.createReply(ACLMessage.UNKNOWN);
+                        ACLMessage resp = lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Santa: Recibido mensaje inesperado\n");
                     }
                     this.finish = true;
                     break;
                 case 2:
-                    ACLMessage arrivalMessage = myAgent.blockingReceive();
-                    if (arrivalMessage.getConversationId().equals(CommManager.CONV_ID_SANTA)) {
+                    if (lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)) {
                         System.out.println("Santa: Recibido un mensaje 3!!");
                         
-                        ACLMessage hoHoHoResponse = arrivalMessage.createReply();
+                        ACLMessage hoHoHoResponse = lastMsg.createReply();
                         hoHoHoResponse.setPerformative(ACLMessage.INFORM);
                         hoHoHoResponse.setContent("HoHoHo!");
 
