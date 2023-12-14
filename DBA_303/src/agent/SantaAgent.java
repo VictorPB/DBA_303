@@ -68,10 +68,10 @@ public class SantaAgent extends Agent{
          
         int state = 0;
         boolean finish = false;
+        ACLMessage lastMsg = myAgent.blockingReceive();
         
         @Override
         public void action(){
-            ACLMessage lastMsg = myAgent.blockingReceive();
             ACLMessage resp;
 
             switch (state) {
