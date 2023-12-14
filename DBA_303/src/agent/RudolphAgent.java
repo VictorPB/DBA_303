@@ -10,11 +10,7 @@ import jade.core.behaviours.Behaviour;
 import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import components.*;
-import jade.util.leap.Collection;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 
@@ -30,32 +26,14 @@ public class RudolphAgent extends Agent{
     
     // Number of found reindeers
     int foundReindeers;
-    
-    // Array of lost reindeers
-    private ArrayList<Reindeer> reindeers;
         
     /**
-     * Constructor that initialize the lost reindeers array
+     * Constructor
      */
     public RudolphAgent() {
         super();
         
-        List<Reindeer> aux = new LinkedList<Reindeer>();
-        this.reindeers = new ArrayList<>();
-        
-        int numReindeers = Environment.getInstance().getNumberReindeers();
-        
-        for (int i = 0; i < numReindeers; i++ ) {
-            Reindeer reindeer = Environment.getInstance().getReindeer(i);
-            aux.add(reindeer);
-        }
-        
-        // Desordenar lista
-        Collections.shuffle(aux);
-        
-        for (int i = 0; i < aux.size(); i++) {
-            this.reindeers.add(aux.get(i));
-        }
+        foundReindeers = 0;
     }
     
     // TODO refill with getters, etc
@@ -78,6 +56,25 @@ public class RudolphAgent extends Agent{
         System.out.println("Agent has found all reindeers. Terminating Rudolph...\n");
     }
     
+    /**
+     * Get the first element of array Reindeers (Environment class)
+     * @return the first reindeer in Enviroment class array reindeers
+     */
+    public Reindeer getNextReindeer() {
+        return (Reindeer) Environment.getInstance().getReindeers().get(0);
+    }
+    
+    /**
+     * Pops the element of array Reindeers (Environment class) with name name
+     * @param name the name of the reindeer to pop
+     * @return true if it deletes the reindeer, false otherwhise
+     */
+    public boolean foundReindeer(Reindeer.Name name) {
+        Reindeer reindeer = (Reindeer) Environment.getInstance().getReindeers().stream().filter(r -> r.getName().equals(name)).findAny().orElse(null);
+            
+        return Environment.getInstance().getReindeers().remove(reindeer);
+    }
+    
     /**************************************************************************/
     
     class RudolphComunicationBeh extends Behaviour{
@@ -96,9 +93,8 @@ public class RudolphAgent extends Agent{
                     if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLF)){
                         System.out.println("Rudolph: Recibido un propose con código correcto!!");
                         resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
-                        System.out.println(Environment.getInstance().getReindeer(foundReindeers).toString());
-                        Reindeer first = Environment.getInstance().getReindeer(foundReindeers);
-                        resp.setContent(first.toString());
+                        Reindeer ini = getNextReindeer();
+                        resp.setContent("PENDING " + ini.getName() + " " + ini.getPosition());
                         this.myAgent.send(resp);
                         state = 1;
                     }
@@ -115,10 +111,10 @@ public class RudolphAgent extends Agent{
                         System.out.println("Rudolph: Request recibida\n");
                         if (foundReindeers < Environment.getInstance().getNumberReindeers()){
                             System.out.println("Rudolph: Te envio las coordenadas del siguiente reno\n\n");
-                            foundReindeers++;
+                            
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
-                            Reindeer next = Environment.getInstance().getReindeer(foundReindeers);
+                            Reindeer next = getNextReindeer();
                             resp.setContent("PENDING " + next.getName() + " " + next.getPosition());
                             myAgent.send(resp);
                         }
@@ -131,7 +127,15 @@ public class RudolphAgent extends Agent{
                             finish = true;
                         }
                     }
-                    else{
+                    else if (this.lastMsg.getPerformative() == ACLMessage.INFORM) {
+                        System.out.println("Rudolph: Inform recibido (reno encontrado)\n");
+                        /*
+                        Obtener el name del mensaje y llamar a foundReindeer para eliminar el reno del array
+                        Reindeer reindeer = new Reindeer(this.lastMsg.getContent());
+                        foundReindeer(name);
+                        */
+                    }
+                    else {
                         resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Rudoplh: Recibido mensaje inesperado\n");
