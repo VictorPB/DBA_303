@@ -72,25 +72,26 @@ public class SantaAgent extends Agent{
         @Override
         public void action(){
             ACLMessage lastMsg = myAgent.blockingReceive();
+            ACLMessage resp;
 
             switch (state) {
                 case 0:
                     if(lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         System.out.println("Santa: Recibido un propose!!");
                         if(radomElfAprove()){
-                            ACLMessage resp = lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
+                            resp = lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
                             // TODO Añadir los mensajes con la dirección de Rudolf
                             resp.setContent(CommManager.CONV_ID_RUDOLF);
                             myAgent.send(resp);
                         }
                         else{
-                            ACLMessage resp = lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
+                            resp = lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
                             System.out.println("Santa: Elf REJECTED\n");
                             this.myAgent.send(resp);
                         }
                     }
                     else{
-                        ACLMessage resp = lastMsg.createReply(ACLMessage.UNKNOWN);
+                        resp = lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Santa: Recibido mensaje inesperado\n");
                     }
@@ -114,7 +115,7 @@ public class SantaAgent extends Agent{
                         System.out.println("Santa: Enviando ubicación: " + santaLocation);
                     }
                     else{
-                        ACLMessage resp = lastMsg.createReply(ACLMessage.UNKNOWN);
+                        resp = lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Santa: Recibido mensaje inesperado\n");
                     }
