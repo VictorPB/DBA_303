@@ -308,8 +308,11 @@ public class ConversationPanel extends javax.swing.JPanel {
         
         SantaPanel.addElfMessage("Hola Santa! he venío pa YATUSABEH!");
         SantaPanel.addReceiverMsg("Ok, pos ya sabes, busca al rudolf...");
+        SantaPanel.addElfMessage("VIXEN encontrado!");
+        SantaPanel.addElfMessage("BLITZEN encontrado!");
+        SantaPanel.addElfMessage("CUPIDO encontrado!");
         
-        RudolfPanel.addElfMessage("Hey Jude! quiero buscar un reno...");
+        RudolfPanel.addElfMessage("Hey Rude! quiero buscar un reno...");
         RudolfPanel.addReceiverMsg("Busca a VIXEN (30,22)");
         RudolfPanel.addElfMessage("Aquí lo tienes");
         RudolfPanel.addReceiverMsg("Busca a BLITZEN (12,39)");
