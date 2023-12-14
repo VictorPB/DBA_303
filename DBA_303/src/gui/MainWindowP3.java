@@ -11,6 +11,7 @@ import components.Action;
 import components.Map;
 import components.Position;
 import components.Tile;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -31,23 +32,32 @@ public class MainWindowP3 extends javax.swing.JFrame {
     List<List<JPanel>> mainMapTilePanelArr;
     int MapTileWidth;
     
+    JPanel rudolphConvPanel, santaConvPanel;
+    
     
     
     /**
      * Creates new form MainWindow with a Map as argument
      */
-    public MainWindowP3(Map map, String mapName) {
+    public MainWindowP3(Map map) {
         initComponents();
+        this.map = map;
         
+        this.santaConvPanel = new ConversationPanel("SANTA");
+        this.santaConvPanel.setMaximumSize(new Dimension(360,360));
+        this.santaConvContainer.add(this.santaConvPanel);
+        this.rudolphConvPanel = new ConversationPanel("RUDOLF");
+        this.rudolphConvPanel.setMaximumSize(new Dimension(360,360));
+        this.rudolphConvContainer.add(this.rudolphConvPanel);
         
-        this.mainMap.updateUI();
+        createMapView();
         
         this.closeBtn.addActionListener(((e) -> {
             this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         }));
 
     }
-
+    
     
     /**
      * Create the map view in the Main Map Frame
@@ -55,6 +65,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
     private void createMapView(){
         int rows = this.map.getNumRows();
         int cols = this.map.getNumCols();
+        System.out.println("MAP: "+rows +"x"+cols);
         
         // initialize the array
         GridLayout gridLayout = new GridLayout(rows, cols,1,1);
@@ -121,12 +132,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         this.mainMap.updateUI();
     }
     
-    public void updateActionList(){
-        
-    }
-    
-    
-    /**************************************************************************/
+    /**************************************************************************/   
     /**************************************************************************/
     /**************************************************************************/
     
@@ -142,12 +148,11 @@ public class MainWindowP3 extends javax.swing.JFrame {
         mainMap = new javax.swing.JPanel();
         closeBtn = new javax.swing.JButton();
         mainMapTitle = new javax.swing.JLabel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        santaConvContainer = new javax.swing.JPanel();
+        rudolphConvContainer = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DBA 2023/24 - P2 - Grupo 303");
-        setMinimumSize(new java.awt.Dimension(830, 630));
-        setResizable(false);
         setSize(new java.awt.Dimension(830, 630));
 
         mainMap.setPreferredSize(new java.awt.Dimension(500, 500));
@@ -156,11 +161,11 @@ public class MainWindowP3 extends javax.swing.JFrame {
         mainMap.setLayout(mainMapLayout);
         mainMapLayout.setHorizontalGroup(
             mainMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
         );
         mainMapLayout.setVerticalGroup(
             mainMapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 500, Short.MAX_VALUE)
+            .addGap(0, 730, Short.MAX_VALUE)
         );
 
         closeBtn.setText("Cerrar");
@@ -168,35 +173,49 @@ public class MainWindowP3 extends javax.swing.JFrame {
         mainMapTitle.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         mainMapTitle.setText("Mapa");
 
+        santaConvContainer.setMaximumSize(new java.awt.Dimension(360, 360));
+        santaConvContainer.setMinimumSize(new java.awt.Dimension(360, 360));
+        santaConvContainer.setPreferredSize(new java.awt.Dimension(360, 360));
+        santaConvContainer.setLayout(new javax.swing.BoxLayout(santaConvContainer, javax.swing.BoxLayout.LINE_AXIS));
+
+        rudolphConvContainer.setMaximumSize(new java.awt.Dimension(360, 360));
+        rudolphConvContainer.setMinimumSize(new java.awt.Dimension(360, 360));
+        rudolphConvContainer.setPreferredSize(new java.awt.Dimension(360, 360));
+        rudolphConvContainer.setLayout(new javax.swing.BoxLayout(rudolphConvContainer, javax.swing.BoxLayout.LINE_AXIS));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(mainMapTitle)
-                        .addGap(206, 206, 206)
-                        .addComponent(closeBtn))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(176, Short.MAX_VALUE))
+                    .addComponent(closeBtn, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(mainMapTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(santaConvContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rudolphConvContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(7, Short.MAX_VALUE)
                 .addComponent(mainMapTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(santaConvContainer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(rudolphConvContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mainMap, javax.swing.GroupLayout.PREFERRED_SIZE, 730, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeBtn)
-                .addGap(16, 16, 16))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         pack();
@@ -229,46 +248,28 @@ public class MainWindowP3 extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        // TODO - detele 
-//        Map myMap = new Map("mapWithDiagonalWall.txt");
-//        Sensor.getInstance().setParameters( "mapWithDiagonalWall.txt", new Position(0,0), new Position(3,6));
-//        Sensor.getInstance().setAgentPosition(new Position(0,0));
-//        Sensor.getInstance().updatePosition(Action.DOWN);
-//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
-//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
-//        Sensor.getInstance().updatePosition(Action.RIGHT);
-        
+        // Create the example map
+        Map myMap = new Map("P3map40.txt");
+        System.out.println(myMap);
         
         /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new MainWindow(myMap).setVisible(true);
-//            }
-//        });
-        //</editor-fold>
-
-        // TODO - detele 
-//        Map myMap = new Map("mapWithDiagonalWall.txt");
-//        Sensor.getInstance().setParameters( "mapWithDiagonalWall.txt", new Position(0,0), new Position(3,6));
-//        Sensor.getInstance().setAgentPosition(new Position(0,0));
-//        Sensor.getInstance().updatePosition(Action.DOWN);
-//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
-//        Sensor.getInstance().updatePosition(Action.DOWN_RIGHT);
-//        Sensor.getInstance().updatePosition(Action.RIGHT);
-        
-        
-        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new MainWindow(myMap).setVisible(true);
-//            }
-//        });
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                MainWindowP3 mw = new MainWindowP3(myMap);
+                mw.setVisible(true);
+                
+                ((ConversationPanel)mw.santaConvPanel).addElfMessage("Yepaaaa que pacha!!!");
+                ((ConversationPanel)mw.santaConvPanel).addReceiverMsg("Chupame un huevo");
+                
+            }
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeBtn;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JPanel mainMap;
     private javax.swing.JLabel mainMapTitle;
+    private javax.swing.JPanel rudolphConvContainer;
+    private javax.swing.JPanel santaConvContainer;
     // End of variables declaration//GEN-END:variables
 }

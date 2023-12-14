@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 public class ConversationPanel extends javax.swing.JPanel {
 
     static final int ICON_SIZE = 40;
-    static final int CONV_PAN_WIDTH = 400;
+    static final int CONV_PAN_WIDTH = 360;
     static final Font nameFont = new Font("Arial", Font.BOLD, 16);
     // COLORS
     static final Color AVATAR_BG = Color.decode("#c7cfd4");
@@ -55,11 +55,11 @@ public class ConversationPanel extends javax.swing.JPanel {
         // Init the 
         if(receiver=="SANTA"){
             destName = "SantaClaus";
-            destIcon = AssetManager.getSantaAvatar(40);
+            destIcon = AssetManager.getSantaAvatar(ICON_SIZE);
         }
         else if(receiver=="RUDOLF"){
             destName = "Rudolf";
-            destIcon = AssetManager.getRudolfAvatar(40);
+            destIcon = AssetManager.getRudolfAvatar(ICON_SIZE);
         }
         
         createHeader();
@@ -72,15 +72,15 @@ public class ConversationPanel extends javax.swing.JPanel {
     private void createHeader(){
         // añado icono
         JLabel icon = new JLabel(new ImageIcon(destIcon));
-        icon.setBounds(5,5,40,40);
+        icon.setBounds(5,5,ICON_SIZE,ICON_SIZE);
         this.headerPanel.add(icon);
         // añado Circulo
         JPanel iconBg = new CirclePanel(40, Color.black);
-        iconBg.setBounds(5,5,40,40);
+        iconBg.setBounds(5,5,ICON_SIZE,ICON_SIZE);
         this.headerPanel.add(iconBg);
         // añado el nombre
         JLabel name = new JLabel(this.destName);
-        name.setBounds(55,5,340,40);
+        name.setBounds(55,5,300,40);
         name.setFont(nameFont);
         name.setAlignmentX(LEFT_ALIGNMENT);
         name.setAlignmentY(CENTER_ALIGNMENT);
@@ -89,14 +89,14 @@ public class ConversationPanel extends javax.swing.JPanel {
     
 
     
-    void addElfMessage(String msg){
+    public void addElfMessage(String msg){
         // add a previous separator
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.ME, msg));
     }
 
-    void addReceiverMsg(String msg){
+    public void addReceiverMsg(String msg){
         // add a previous separator
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
@@ -149,7 +149,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         
         Sender sender;
         Area msgBg;
-        static final int PAN_WIDTH = 320;
+        static final int PAN_WIDTH = 280;
         static final int STEP = 10;
         
         MessageBgPanel(Sender sender, int height){
@@ -161,7 +161,7 @@ public class ConversationPanel extends javax.swing.JPanel {
             this.setMaximumSize(d);
             
             this.msgBg = new Area(
-                    new RoundRectangle2D.Float(10,0,300,height,10,10));
+                    new RoundRectangle2D.Float(10,0,260,height,10,10));
             Path2D mark = new Path2D.Float();
             if(this.sender.equals(Sender.ME)){
                 mark.moveTo(0, 0);
@@ -203,9 +203,10 @@ public class ConversationPanel extends javax.swing.JPanel {
             int height = nlines*20 + 10;
             if(height < 30) height = 30;
 
+            
             // Create the label(s)
             JLabel msgLabel = new JLabel(msg);
-            msgLabel.setBounds(55,5,290,14);
+            msgLabel.setBounds(55,5,250,14);
             this.add(msgLabel);
 
             //dpending on the sender, place icon, msg bg (and circle?)
@@ -219,19 +220,32 @@ public class ConversationPanel extends javax.swing.JPanel {
             }
             else{
                 avatar = new JLabel(new ImageIcon(destIcon.getScaledInstance(30, 30, 0)));
-                avatar.setBounds(360,0,30,30);
-                avatarBg.setBounds(360,0,30,30);
+                avatar.setBounds(320,0,30,30);
+                avatarBg.setBounds(320,0,30,30);
             }
 
             JPanel msgBg = new ConversationPanel.MessageBgPanel(sender, height);
-            msgBg.setBounds(40,0,320,height);
+            msgBg.setBounds(40,0,280,height);
 
             this.add(avatar);
             this.add(avatarBg);
             this.add(msgBg);
             
+            JPanel o = new JPanel();
+            o.setSize(new Dimension(10,10));
+            o.setBackground(Color.GREEN);
+            o.setBounds(0, 0, 10, 10);
+            this.add(o);
+            
+            JPanel o2 = new JPanel();
+            o2.setSize(new Dimension(10,10));
+            o2.setBackground(Color.GREEN);
+            o2.setBounds(350, 0, 10, 10);
+            this.add(o2);
+            
+            
             // resize the panel
-            Dimension d = new Dimension(CONV_PAN_WIDTH,height);
+            Dimension d = new Dimension(360 ,height);
             this.setSize(d);
             this.setMaximumSize(d);
             this.setMinimumSize(d);
@@ -253,20 +267,22 @@ public class ConversationPanel extends javax.swing.JPanel {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
         ConvPanel = new javax.swing.JPanel();
 
-        setMinimumSize(new java.awt.Dimension(400, 400));
+        setMaximumSize(new java.awt.Dimension(360, 360));
+        setMinimumSize(new java.awt.Dimension(360, 360));
+        setPreferredSize(new java.awt.Dimension(360, 360));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         headerPanel.setBackground(new java.awt.Color(30, 30, 30));
-        headerPanel.setMaximumSize(new java.awt.Dimension(32767, 50));
+        headerPanel.setMaximumSize(new java.awt.Dimension(360, 50));
         headerPanel.setMinimumSize(new java.awt.Dimension(100, 50));
         headerPanel.setOpaque(true);
-        headerPanel.setPreferredSize(new java.awt.Dimension(400, 50));
+        headerPanel.setPreferredSize(new java.awt.Dimension(360, 50));
 
         javax.swing.GroupLayout headerPanelLayout = new javax.swing.GroupLayout(headerPanel);
         headerPanel.setLayout(headerPanelLayout);
         headerPanelLayout.setHorizontalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 450, Short.MAX_VALUE)
+            .addGap(0, 360, Short.MAX_VALUE)
         );
         headerPanelLayout.setVerticalGroup(
             headerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -278,9 +294,9 @@ public class ConversationPanel extends javax.swing.JPanel {
 
         ConvPanel.setBackground(new java.awt.Color(80, 80, 80));
         ConvPanel.setAlignmentX(0.5F);
-        ConvPanel.setMaximumSize(new java.awt.Dimension(32000, 32000));
-        ConvPanel.setMinimumSize(new java.awt.Dimension(400, 400));
-        ConvPanel.setPreferredSize(new java.awt.Dimension(400, 400));
+        ConvPanel.setMaximumSize(new java.awt.Dimension(360, 305));
+        ConvPanel.setMinimumSize(new java.awt.Dimension(360, 305));
+        ConvPanel.setPreferredSize(new java.awt.Dimension(360, 305));
         ConvPanel.setLayout(new javax.swing.BoxLayout(ConvPanel, javax.swing.BoxLayout.Y_AXIS));
         add(ConvPanel);
     }// </editor-fold>//GEN-END:initComponents
