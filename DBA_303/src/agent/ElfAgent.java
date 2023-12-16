@@ -117,7 +117,9 @@ public class ElfAgent extends Agent{
                         decodeMSG(santaValidationContent);
                         
                         System.out.println("Elf: Tengo el codigo para hablar con Rudolf:"+this.secretCode);
-                        System.out.println("Elf: Lo encontrare en la posicion:"+this.rudolphPos.toString());
+                        System.out.println("Elf: Lo encontrare en la posicion:"+this.rudolphPos.toString()+"\n");
+                        
+                        //TODO: desplazarse hacia Rudolf
                     }
                     else{
                         System.out.println("Elf: Santa me rechazó\n");
@@ -129,28 +131,34 @@ public class ElfAgent extends Agent{
                     
                 //RUDOLF
                     
-                case 2:
+                case 3:
                     msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_RUDOLPH,AID.ISLOCALNAME));
                     msg.setConversationId(secretCode);
-                    msg.setContent("Elf: Hola Rudolf, Santa me ha propuesto para encontrar los renos perdidos.");
+                    msg.setContent("Elf: Hola Rudolf, este es el codigo secreto:"+this.secretCode);               
                     System.out.println(msg.getContent());
+                    System.out.println("Elf: Santa me ha aceptado mi proposicion para encontrar los renos perdidos.");
                     myAgent.send(msg);                  
                     
-                    this.state = 3;
+                    this.state = 4;
                     break;
                     
-                case 3:
+                case 4:
                     this.lastMsgRudolph = myAgent.blockingReceive();
                     if(this.lastMsgRudolph.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
                         String reindeerPosContent = this.lastMsgRudolph.getContent();
                         System.out.println("Elf: Rudolf me habla!");
                         System.out.println("       msg: "+reindeerPosContent+"\n");
                         
+                        //Decode Message Get Secret Code and Rudolf Pos
+                        decodeMSG(reindeerPosContent);
+                        
+                        System.out.println("Elf: Encontrare a "+this.reindeerName+" en la posicion:"+this.reindeerPos.toString()+"\n");
+                        
                         //Decode Message Get first lost reindeer
                         decodeMSG(reindeerPosContent);
                         
-                        //Marcar casilla como objetivo
+                        //TODO: desplazarse hacia reno perdido
                         
                     }
                     else{
@@ -159,7 +167,7 @@ public class ElfAgent extends Agent{
                         this.finish = true;
                     }
                     
-                    this.state = 4;
+                    this.state = 5;
                     
                     break;
             }
