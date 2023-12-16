@@ -1,5 +1,5 @@
 /*
- * @file    ElfAgent.java
+ * @file    SantaAgent.java
  * @author 
  * @version
  */
@@ -68,27 +68,30 @@ public class SantaAgent extends Agent{
          
         int state = 0;
         boolean finish = false;
+        ACLMessage lastMsg = myAgent.blockingReceive();
         
         @Override
         public void action(){
+            ACLMessage resp;
+
             switch (state) {
                 case 0:
-                    ACLMessage msg = myAgent.blockingReceive();
-                    if(msg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
+                    if(lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         System.out.println("Santa: Recibido un propose!!");
                         if(radomElfAprove()){
-                            ACLMessage resp = msg.createReply(ACLMessage.ACCEPT_PROPOSAL);
+                            resp = lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
+                            // TODO Añadir los mensajes con la dirección de Rudolf
                             resp.setContent(CommManager.CONV_ID_RUDOLF);
                             myAgent.send(resp);
                         }
                         else{
-                            ACLMessage resp = msg.createReply(ACLMessage.REJECT_PROPOSAL);
+                            resp = lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
                             System.out.println("Santa: Elf REJECTED\n");
                             this.myAgent.send(resp);
                         }
                     }
                     else{
-                        ACLMessage resp = msg.createReply(ACLMessage.UNKNOWN);
+                        resp = lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
                         System.out.println("Santa: Recibido mensaje inesperado\n");
                     }
@@ -96,24 +99,51 @@ public class SantaAgent extends Agent{
                     break;
                 
                 case 1:
-//                    ACLMessage msg2 = myAgent.blockingReceive();
-//                    if(msg2.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
-//                        String response = msg2.getContent();
-//                        System.out.println("Elf: Santa me aceptó");
-//                        System.out.println("       msg: "+response);
-//                    }
-//                    else{
-//                        System.out.println("Elf: Santa me rechazó");
-//                    }
-//                    this.finish = true;
+                    if(lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
+                        System.out.println("Santa: Recibido un mensaje 2!!");
+                        
+                        // TODO: Obtener ubicación de Santa
+                        String santaLocation = "";
+                        
+                        ACLMessage locationResponse = lastMsg.createReply();
+
+                        locationResponse.setPerformative(ACLMessage.INFORM);
+                        locationResponse.setContent(santaLocation);
+
+                        myAgent.send(locationResponse);
+
+                        System.out.println("Santa: Enviando ubicación: " + santaLocation);
+                    }
+                    else{
+                        resp = lastMsg.createReply(ACLMessage.UNKNOWN);
+                        this.myAgent.send(resp);
+                        System.out.println("Santa: Recibido mensaje inesperado\n");
+                    }
+                    this.finish = true;
                     break;
+                case 2:
+                    if (lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)) {
+                        System.out.println("Santa: Recibido un mensaje 3!!");
+                        
+                        ACLMessage hoHoHoResponse = lastMsg.createReply();
+                        hoHoHoResponse.setPerformative(ACLMessage.INFORM);
+                        hoHoHoResponse.setContent("HoHoHo!");
+
+                        myAgent.send(hoHoHoResponse);
+
+                        System.out.println("Santa: ¡HoHoHo! - Elf llegó a la ubicación.");
+                    } else {
+                        System.out.println("Santa: Mensaje inesperado o elfo no llegó.");
+                    }
+                    this.finish = true;
+                    break;
+                }
             }
+
+            @Override
+            public boolean done(){
+                return finish; 
+            }
+
         }
-        
-        @Override
-        public boolean done(){
-            return finish; 
-        }
-        
-    }
 }
