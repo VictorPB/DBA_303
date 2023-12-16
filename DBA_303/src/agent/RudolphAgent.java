@@ -90,18 +90,29 @@ public class RudolphAgent extends Agent{
             switch (state) {
                 case 0:
                     this.lastMsg = myAgent.blockingReceive();
-                    if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLF)){
-                        System.out.println("Rudolph: Recibido un propose con código correcto!!");
-                        resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
-                        Reindeer ini = getNextReindeer();
-                        resp.setContent("PENDING " + ini.getName() + " " + ini.getPosition());
+                    System.out.println(this.lastMsg.getPerformative());
+                    System.out.println(ACLMessage.PROPOSE);
+                    if(this.lastMsg.getPerformative() == ACLMessage.PROPOSE){
+                        if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLPH)){
+                            System.out.println("Rudolph: Recibido un propose con código correcto!!");
+                            resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
+                            Reindeer ini = getNextReindeer();
+                            resp.setContent("PENDING " + CommManager.SEPARATOR + 
+                                            ini.getName() + CommManager.SEPARATOR +
+                                            ini.getPosition().toString(CommManager.SEPARATOR));
+                            this.myAgent.send(resp);
+                            state = 1;
+                        }
+                        else{
+                            resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
+                            System.out.println("Rudolph: NO TE ENTIENDO (código incorrecto)\n");
+                            this.myAgent.send(resp);
+                        }
+                    }else{
+                        resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
-                        state = 1;
-                    }
-                    else{
-                        resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
-                        System.out.println("Rudolph: NO TE ENTIENDO (código incorrecto)\n");
-                        this.myAgent.send(resp);
+                        System.out.println("Rudoplh: Recibido mensaje inesperado\n");
+                        finish = true;
                     }
                     break;
                     

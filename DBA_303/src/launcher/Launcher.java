@@ -20,6 +20,7 @@ import jade.core.Agent;
 // P3
 import agent.ElfAgent;
 import agent.SantaAgent;
+import agent.RudolphAgent;
 
 /**
  *
@@ -126,9 +127,11 @@ public class Launcher {
         // previous steps for the P3
         Agent elfAgent = new ElfAgent();
         Agent santaAgent = new SantaAgent();
+        Agent rudolphAgent = new RudolphAgent();
         try{
             AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
             AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
+            AgentController rudolphController = agentContController.acceptNewAgent("RUDOLPH", rudolphAgent);
             santaController.start();
             elfController.start();
         }

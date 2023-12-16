@@ -74,17 +74,25 @@ public class ElfAgent extends Agent{
         boolean finish = false;
         
         String secretCode;
-        Position rudolfPos;
+        Position rudolphPos;
+        String reindeerName;
+        Position reindeerPos;
         
+        ACLMessage lastMsgSanta;
+        ACLMessage lastMsgRudolph;
         
         @Override
         public void action(){
+            
+            ACLMessage msg;
+            
             switch (state) {
+                
                 
                 //SANTA
                 
                 case 0:
-                    ACLMessage msg = new ACLMessage(ACLMessage.PROPOSE);
+                    msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_SANTA,AID.ISLOCALNAME));
                     msg.setConversationId(CommManager.CONV_ID_SANTA);
                     msg.setContent("Me propongo voluntario para buscar los renos perdidos");
@@ -94,23 +102,59 @@ public class ElfAgent extends Agent{
                     break;
                 
                 case 1:
-                    ACLMessage santaValidation = myAgent.blockingReceive();
-                    if(santaValidation.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
-                        String santaValidationContext = santaValidation.getContent();
+                    this.lastMsgSanta = myAgent.blockingReceive();
+                    if(this.lastMsgSanta.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+                        String santaValidationContent = this.lastMsgSanta.getContent();
                         System.out.println("Elf: Santa me aceptó");
-                        System.out.println("       msg: "+santaValidationContext+"\n");
-                        
+                        System.out.println("       msg: "+santaValidationContent+"\n");
+                                             
                         //Decode Message Get Secret Code and Rudolf Pos
-                        decodeMSG(santaValidationContext, secretCode, rudolfPos);
+                        decodeMSG(santaValidationContent, secretCode, rudolphPos);
+                        System.out.println(secretCode);
                     }
                     else{
                         System.out.println("Elf: Santa me rechazó\n");
+                        this.finish = true;
                     }
-                    this.finish = true;
                     
+                    this.state = 2;
                     break;
                     
-                //RUDOLF    
+                //RUDOLF
+                    
+                case 2:
+                    msg = new ACLMessage(ACLMessage.PROPOSE);
+                    msg.addReceiver(new AID(CommManager.AID_RUDOLPH,AID.ISLOCALNAME));
+                    msg.setConversationId(secretCode);
+                    msg.setContent("Hola Rudolf, Santa me ha propuesto para encontrar los renos perdidos.");
+                    System.out.println("Hola Rudolf, Santa me ha propuesto para encontrar los renos perdidos.");
+                    myAgent.send(msg);                  
+                    
+                    this.state = 3;
+                    break;
+                    
+                case 3:
+                    this.lastMsgRudolph = myAgent.blockingReceive();
+                    if(this.lastMsgRudolph.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+                        String reindeerPosContent = this.lastMsgRudolph.getContent();
+                        System.out.println("Elf: Rudolf me habla!");
+                        System.out.println("       msg: "+reindeerPosContent+"\n");
+                        
+                        //Decode Message Get first lost reindeer
+                        decodeMSG(reindeerPosContent, reindeerName, reindeerPos);
+                        
+                        //Marcar casilla como objetivo
+                        
+                    }
+                    else{
+                        System.out.println("Elf: Rudolf no habla conmigo.\n");
+                        
+                        this.finish = true;
+                    }
+                    
+                    this.state = 4;
+                    
+                    break;
             }
         }
         
@@ -132,16 +176,19 @@ public class ElfAgent extends Agent{
          * 
          * Example encode message: "xAeJtxC;12;26"  "reno;28;17"
          * 
+         * Position toString pasa esto (5,9)   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         * Además rudolf devuelve primero PENDING o FINISH
+         * 
          * @param encodedMessage
          * @param outputString
          * @param outputPosition 
          */
         void decodeMSG(String encodedMessage, String outputString, Position outputPosition){
-            final char SEPARATOR = ';';
             
-            String[] parts = encodedMessage.split(";");
+            String[] parts = encodedMessage.split(CommManager.SEPARATOR);
             
             outputString = parts[0];
+            secretCode = parts[0];
             
             outputPosition = new Position(Integer.parseInt(parts[1]),Integer.parseInt(parts[2]));
         }
