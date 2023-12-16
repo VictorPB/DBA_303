@@ -81,14 +81,10 @@ public class SantaAgent extends Agent{
                         System.out.println("Santa: Recibido un propose!!");
                         if(radomElfAprove()){
                             resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
-                            // TODO Añadir los mensajes con la dirección de Rudolf
-                            
-                            Position prueba = new Position(5,17);
-                            
+                            // TODO Añadir los mensajes con la dirección de Rudolf                            
                             resp.setContent(CommManager.CONV_ID_RUDOLPH + 
                                             CommManager.SEPARATOR +
-                                            //Environment.getInstance().getRudolphPosition().toString(CommManager.SEPARATOR));
-                                            prueba.toString(CommManager.SEPARATOR));
+                                            Environment.getInstance().getRudolphPosition().toString(CommManager.SEPARATOR));
                             myAgent.send(resp);
                         }
                         else{

@@ -134,6 +134,7 @@ public class Launcher {
             AgentController rudolphController = agentContController.acceptNewAgent("RUDOLPH", rudolphAgent);
             santaController.start();
             elfController.start();
+            rudolphController.start();
         }
         catch(StaleProxyException e){
             System.out.println(e);

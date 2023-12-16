@@ -56,8 +56,12 @@ public class ElfAgent extends Agent{
     public void setup() {
         System.out.println("Hello! I'm the Elf Agent.\n");
         
-        this.addBehaviour(new ElfComunicationBeh());
+        Map map = new Map("mapWithDiagonalWall.txt");
+        System.out.println("Generating new Environment...");
         
+        Environment.getInstance().setParameters(map);
+        
+        this.addBehaviour(new ElfComunicationBeh());
     }
 
     @Override

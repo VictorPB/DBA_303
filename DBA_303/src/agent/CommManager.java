@@ -34,7 +34,10 @@ class CommManager {
         String result = "";
         while(result.length()<8){
             char ch = (char)(min + random.nextInt(range));
-            result += ch;
+            // Ensure that the character is an uppercase or lowercase letter
+            if (Character.isLetter(ch)) {
+                result += ch;
+            }
         }
         return result;
     }

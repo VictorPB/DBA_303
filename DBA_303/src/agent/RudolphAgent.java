@@ -45,7 +45,7 @@ public class RudolphAgent extends Agent{
      */
     @Override
     public void setup() {
-        System.out.println("Hello! I'm the Rudolph Agent.\n");
+        System.out.println("Hello! I'm the Rudolph Agent. \"¡Hiaa, hiaa!\\n");
         
         this.addBehaviour(new RudolphComunicationBeh());
         
@@ -90,15 +90,14 @@ public class RudolphAgent extends Agent{
             switch (state) {
                 case 0:
                     this.lastMsg = myAgent.blockingReceive();
-                    System.out.println(this.lastMsg.getPerformative());
-                    System.out.println(ACLMessage.PROPOSE);
+
                     if(this.lastMsg.getPerformative() == ACLMessage.PROPOSE){
                         if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLPH)){
                             System.out.println("Rudolph: Recibido un propose con código correcto!!");
                             resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
                             Reindeer ini = getNextReindeer();
-                            resp.setContent("PENDING " + CommManager.SEPARATOR + 
-                                            ini.getName() + CommManager.SEPARATOR +
+                            resp.setContent("PENDING" + CommManager.SEPARATOR + 
+                                            ini.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
                                             ini.getPosition().toString(CommManager.SEPARATOR));
                             this.myAgent.send(resp);
                             state = 1;
