@@ -73,9 +73,16 @@ public class ElfAgent extends Agent{
         int state = 0;
         boolean finish = false;
         
+        String secretCode;
+        Position rudolfPos;
+        
+        
         @Override
         public void action(){
             switch (state) {
+                
+                //SANTA
+                
                 case 0:
                     ACLMessage msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_SANTA,AID.ISLOCALNAME));
@@ -87,22 +94,56 @@ public class ElfAgent extends Agent{
                     break;
                 
                 case 1:
-                    ACLMessage msg2 = myAgent.blockingReceive();
-                    if(msg2.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
-                        String response = msg2.getContent();
+                    ACLMessage santaValidation = myAgent.blockingReceive();
+                    if(santaValidation.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
+                        String santaValidationContext = santaValidation.getContent();
                         System.out.println("Elf: Santa me aceptó");
-                        System.out.println("       msg: "+response+"\n");
+                        System.out.println("       msg: "+santaValidationContext+"\n");
+                        
+                        //Decode Message Get Secret Code and Rudolf Pos
+                        decodeMSG(santaValidationContext, secretCode, rudolfPos);
                     }
                     else{
                         System.out.println("Elf: Santa me rechazó\n");
                     }
                     this.finish = true;
+                    
+                    break;
+                    
+                //RUDOLF    
             }
         }
         
         @Override
         public boolean done(){
             return finish;
+        }
+        
+        
+        /**
+         * Decodes messages containing a string and a position and stores the 
+         * information in the output parameters.
+         * 
+         * Used to obtain Rudolf's secret code and position. 
+         * Used to obtain name and position of lost reindeer.
+         * 
+         * The message encoding is preset and depends on the programmer,
+         * using SEPARATOR to delimit the fields in the encodedMessage.
+         * 
+         * Example encode message: "xAeJtxC;12;26"  "reno;28;17"
+         * 
+         * @param encodedMessage
+         * @param outputString
+         * @param outputPosition 
+         */
+        void decodeMSG(String encodedMessage, String outputString, Position outputPosition){
+            final char SEPARATOR = ';';
+            
+            String[] parts = encodedMessage.split(";");
+            
+            outputString = parts[0];
+            
+            outputPosition = new Position(Integer.parseInt(parts[1]),Integer.parseInt(parts[2]));
         }
         
     }
