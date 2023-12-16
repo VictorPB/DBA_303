@@ -76,6 +76,7 @@ public class ElfAgent extends Agent{
          
         int state = 0;
         boolean finish = false;
+        boolean allReindeerFound = false;
         
         String secretCode;
         Position rudolphPos;
@@ -99,7 +100,7 @@ public class ElfAgent extends Agent{
                     msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_SANTA,AID.ISLOCALNAME));
                     msg.setConversationId(CommManager.CONV_ID_SANTA);
-                    msg.setContent("Me propongo voluntario para buscar los renos perdidos");
+                    msg.setContent("Elf: Me propongo voluntario para buscar los renos perdidos");
                     myAgent.send(msg);
                     
                     this.state = 1;
@@ -113,8 +114,10 @@ public class ElfAgent extends Agent{
                         System.out.println("       msg: "+santaValidationContent+"\n");
                                              
                         //Decode Message Get Secret Code and Rudolf Pos
-                        decodeMSG(santaValidationContent, secretCode, rudolphPos);
-                        System.out.println(secretCode);
+                        decodeMSG(santaValidationContent);
+                        
+                        System.out.println("Elf: Tengo el codigo para hablar con Rudolf:"+this.secretCode);
+                        System.out.println("Elf: Lo encontrare en la posicion:"+this.rudolphPos.toString());
                     }
                     else{
                         System.out.println("Elf: Santa me rechazó\n");
@@ -130,8 +133,8 @@ public class ElfAgent extends Agent{
                     msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_RUDOLPH,AID.ISLOCALNAME));
                     msg.setConversationId(secretCode);
-                    msg.setContent("Hola Rudolf, Santa me ha propuesto para encontrar los renos perdidos.");
-                    System.out.println("Hola Rudolf, Santa me ha propuesto para encontrar los renos perdidos.");
+                    msg.setContent("Elf: Hola Rudolf, Santa me ha propuesto para encontrar los renos perdidos.");
+                    System.out.println(msg.getContent());
                     myAgent.send(msg);                  
                     
                     this.state = 3;
@@ -145,7 +148,7 @@ public class ElfAgent extends Agent{
                         System.out.println("       msg: "+reindeerPosContent+"\n");
                         
                         //Decode Message Get first lost reindeer
-                        decodeMSG(reindeerPosContent, reindeerName, reindeerPos);
+                        decodeMSG(reindeerPosContent);
                         
                         //Marcar casilla como objetivo
                         
@@ -178,7 +181,7 @@ public class ElfAgent extends Agent{
          * The message encoding is preset and depends on the programmer,
          * using SEPARATOR to delimit the fields in the encodedMessage.
          * 
-         * Example encode message: "xAeJtxC;12;26"  "reno;28;17"
+         * Example encode message: "Rudolf;xAeJtxC;12;26"  "PENDING ;BLITZEN;28;17"
          * 
          * Position toString pasa esto (5,9)   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
          * Además rudolf devuelve primero PENDING o FINISH
@@ -187,14 +190,21 @@ public class ElfAgent extends Agent{
          * @param outputString
          * @param outputPosition 
          */
-        void decodeMSG(String encodedMessage, String outputString, Position outputPosition){
+        void decodeMSG(String encodedMessage){
             
             String[] parts = encodedMessage.split(CommManager.SEPARATOR);
             
-            outputString = parts[0];
-            secretCode = parts[0];
+            if("SecretCode".equals(parts[0])){
+                this.secretCode = parts[1];
+                this.rudolphPos = new Position(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));
+            }else if("PENDING".equals(parts[0])){
+                reindeerName = parts[1];
+                reindeerPos = new Position(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));
+            }else if("FINISH".equals(parts[0])){
+                allReindeerFound = true;
+            }
             
-            outputPosition = new Position(Integer.parseInt(parts[1]),Integer.parseInt(parts[2]));
+            
         }
         
     }

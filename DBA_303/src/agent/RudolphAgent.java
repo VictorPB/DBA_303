@@ -125,7 +125,7 @@ public class RudolphAgent extends Agent{
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
                             Reindeer next = getNextReindeer();
-                            resp.setContent("PENDING " + next.getName() + " " + next.getPosition());
+                            resp.setContent("PENDING" + next.getName() + " " + next.getPosition());
                             myAgent.send(resp);
                         }
                         else {
