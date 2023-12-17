@@ -11,10 +11,10 @@ import java.util.Random;
  *
  * @author JorgeBG
  */
-class CommManager {
-    static final String AID_ELF = "ELF";
-    static final String AID_SANTA = "SANTA";
-    static final String AID_RUDOLPH = "RUDOLPH";
+public class CommManager {
+    public static final String AID_ELF = "ELF";
+    public static final String AID_SANTA = "SANTA";
+    public static final String AID_RUDOLPH = "RUDOLPH";
     
     static final String CONV_ID_SANTA = "SANTA_MISION";
     

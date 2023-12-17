@@ -20,6 +20,8 @@ import jade.core.Agent;
 // P3
 import agent.ElfAgent;
 import agent.SantaAgent;
+import agent.RudolphAgent;
+import agent.CommManager;
 
 import gui.MainWindowP3;
 import javax.swing.JFrame;
@@ -46,8 +48,12 @@ public class Launcher {
     
     private static jade.core.Runtime runtime = jade.core.Runtime.instance();
     
-    private static Agent scoutAgent, elfAgent, santaAgent, rudolfAgent;
+    private static Agent scoutAgent; 
     private static AgentController agentController;
+    
+    /// P3
+    private static Agent elfAgent, santaAgent, rudolphAgent;
+    private static AgentController elfController, santaController, rudolphController;
     
     /// windows
     private static LauncherWindow launcherW = new LauncherWindow();
@@ -94,6 +100,40 @@ public class Launcher {
     }
     
     /**
+     * Public method to create agents for P3
+     * for being called from the launcher window
+     */
+    public static void createP3Agents(){
+        elfAgent = new ElfAgent();
+        santaAgent = new SantaAgent();
+        rudolphAgent = new RudolphAgent();
+        
+        try{
+            santaController = agentContController.acceptNewAgent(CommManager.AID_SANTA, santaAgent);
+            rudolphController = agentContController.acceptNewAgent(CommManager.AID_RUDOLPH, rudolphAgent );
+            elfController = agentContController.acceptNewAgent(CommManager.AID_ELF, elfAgent);
+        }
+        catch(StaleProxyException e){
+            System.out.println(e);
+        }
+    }
+    
+    /**
+     * Public metho to start the agents for the P3
+     * for being called from the launcher window
+     */
+    public static void startP3Agents(){
+        try{
+            santaController.start();
+            rudolphController.start();
+            elfController.start();
+        }
+        catch(StaleProxyException e){
+            System.out.println(e);
+        }
+    }
+    
+    /**
      * Method to configure the agent for the P2 launch
      * @param map
      * @param origin
@@ -101,7 +141,6 @@ public class Launcher {
      */
     public static void configureAgent(Map map, Position origin, Position target){
         Sensor.getInstance().setParameters(map, origin, target);
-        
     }
     
     /**
@@ -150,17 +189,14 @@ public class Launcher {
      */
     public static void runP3(){
         // Create agents (first those that have to hear others)
-        elfAgent = new ElfAgent();
-        santaAgent = new SantaAgent();
-        // rudolfAgent = new RudolfAgent();
-        
-        // TODO finish this
-        
+        createP3Agents();
+               
         // configure?
         // open the P3 window
         openP3Window(launcherW.selectedMap);
         
         //start agents (first those that have to hear others)
+        startP3Agents();
         //close the launcher window
         launcherW.setVisible(false);
     }
@@ -197,20 +233,20 @@ public class Launcher {
 //        catch(StaleProxyException e){
 //            System.out.println(e);
 //        }
-        Agent elfAgent = new ElfAgent();
-        Agent santaAgent = new SantaAgent();
+//        Agent elfAgent = new ElfAgent();
+//        Agent santaAgent = new SantaAgent();
 //        Agent rudolphAgent = new RudolphAgent();
-        try{
-            AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
-            AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
-            AgentController rudolphController = agentContController.acceptNewAgent("RUDOLPH", rudolphAgent);
-            santaController.start();
-            elfController.start();
-            rudolphController.start();
-        }
-        catch(StaleProxyException e){
-            System.out.println(e);
-        }
+//        try{
+//            AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
+//            AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
+//            AgentController rudolphController = agentContController.acceptNewAgent("RUDOLPH", rudolphAgent);
+//            santaController.start();
+//            elfController.start();
+//            rudolphController.start();
+//        }
+//        catch(StaleProxyException e){
+//            System.out.println(e);
+//        }
 
     }
                 

@@ -5,8 +5,7 @@
  */
 package gui;
 
-import agent.ScoutAgent;
-import agent.Sensor;
+import components.Environment;
 import components.Action;
 import components.Map;
 import components.Position;
@@ -92,21 +91,21 @@ public class MainWindowP3 extends javax.swing.JFrame {
      * Updates the agent position 
      */
     public void updateAgent(){
-        clearAgentPath();
-        
-        ArrayList<Sensor.ActionPair> path = Sensor.getInstance().getAgentVisitedPath();
-        
-        for(int i=0; i<path.size(); i++){
-            Position p = path.get(i).getPos();
-            JPanel panel = this.mainMapTilePanelArr.get(p.getY()).get(p.getX());
-            if(path.get(i).getAct() == Action.IDLE)
-                panel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
-            else
-                panel.add(new JLabel (AssetManager.getAgentPastIcon(this.MapTileWidth)));
-        }
-        
-        this.mainMap.updateUI();
-        
+//        clearAgentPath();
+//        
+//        ArrayList<Sensor.ActionPair> path = Sensor.getInstance().getAgentVisitedPath();
+//        
+//        for(int i=0; i<path.size(); i++){
+//            Position p = path.get(i).getPos();
+//            JPanel panel = this.mainMapTilePanelArr.get(p.getY()).get(p.getX());
+//            if(path.get(i).getAct() == Action.IDLE)
+//                panel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
+//            else
+//                panel.add(new JLabel (AssetManager.getAgentPastIcon(this.MapTileWidth)));
+//        }
+//        
+//        this.mainMap.updateUI();
+//        
     }
     
     private void clearAgentPath(){
@@ -120,19 +119,19 @@ public class MainWindowP3 extends javax.swing.JFrame {
     /*** update the agent in the main map *************************************/
     // this is a temporal implementation
     public void updateAgentWithoutPath(){
-        clearAgentPath();
-        
-        // temporal -> it access directly to sensors
-        Position agentPos = Sensor.getInstance().getAgentPosition();
-        Position targetPos = Sensor.getInstance().getTargetPosition();
-        
-        JPanel agentPanel = this.mainMapTilePanelArr.get(agentPos.getY()).get(agentPos.getX());
-        JPanel targetPanel = this.mainMapTilePanelArr.get(targetPos.getY()).get(targetPos.getX());
-        
-        agentPanel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
-        targetPanel.add(new JLabel(AssetManager.getTargetIcon(this.MapTileWidth, true)));
-        
-        this.mainMap.updateUI();
+//        clearAgentPath();
+//        
+//        // temporal -> it access directly to sensors
+//        Position agentPos = Sensor.getInstance().getAgentPosition();
+//        Position targetPos = Sensor.getInstance().getTargetPosition();
+//        
+//        JPanel agentPanel = this.mainMapTilePanelArr.get(agentPos.getY()).get(agentPos.getX());
+//        JPanel targetPanel = this.mainMapTilePanelArr.get(targetPos.getY()).get(targetPos.getX());
+//        
+//        agentPanel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
+//        targetPanel.add(new JLabel(AssetManager.getTargetIcon(this.MapTileWidth, true)));
+//        
+//        this.mainMap.updateUI();
     }
     
     /**************************************************************************/   
