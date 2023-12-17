@@ -20,8 +20,10 @@ import jade.core.Agent;
 // P3
 import agent.ElfAgent;
 import agent.SantaAgent;
+
 import gui.MainWindowP3;
 import javax.swing.JFrame;
+
 
 /**
  *
@@ -195,6 +197,20 @@ public class Launcher {
 //        catch(StaleProxyException e){
 //            System.out.println(e);
 //        }
+        Agent elfAgent = new ElfAgent();
+        Agent santaAgent = new SantaAgent();
+//        Agent rudolphAgent = new RudolphAgent();
+        try{
+            AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
+            AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
+            AgentController rudolphController = agentContController.acceptNewAgent("RUDOLPH", rudolphAgent);
+            santaController.start();
+            elfController.start();
+            rudolphController.start();
+        }
+        catch(StaleProxyException e){
+            System.out.println(e);
+        }
 
     }
                 

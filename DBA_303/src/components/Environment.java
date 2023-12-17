@@ -4,6 +4,8 @@
  */
 package components;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 
 /**
@@ -20,9 +22,6 @@ public class Environment {
     
     /// The lost reindeers array
     private ArrayList<Reindeer> reindeers;
-    /// Number of reindeers. It corresponds to the number of enum
-    /// constant the Reindeer.Name enum has
-    private final int numReindeers = 8;
     
     private Map theMap;
     
@@ -40,9 +39,11 @@ public class Environment {
     private Environment(){
         this.reindeers = new ArrayList<>();
         
-        for(int i=0; i<numReindeers; i++){
-            reindeers.add(new Reindeer(i));
+        for(Reindeer.Name name : Reindeer.Name.values()){
+            this.reindeers.add(new Reindeer(name));
         }
+        
+        Collections.shuffle(this.reindeers);
     }
         
     /**
@@ -56,11 +57,11 @@ public class Environment {
     /** GETTERS ***************************************************************/
 
     /**
-     * Gets a reindeer by his index on array
-     * @param index the position in array
+     * Gets the reindeer array
+     * @return the ArrayList reindeer
      */
-    public Reindeer getReindeer(int index) {
-        return reindeers.get(index);
+    public ArrayList<Reindeer> getReindeers() {
+        return this.reindeers;
     };
     
     /**
@@ -125,7 +126,7 @@ public class Environment {
      * @param  pos the new position in the map
      */
     public void setReindeerPos (int index, Position pos) {
-        getReindeer(index).setPosition(pos);
+        this.reindeers.get(index).setPosition(pos);
     };
     
     /**
@@ -134,7 +135,7 @@ public class Environment {
      * @param  state the new state of the reindeer
      */
     public void setReindeerState (int index, Reindeer.State state) {
-        getReindeer(index).setState(state);
+        this.reindeers.get(index).setState(state);
     };
     
     /** PRIVATE UTIL METHODS **************************************************/
@@ -165,12 +166,12 @@ public class Environment {
         
         Position pos;
         
-        for (int i = 0; i < numReindeers; i++) {
+        for (int i = 0; i < this.reindeers.size(); i++) {
             do {
                 pos = new Position ((int) (Math.random() * n),(int) (Math.random() * m));
             } while (!legalPos(pos));
             
-            getReindeer(i).setPosition(pos);
+            this.reindeers.get(i).setPosition(pos);
         }
     }
     
@@ -192,7 +193,7 @@ public class Environment {
         boolean isIn = false;
         
         for (int i = 0; i < this.reindeers.size() && !isIn; i++) {
-            if (getReindeer( i).getPosition().equals(pos)) {
+            if (this.reindeers.get( i).getPosition().equals(pos)) {
                 isIn = true;
             }
         }
