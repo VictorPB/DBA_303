@@ -92,25 +92,26 @@ public class RudolphAgent extends Agent{
                     this.lastMsg = myAgent.blockingReceive();
 
                     if(this.lastMsg.getPerformative() == ACLMessage.PROPOSE){
+                        System.out.println("RUDOLPH <--- ELF  ---------------  PROPOSE");
                         if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLPH)){
-                            System.out.println("Rudolph: Recibido un propose con código correcto!!");
                             resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
                             Reindeer ini = getNextReindeer();
                             resp.setContent("PENDING" + CommManager.SEPARATOR + 
                                             ini.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
                                             ini.getPosition().toString(CommManager.SEPARATOR));
                             this.myAgent.send(resp);
+                            System.out.println("RUDOLPH ---> ELF --------------- ACCEPT ReindeerName + ReindeerPos\n");
                             state = 1;
                         }
                         else{
                             resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
-                            System.out.println("Rudolph: NO TE ENTIENDO (código incorrecto)\n");
+                            System.out.println("RUDOLPH ---> ELF --------------- REJECT\n");
                             this.myAgent.send(resp);
                         }
                     }else{
                         resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
-                        System.out.println("Rudoplh: Recibido mensaje inesperado\n");
+                            System.out.println("RUDOLPH ---> ELF --------------- UNKNOWN\n");
                         finish = true;
                     }
                     break;
@@ -118,18 +119,20 @@ public class RudolphAgent extends Agent{
                 case 1:
                     this.lastMsg = myAgent.blockingReceive();
                     if(this.lastMsg.getPerformative() == ACLMessage.REQUEST) {
-                        System.out.println("Rudolph: Request recibida\n");
+                        System.out.println("RUDOLPH <--- ELF  ---------------  REQUEST nextReindeer");
                         if (foundReindeers < Environment.getInstance().getNumberReindeers()){
-                            System.out.println("Rudolph: Te envio las coordenadas del siguiente reno\n\n");
+                            System.out.println("RUDOLPH ---> ELF --------------- INFORM ReindeerName + ReindeerPos\n");
                             
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
                             Reindeer next = getNextReindeer();
-                            resp.setContent("PENDING" + next.getName() + " " + next.getPosition());
+                            resp.setContent("PENDING" + CommManager.SEPARATOR + 
+                                            next.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
+                                            next.getPosition().toString(CommManager.SEPARATOR));
                             myAgent.send(resp);
                         }
                         else {
-                            System.out.println("Rudolph: No quedan renos perdidos\n\n");
+                            System.out.println("RUDOLPH ---> ELF --------------- INFORM FINISH\n");
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
                             resp.setContent("FINISH");
@@ -138,17 +141,15 @@ public class RudolphAgent extends Agent{
                         }
                     }
                     else if (this.lastMsg.getPerformative() == ACLMessage.INFORM) {
-                        System.out.println("Rudolph: Inform recibido (reno encontrado)\n");
-                        /*
-                        Obtener el name del mensaje y llamar a foundReindeer para eliminar el reno del array
-                        Reindeer reindeer = new Reindeer(this.lastMsg.getContent());
-                        foundReindeer(name);
-                        */
+                        System.out.println("RUDOLPH <--- ELF  ---------------  INFORM found");
+                        Reindeer reindeer = new Reindeer(Integer.parseInt(this.lastMsg.getContent()));
+                        foundReindeer(reindeer.getName());
+
                     }
                     else {
                         resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
                         this.myAgent.send(resp);
-                        System.out.println("Rudoplh: Recibido mensaje inesperado\n");
+                        System.out.println("RUDOLPH ---> ELF --------------- UNKNOWN\n");
                         finish = true;
                     }
                     break;
