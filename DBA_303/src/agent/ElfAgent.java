@@ -5,6 +5,7 @@
  */
 package agent;
 
+import agent.behaviours.HadFinishedBehaviour;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.AID;
@@ -41,7 +42,7 @@ public class ElfAgent extends Agent{
     Behaviour[] activeBehaviours;
     
     // Indicates whether the agent has to move or is moving so as not to engage in communication behavior
-    boolean isMoving = false;
+    boolean isMoving;
     
     /**
      * Constructor
@@ -49,6 +50,8 @@ public class ElfAgent extends Agent{
     public ElfAgent() {
         this.exploredArea = new Map(3,3);
         this.agentPos = new Position(1,1);
+        
+        this.isMoving = false;
     }
     
     // TODO refill with getters, etc
@@ -66,6 +69,7 @@ public class ElfAgent extends Agent{
         Environment.getInstance().setParameters(map);
         
         this.addBehaviour(new ElfComunicationBeh());
+        this.addBehaviour(new HadFinishedBehaviour());
     }
 
     @Override
