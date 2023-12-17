@@ -76,12 +76,14 @@ public class ElfAgent extends Agent{
          
         int state = 0;
         boolean finish = false;
+        boolean isMoving = false;
         boolean allReindeerFound = false;
         
         String secretCode;
         Position rudolphPos;
         String reindeerName;
         Position reindeerPos;
+        Position santaPos;
         
         ACLMessage lastMsgSanta;
         ACLMessage lastMsgRudolph;
@@ -131,7 +133,7 @@ public class ElfAgent extends Agent{
                     
                 //RUDOLF
                     
-                case 3:
+                case 2:
                     msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_RUDOLPH,AID.ISLOCALNAME));
                     msg.setConversationId(secretCode);
@@ -140,26 +142,24 @@ public class ElfAgent extends Agent{
                     System.out.println("Elf: Santa me ha aceptado mi proposicion para encontrar los renos perdidos.");
                     myAgent.send(msg);                  
                     
-                    this.state = 4;
+                    this.state = 3;
                     break;
                     
-                case 4:
+                case 3:
                     this.lastMsgRudolph = myAgent.blockingReceive();
                     if(this.lastMsgRudolph.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
                         String reindeerPosContent = this.lastMsgRudolph.getContent();
                         System.out.println("Elf: Rudolf me habla!");
                         System.out.println("       msg: "+reindeerPosContent+"\n");
                         
-                        //Decode Message Get Secret Code and Rudolf Pos
-                        decodeMSG(reindeerPosContent);
-                        
-                        System.out.println("Elf: Encontrare a "+this.reindeerName+" en la posicion:"+this.reindeerPos.toString()+"\n");
-                        
                         //Decode Message Get first lost reindeer
                         decodeMSG(reindeerPosContent);
                         
-                        //TODO: desplazarse hacia reno perdido
+                        System.out.println("Elf: Encontrare a "+this.reindeerName+" en la posicion:"+this.reindeerPos.toString()+"\n");               
                         
+                        //TODO: desplazarse hacia primer reno perdido
+                        
+                        //TODO: volver a Rudolf
                     }
                     else{
                         System.out.println("Elf: Rudolf no habla conmigo.\n");
@@ -167,9 +167,100 @@ public class ElfAgent extends Agent{
                         this.finish = true;
                     }
                     
+                    this.state = 4;                 
+                    break;
+                    
+                case 4:         //Informamos reno encontrado y pedimos siguiente reno
+                    ACLMessage reply = this.lastMsgRudolph.createReply(ACLMessage.INFORM);
+                    reply.setContent(this.reindeerName);
+                    System.out.println("Elf: He encontrado a "+this.reindeerName);
+                    this.myAgent.send(reply);
+                    
+                    reply = this.lastMsgRudolph.createReply(ACLMessage.REQUEST);
+                    System.out.println("Elf: Rudolf dime ubicacion del siguiente reno");
+                    this.myAgent.send(reply);
+                    
                     this.state = 5;
+                    break;
+                    
+                case 5:         //Obtenemos coordenadas
+                    this.lastMsgRudolph = myAgent.blockingReceive();
+                    
+                    if(this.lastMsgRudolph.getPerformative() == ACLMessage.INFORM){
+                        String reindeerPosContent = this.lastMsgRudolph.getContent();
+                        System.out.println("Elf: Rudolf me dijo pos de siguiente reno!");
+                        System.out.println("       msg: "+reindeerPosContent+"\n");
+                        
+                        //Decode Message Get first lost reindeer
+                        decodeMSG(reindeerPosContent);
+                        
+                        if(!this.allReindeerFound){
+                            System.out.println("Elf: Encontrare a "+this.reindeerName+" en la posicion:"+this.reindeerPos.toString()+"\n");                                               
+
+                            //TODO: desplazarse hacia siguiente reno perdido
+                            
+                            //TODO: volver a Rudolf
+                        }else{
+                            System.out.println("Elf: He encontrado todos los renos!");
+                            System.out.println("       msg: "+reindeerPosContent+"\n");
+                            this.state = 6;
+                        }
+                    }else{
+                        System.out.println("Elf: Rudolf no mando un INFORM.\n");
+                        
+                        this.finish = true;
+                    }
                     
                     break;
+                    
+                case 6:         //Request Santa position
+                    reply = this.lastMsgSanta.createReply(ACLMessage.REQUEST);
+                    System.out.println("Elf: Hola santa, ya he encontrado todos los renos. Mandame tu ubicacion.");
+                    this.myAgent.send(reply);
+                    
+                    this.state = 7;
+                    break;
+                    
+                case 7:
+                    this.lastMsgSanta = myAgent.blockingReceive();
+                    if(this.lastMsgSanta.getPerformative() == ACLMessage.INFORM){
+                        String santaLocationContent = this.lastMsgSanta.getContent();
+                        System.out.println("Elf: Santa me dio sus cordenadas.");
+                        System.out.println("       msg: "+santaLocationContent+"\n");
+                                             
+                        //Decode Message Get Santa Pos
+                        decodeMSG(santaLocationContent);
+                        
+                        System.out.println("Elf: Lo encontrare en la posicion:"+this.santaPos.toString()+"\n");
+                        
+                        //TODO: desplazarse hacia Santa
+                                               
+                    }else{
+                        System.out.println("Elf: Santa no me mando bien la ubi\n");
+                        this.finish = true;
+                    }
+                    this.state = 8;
+                    break;
+                    
+                case 8:
+                    reply = this.lastMsgSanta.createReply(ACLMessage.INFORM);
+                    System.out.println("Elf: Hola santa, ya estoy aqui. Mision Completada");
+                    this.myAgent.send(reply);
+                    
+                    this.state = 9;
+                    break; 
+                    
+                case 9:
+                    this.lastMsgSanta = myAgent.blockingReceive();
+                    if(this.lastMsgSanta.getPerformative() == ACLMessage.INFORM){
+                        String santaThanksContent = this.lastMsgSanta.getContent();
+                        System.out.println("Elf: Santa me agradecio la labor.");
+                        System.out.println("       msg: "+santaThanksContent+"\n");
+                        this.finish = true;
+                    }else{
+                        System.out.println("Elf: Santa manda performativa final mal\n");
+                        this.finish = true;
+                    }
             }
         }
         
@@ -191,9 +282,6 @@ public class ElfAgent extends Agent{
          * 
          * Example encode message: "Rudolf;xAeJtxC;12;26"  "PENDING ;BLITZEN;28;17"
          * 
-         * Position toString pasa esto (5,9)   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-         * Además rudolf devuelve primero PENDING o FINISH
-         * 
          * @param encodedMessage
          * @param outputString
          * @param outputPosition 
@@ -210,8 +298,9 @@ public class ElfAgent extends Agent{
                 reindeerPos = new Position(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));
             }else if("FINISH".equals(parts[0])){
                 allReindeerFound = true;
+            }else if("SANTA".equals(parts[0])){
+                santaPos = new Position(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));     
             }
-            
             
         }
         
