@@ -114,6 +114,10 @@ public class Position {
     public String toString() {
         return "(" + this.x + "," + this.y+")";
     }
+    
+    public String toString(String separator) {
+        return  this.x + separator + this.y;
+    }
 
     
 }

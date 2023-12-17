@@ -14,11 +14,13 @@ import java.util.Random;
 class CommManager {
     static final String AID_ELF = "ELF";
     static final String AID_SANTA = "SANTA";
-    static final String AID_RUDOLF = "RUDOLF";
+    static final String AID_RUDOLPH = "RUDOLPH";
     
-    static final String CONV_ID_SANTA = "SANTA-MISION";
+    static final String CONV_ID_SANTA = "SANTA_MISION";
     
-    static final String CONV_ID_RUDOLF = generateSecretCode();
+    static final String CONV_ID_RUDOLPH = generateSecretCode();
+    
+    static final String SEPARATOR = ";";
     
     /**
      * Generates a secret code (8 length string) using only alphabetic letters
@@ -32,7 +34,10 @@ class CommManager {
         String result = "";
         while(result.length()<8){
             char ch = (char)(min + random.nextInt(range));
-            result += ch;
+            // Ensure that the character is an uppercase or lowercase letter
+            if (Character.isLetter(ch)) {
+                result += ch;
+            }
         }
         return result;
     }

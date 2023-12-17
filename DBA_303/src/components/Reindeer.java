@@ -81,6 +81,27 @@ public class Reindeer {
         this.pos = pos; 
     }
     
+    /**************************************************************************/
+
+     @Override
+        public String toString() {
+            String res = "";
+            
+            res += "Reno ";
+            
+            res += this.name;
+            
+            res += " con estado ";
+            
+            res += this.state;
+            
+            res += " y posición ";
+            
+            res += this.pos;
+            
+            return res;
+        }
+    
     
     /**************************************************************************/
     
