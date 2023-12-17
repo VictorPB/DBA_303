@@ -20,7 +20,6 @@ class CommManager {
     
     static final String CONV_ID_RUDOLF = generateSecretCode();
     
-    
     /**
      * Generates a secret code (8 length string) using only alphabetic letters
      * @return The secret code
@@ -38,6 +37,7 @@ class CommManager {
         return result;
     }
     
+    /**
     public static void main(String args[]){
         
         
@@ -50,6 +50,7 @@ class CommManager {
         System.out.println("Generating new random code...");
         System.out.println(generateSecretCode()+"\n");
     }
+    */
 }
 
 
