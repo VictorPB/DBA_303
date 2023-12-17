@@ -243,14 +243,14 @@ public class ConversationPanel extends javax.swing.JPanel {
     }
     
     class missionList extends JLayeredPane {
-        Map<Reindeer, Boolean> misions;
-        public Map<Reindeer, JLabel> missionsCheckedPanels;
+        Map<Reindeer.Name, Boolean> misions;
+        public Map<Reindeer.Name, JLabel> missionsCheckedPanels;
         JLayeredPane misionListPane;
         
         missionList(){
             misions = new HashMap<>();
             missionsCheckedPanels = new HashMap<>();
-            for(Reindeer r: Reindeer.values()){
+            for(Reindeer.Name r: Reindeer.Name.values()){
                 misions.put(r, false);
                 missionsCheckedPanels.put(r, 
                     new JLabel( new ImageIcon(AssetManager.getTick_Empty(20))));
@@ -278,11 +278,11 @@ public class ConversationPanel extends javax.swing.JPanel {
             for(int i = 0; i<misions.size(); i++){
                 int x = 15 + (int)(i/4)*100;
                 int y = 25 + (i%4)*25;
-                Reindeer theReindeer = Reindeer.values()[i];
+                Reindeer.Name theReindeer = Reindeer.Name.values()[i];
                 JLabel tick = missionsCheckedPanels.get(theReindeer);
                 tick.setBounds(x, y, 20,20);
                 misionListPane.add(tick);
-                JLabel name = new JLabel(theReindeer.toString());
+                JLabel name = new JLabel(theReindeer.name());
                 name.setBounds(x+25, y, 65, 20);
                 name.setVerticalAlignment(SwingConstants.CENTER);
                 misionListPane.add(name);
@@ -295,7 +295,7 @@ public class ConversationPanel extends javax.swing.JPanel {
             misionListPane.add(misionListBgPanel);
         }
         
-        void checkFoundReindeer(Reindeer reindeer){
+        void checkFoundReindeer(Reindeer.Name reindeer){
             JLabel thickPane = this.missionsCheckedPanels.get(reindeer);
             thickPane.setIcon(new ImageIcon(AssetManager.getTick_Checked(20)));
             this.updateUI();
@@ -311,7 +311,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         this.ConvPanel.add(this.taskListPanel);
     }
     
-    public void addCheckFoundReindeer(Reindeer reindeer){
+    public void addCheckFoundReindeer(Reindeer.Name reindeer){
         ((missionList)this.taskListPanel).checkFoundReindeer(reindeer);
     }
     
@@ -392,8 +392,8 @@ public class ConversationPanel extends javax.swing.JPanel {
         RudolfPanel.addElfMessage("Aquí lo tienes");
         RudolfPanel.addReceiverMsg("Busca a BLITZEN (12,39)");
         
-        SantaPanel.addCheckFoundReindeer(Reindeer.DANCER);
-        SantaPanel.addCheckFoundReindeer(Reindeer.PRANCER);
+        SantaPanel.addCheckFoundReindeer(Reindeer.Name.DANCER);
+        SantaPanel.addCheckFoundReindeer(Reindeer.Name.PRANCER);
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
