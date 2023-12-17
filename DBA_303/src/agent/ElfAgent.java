@@ -27,6 +27,9 @@ public class ElfAgent extends Agent{
 
     // Target position relative to the internal map
     Position targetPos;
+    
+    // Boolean value that controls if the agent had reached the target
+    boolean targetReached;
 
     // Internal storage of the last vision of the agent
     ArrayList<Tile> vision;
@@ -36,6 +39,9 @@ public class ElfAgent extends Agent{
 
     // List of behaviours added to the agent
     Behaviour[] activeBehaviours;
+    
+    // Indicates whether the agent has to move or is moving so as not to engage in communication behavior
+    boolean isMoving = false;
     
     /**
      * Constructor
@@ -76,7 +82,6 @@ public class ElfAgent extends Agent{
          
         int state = 0;
         boolean finish = false;
-        boolean isMoving = false;
         boolean allReindeerFound = false;
         
         String secretCode;
