@@ -43,6 +43,11 @@ public class AssetManager {
     static private final ImageIcon ELF_AVATAR = new ImageIcon( "assets/p3-elf-agent-avatar.png");
     static private final ImageIcon RUDOLF_AVATAR = new ImageIcon( "assets/p3-rudolf.png");
     static private final ImageIcon SANTA_AVATAR = new ImageIcon( "assets/p3-santa.png");
+    static private final ImageIcon TICK_EMPTY = new ImageIcon("assets/icon_tick_empty.png");
+    static private final ImageIcon TICK_CHECKED = new ImageIcon("assets/icon_tick_checked.png");
+    static private final ImageIcon SOFT_REINDEER = new ImageIcon("assets/icon_soft_reindeer.png");
+    static private final ImageIcon LINE_REINDEER = new ImageIcon("assets/icon_line_reindeer.png");
+    static private final ImageIcon TARGET_REINDEER = new ImageIcon("assets/icon_target_reindeer.png");
     
     
     static ImageIcon getOriginIcon(int dim, boolean valid){
@@ -84,6 +89,28 @@ public class AssetManager {
     static Image getElfAvatar(int dim){
         return ELF_AVATAR.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
     }
+    
+    static Image getTick_Empty(int dim){
+        return TICK_EMPTY.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getTick_Checked(int dim){
+        return TICK_CHECKED.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getReindeer_Soft(int dim){
+        return SOFT_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getReindeer_Line(int dim){
+        return LINE_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getReindeer_Target(int dim){
+        return TARGET_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    /** TILE PANEL FOR P2 *****************************************************/
     
     static JPanel getTilePanel(Tile.Type type){
 

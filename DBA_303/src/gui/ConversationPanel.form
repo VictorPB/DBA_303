@@ -80,7 +80,6 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="50" green="50" red="50" type="rgb"/>
         </Property>
-        <Property name="alignmentX" type="float" value="0.5"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[360, 305]"/>
         </Property>

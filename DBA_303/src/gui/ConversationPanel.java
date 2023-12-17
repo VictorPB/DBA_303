@@ -5,19 +5,20 @@
  */
 package gui;
 
-import jade.tools.introspector.gui.MessagePanel;
+import components.Reindeer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -25,7 +26,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -43,6 +46,7 @@ public class ConversationPanel extends javax.swing.JPanel {
     
     Image destIcon;
     String destName;
+    JLayeredPane taskListPanel;
     
     /**
      * Creates new form ConversationPanel
@@ -180,7 +184,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         }
  
 
-        @Override//ww  w  .  j  a  v a  2s  . c  o m
+        @Override
         public void paintComponent(Graphics g) {
           Graphics2D g2d = (Graphics2D) g;
           g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -231,19 +235,6 @@ public class ConversationPanel extends javax.swing.JPanel {
             this.add(avatarBg);
             this.add(msgBg);
             
-            JPanel o = new JPanel();
-            o.setSize(new Dimension(10,10));
-            o.setBackground(Color.GREEN);
-            o.setBounds(0, 0, 10, 10);
-            this.add(o);
-            
-            JPanel o2 = new JPanel();
-            o2.setSize(new Dimension(10,10));
-            o2.setBackground(Color.GREEN);
-            o2.setBounds(350, 0, 10, 10);
-            this.add(o2);
-            
-            
             // resize the panel
             Dimension d = new Dimension(360 ,height);
             this.setSize(d);
@@ -252,7 +243,78 @@ public class ConversationPanel extends javax.swing.JPanel {
         }
     }
     
+    class missionList extends JLayeredPane {
+        Map<Reindeer, Boolean> misions;
+        public Map<Reindeer, JLabel> missionsCheckedPanels;
+        JLayeredPane misionListPane;
+        
+        missionList(){
+            misions = new HashMap<>();
+            missionsCheckedPanels = new HashMap<>();
+            for(Reindeer r: Reindeer.values()){
+                misions.put(r, false);
+                missionsCheckedPanels.put(r, 
+                    new JLabel( new ImageIcon(AssetManager.getTick_Empty(20))));
+            }
+            
+            Dimension d = new Dimension(360, 125);
+            this.setSize(d);
+            this.setMaximumSize(d);
+            this.setMinimumSize(d);
+            
+            // Main taks list panel
+            misionListPane = new JLayeredPane();
+            misionListPane.setBounds(70, 0, 220,125);
+            this.add(misionListPane);
+                       
+            
+            // Add main label
+            JLabel panelTitle = new JLabel("LISTA DE TAREAS:");
+            panelTitle.setBounds(0,0,220,20);
+            panelTitle.setHorizontalAlignment(SwingConstants.CENTER);
+            panelTitle.setFont(new Font("Arial", Font.BOLD, 14));
+            misionListPane.add(panelTitle);
 
+            // Add each panel tile
+            for(int i = 0; i<misions.size(); i++){
+                int x = 15 + (int)(i/4)*100;
+                int y = 25 + (i%4)*25;
+                Reindeer theReindeer = Reindeer.values()[i];
+                JLabel tick = missionsCheckedPanels.get(theReindeer);
+                tick.setBounds(x, y, 20,20);
+                misionListPane.add(tick);
+                JLabel name = new JLabel(theReindeer.toString());
+                name.setBounds(x+25, y, 65, 20);
+                name.setVerticalAlignment(SwingConstants.CENTER);
+                misionListPane.add(name);
+            }
+            
+            // Add the bg to the list
+            JPanel misionListBgPanel = new JPanel();
+            misionListBgPanel.setBounds(0,0,220,125);
+            misionListBgPanel.setBackground(AssetManager.CONVERSATION_HEADER_BG);
+            misionListPane.add(misionListBgPanel);
+        }
+        
+        void checkFoundReindeer(Reindeer reindeer){
+            JLabel thickPane = this.missionsCheckedPanels.get(reindeer);
+            thickPane.setIcon(new ImageIcon(AssetManager.getTick_Checked(20)));
+            this.updateUI();
+        }
+    }
+
+        
+    public void addTaskListPanel(){
+         // add a previous separator
+        addSeparatorToConversation();
+        // create and add the entry panel to the conversation
+        this.taskListPanel = new missionList();
+        this.ConvPanel.add(this.taskListPanel);
+    }
+    
+    public void addCheckFoundReindeer(Reindeer reindeer){
+        ((missionList)this.taskListPanel).checkFoundReindeer(reindeer);
+    }
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -324,15 +386,15 @@ public class ConversationPanel extends javax.swing.JPanel {
         
         SantaPanel.addElfMessage("Hola Santa! he venío pa YATUSABEH!");
         SantaPanel.addReceiverMsg("Ok, pos ya sabes, busca al rudolf...");
-        SantaPanel.addElfMessage("VIXEN encontrado!");
-        SantaPanel.addElfMessage("BLITZEN encontrado!");
-        SantaPanel.addElfMessage("CUPIDO encontrado!");
+        SantaPanel.addTaskListPanel();
         
         RudolfPanel.addElfMessage("Hey Rude! quiero buscar un reno...");
         RudolfPanel.addReceiverMsg("Busca a VIXEN (30,22)");
         RudolfPanel.addElfMessage("Aquí lo tienes");
         RudolfPanel.addReceiverMsg("Busca a BLITZEN (12,39)");
         
+        SantaPanel.addCheckFoundReindeer(Reindeer.DANCER);
+        SantaPanel.addCheckFoundReindeer(Reindeer.PRANCER);
         
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

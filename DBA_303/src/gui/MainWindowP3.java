@@ -41,7 +41,9 @@ public class MainWindowP3 extends javax.swing.JFrame {
      */
     public MainWindowP3(Map map) {
         initComponents();
+        
         this.map = map;
+        this.mainMap.setBackground(AssetManager.CONVERSATION_HEADER_BG);
         
         this.santaConvPanel = new ConversationPanel("SANTA");
         this.santaConvPanel.setMaximumSize(new Dimension(360,360));
@@ -49,6 +51,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         this.rudolphConvPanel = new ConversationPanel("RUDOLF");
         this.rudolphConvPanel.setMaximumSize(new Dimension(360,360));
         this.rudolphConvContainer.add(this.rudolphConvPanel);
+        
         
         createMapView();
         
