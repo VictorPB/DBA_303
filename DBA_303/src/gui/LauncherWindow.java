@@ -40,6 +40,8 @@ public class LauncherWindow extends javax.swing.JFrame {
      */
     public LauncherWindow() {
         initComponents();
+        this.numPract_ComboBox.setSelectedIndex(1);
+        notifyPChange();
         updateMapList();
         initializeListeners();
         this.warningLabel.setVisible(false);

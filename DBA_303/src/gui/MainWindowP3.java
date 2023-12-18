@@ -6,15 +6,16 @@
 package gui;
 
 import components.Environment;
-import components.Action;
 import components.Map;
 import components.Position;
+import components.Reindeer;
 import components.Tile;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.text.DefaultCaret;
@@ -41,6 +42,9 @@ public class MainWindowP3 extends javax.swing.JFrame {
     public MainWindowP3(Map map) {
         initComponents();
         
+        // set the environment
+        Environment.getInstance().setParameters(map);
+        
         this.map = map;
         this.mainMap.setBackground(AssetManager.CONVERSATION_HEADER_BG);
         
@@ -50,7 +54,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         this.rudolphConvPanel = new ConversationPanel("RUDOLF");
         this.rudolphConvPanel.setMaximumSize(new Dimension(360,360));
         this.rudolphConvContainer.add(this.rudolphConvPanel);
-        
+        this.MapTileWidth = (int)(this.mainMap.getWidth()/map.getNumCols());
         
         createMapView();
         
@@ -76,16 +80,48 @@ public class MainWindowP3 extends javax.swing.JFrame {
         for(int i = 0; i< rows; i++){
             this.mainMapTilePanelArr.add(new ArrayList<>());
             for(int j=0; j<cols; j++){
-                JPanel p = AssetManager.getTilePanel(map.getTile(i, j).getType());
+                JPanel p = AssetManager.getTileP3Panel(map.getTile(i, j).getType());
                 this.mainMapTilePanelArr.get(i).add( p );
                 this.mainMap.add(p);
             }
         }
 
-        this.mainMap.updateUI();
+        this.updateIcons();
     }
     
-
+    private void updateIcons(){
+        clearMap();
+        Environment theEnvironment = Environment.getInstance();
+        Position elf = theEnvironment.getElfPosition();
+        this.mainMapTilePanelArr.get(elf.getY()).get(elf.getX()).add(
+            new JLabel(new ImageIcon(AssetManager.getElfIcon(this.MapTileWidth))));
+        Position santa = theEnvironment.getSantaPosition();
+        this.mainMapTilePanelArr.get(santa.getY()).get(santa.getX()).add(
+            new JLabel(new ImageIcon(AssetManager.getSantaAvatar(this.MapTileWidth))));
+        Position rudolph = theEnvironment.getRudolphPosition();
+        this.mainMapTilePanelArr.get(rudolph.getY()).get(rudolph.getX()).add(
+            new JLabel(new ImageIcon(AssetManager.getRudolfAvatar(this.MapTileWidth))));
+        
+        for(Reindeer r: theEnvironment.getReindeers()){
+            Position pos = r.getPosition();
+            JLabel icon;
+            switch (r.getState()) {
+                case UNKNOWN:
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Soft(this.MapTileWidth)));
+                    break;
+                case KNOWN:
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Line(this.MapTileWidth)));
+                    break;
+                case CURRENT:
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Target(this.MapTileWidth)));
+                    break;
+                default:
+                    icon = new JLabel("");
+            }
+            this.mainMapTilePanelArr.get(pos.getY()).get(pos.getX()).add(icon);
+            this.mainMap.updateUI();
+        }
+    }
     
     /**
      * Updates the agent position 
@@ -108,7 +144,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
 //        
     }
     
-    private void clearAgentPath(){
+    private void clearMap(){
         for(List<JPanel> row : this.mainMapTilePanelArr)
             for(JPanel p: row)
                 p.removeAll();

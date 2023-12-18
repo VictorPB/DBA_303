@@ -39,6 +39,8 @@ public class AssetManager {
     
     
     // ICONS FOR THE P3 UI
+    static final Color COL_P3_EMPTY_TILE = Color.WHITE;
+    static final Color COL_P3_UNREACHABLE = Color.decode("#4D4D4D");
     static private final ImageIcon ELF_AGENT = new ImageIcon( "assets/p3-elf-agent.png");
     static private final ImageIcon ELF_AVATAR = new ImageIcon( "assets/p3-elf-agent-avatar.png");
     static private final ImageIcon RUDOLF_AVATAR = new ImageIcon( "assets/p3-rudolf.png");
@@ -78,6 +80,10 @@ public class AssetManager {
         return lbl;
     }
     
+    static Image getElfIcon(int dim){
+        return ELF_AGENT.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
     static Image getSantaAvatar(int dim){
         return SANTA_AVATAR.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
     }
@@ -89,15 +95,7 @@ public class AssetManager {
     static Image getElfAvatar(int dim){
         return ELF_AVATAR.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
     }
-    
-    static Image getTick_Empty(int dim){
-        return TICK_EMPTY.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
-    }
-    
-    static Image getTick_Checked(int dim){
-        return TICK_CHECKED.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
-    }
-    
+        
     static Image getReindeer_Soft(int dim){
         return SOFT_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
     }
@@ -110,41 +108,64 @@ public class AssetManager {
         return TARGET_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
     }
     
+    
+    
+    static Image getTick_Empty(int dim){
+        return TICK_EMPTY.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getTick_Checked(int dim){
+        return TICK_CHECKED.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    
     /** TILE PANEL FOR P2 *****************************************************/
     
     static JPanel getTilePanel(Tile.Type type){
-
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
         switch (type) {
-                    case EMPTY: 
-                        panelTile.setBackground(COL_FREE);
-                        break;
-                    case UNREACHABLE:
-                        panelTile.setBackground(COL_WALL);
-                        break;
-                    case UNKNOWN:
-                        panelTile.setBackground(COL_UNKNOWN);
-                        break;
-                }
+            case EMPTY: 
+                panelTile.setBackground(COL_FREE);
+                break;
+            case UNREACHABLE:
+                panelTile.setBackground(COL_WALL);
+                break;
+            case UNKNOWN:
+                panelTile.setBackground(COL_UNKNOWN);
+                break;
+        }
         return panelTile;
     }
     
     static JPanel getMentalTilePanel(Tile.Type type){
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
         switch (type) {
-                    case EMPTY: 
-                        panelTile.setBackground(COL_MIND_FREE);
-                        break;
-                    case UNREACHABLE:
-                        panelTile.setBackground(COL_MIND_WALL);
-                        break;
-                    case UNKNOWN:
-                        panelTile.setBackground(COL_MIND_UNKN);
-                        break;
-                    default:
-                        panelTile.setBackground(COL_MIND_BASE);
-                        break;
-                }
+            case EMPTY: 
+                panelTile.setBackground(COL_MIND_FREE);
+                break;
+            case UNREACHABLE:
+                panelTile.setBackground(COL_MIND_WALL);
+                break;
+            case UNKNOWN:
+                panelTile.setBackground(COL_MIND_UNKN);
+                break;
+            default:
+                panelTile.setBackground(COL_MIND_BASE);
+                break;
+        }
+        return panelTile;
+    }
+    
+     /** TILE PANEL FOR P3 *****************************************************/
+    
+    static JPanel getTileP3Panel(Tile.Type type) {
+        JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
+        if (type == Tile.Type.EMPTY){
+            panelTile.setBackground(COL_P3_EMPTY_TILE);
+        }
+        else{
+            panelTile.setBackground(COL_P3_UNREACHABLE);
+        }
         return panelTile;
     }
     
