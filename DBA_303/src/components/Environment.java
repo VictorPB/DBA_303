@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package components;
+import agent.Sensor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +31,11 @@ public class Environment {
     private Position santaPosition;
     
     private Position rudolphPosition;
+    
+    private Position targetPosition;
+    
+    /// Agent historic path
+    private ArrayList<ActionPair> visitedPath;
     
     /**
      * Constructor with the map
@@ -65,6 +71,14 @@ public class Environment {
     };
     
     /**
+     * Gets the map
+     * @return the map
+     */
+    public Map getMap () {
+        return theMap;
+    }
+    
+    /**
      * Gets the santa agent position
      */
     public Position getSantaPosition() {
@@ -86,10 +100,21 @@ public class Environment {
     };
     
     /**
+     * Gets the target position
+     */
+    public Position getTargetPosition() {
+        return this.targetPosition;
+    };
+    
+    /**
      *  Gets the number of reindeers (size) in reindeers array
      */
     public int getNumberReindeers () {
         return this.reindeers.size();
+    }
+    
+    public ArrayList<Environment.ActionPair> getAgentVisitedPath(){
+        return this.visitedPath;
     }
     
     /** SETTERS ***************************************************************/
@@ -127,6 +152,14 @@ public class Environment {
      */
     public void setReindeerPos (int index, Position pos) {
         this.reindeers.get(index).setPosition(pos);
+    };
+    
+    /**
+     * Sets target Position to pos
+     * @param pos new target position
+     */
+    public void setTargetPos (Position pos) {
+        this.targetPosition = pos;
     };
     
     /**
@@ -215,6 +248,86 @@ public class Environment {
      */
     private boolean isRudolphInTile (Position pos) {        
         return this.rudolphPosition.equals(pos);
+    }
+    
+    
+    /** OTHER USEFUL FUNCTIONS ************************************************/
+    
+    /**
+     * Method that evaluates the agent environment and return the array of tiles
+     * @return The ordered tile array
+     */
+    public ArrayList<Tile> reveal(){
+        ArrayList<Tile> result = new ArrayList();
+        int row = this.elfPosition.getY();
+        int col = this.elfPosition.getX();
+        for( int i=row-1; i<=row+1; i++){
+            for(int j=col-1; j<=col+1; j++){
+                // if the position is out of the map bounds, it adds an
+                // unreachable tile. otherwise it adds the source tile.
+                if(i<0 || i>=theMap.getNumRows() || j<0 || j>=theMap.getNumCols()){
+                    result.add(new Tile(Tile.Type.UNREACHABLE));
+                }
+                else{
+                    result.add(theMap.getTile(i, j));
+                }
+            }
+        }
+        return result;
+    }
+    
+    // TODO review the public visibility
+    /**
+     * Updates the agent position given an Action (if possible)
+     * @return @true if its updated, @false if not
+     */
+    public boolean updatePosition(Action action){
+        Position newPosition = this.elfPosition.update(action);
+        if(theMap.getTile(newPosition.getY(),newPosition.getX()).isType(Tile.Type.EMPTY)){
+            this.elfPosition = newPosition;
+            this.visitedPath.get(this.visitedPath.size()-1).a = action;
+            if(targetReached()){
+                this.visitedPath.add(new ActionPair(newPosition, Action.END));
+            }
+            else{
+                this.visitedPath.add(new ActionPair(newPosition, Action.IDLE));
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    
+    Position getTargetRespectAgent(){
+        return new Position(
+            targetPosition.getX() - this.elfPosition.getX(),
+            targetPosition.getY() - this.elfPosition.getY()
+        );
+    }
+    
+    /**
+     * Method to check if the agent has reached the goal
+     */
+    public boolean targetReached(){
+        return this.elfPosition.equals(targetPosition);
+    }
+    
+    /**
+     * A Class that models a visited node in the map
+     */
+    public class ActionPair {
+        Position p;
+        Action a;
+        
+        public ActionPair(Position p, Action a){
+            this.p = p;
+            this.a = a;
+        }
+        
+        public Position getPos(){return this.p;}
+        public Action getAct(){ return this.a;}
     }
     
     

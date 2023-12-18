@@ -27,7 +27,7 @@ public class TargetReachedBehaviour extends Behaviour{
     public void action() {
         
         //If agent is next to targetPos
-        if(myAgent.getAgentRelPos().getManhattanTo(myAgent.getTargetRelPos()) <= 2){
+        if(myAgent.getAgentRelPos().getChebyshovTo(myAgent.getTargetRelPos()) <= 2){
             for(Behaviour b : myAgent.getMovementBehaviours()){
                 this.myAgent.removeBehaviour(b);
             }

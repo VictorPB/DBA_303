@@ -46,7 +46,7 @@ public class ElfAgent extends Agent{
     Behaviour[] movementBehaviours;
     
     // Indicates whether the agent has to move or is moving so as not to engage in communication behavior
-    boolean isTalking;
+    boolean isMoving;
     
     /**
      * Constructor
@@ -55,7 +55,7 @@ public class ElfAgent extends Agent{
         this.exploredArea = new Map(3,3);
         this.agentPos = new Position(1,1);
         
-        this.isTalking = false;
+        this.isMoving = false;
     }
     
     // TODO refill with getters, etc
@@ -65,7 +65,7 @@ public class ElfAgent extends Agent{
      * Get the attribute isMoving
      * 
      */
-    public boolean getTalking() { return this.isTalking; }
+    public boolean getIsMoving() { return this.isMoving; }
     
     /**
      * Method to get the internal map
@@ -95,12 +95,13 @@ public class ElfAgent extends Agent{
      * @param state boolean to set
      * 
      */
-    public void setTalking(boolean state) { 
-        this.isTalking = state; 
+    public void setIsMoving(boolean state) { 
+        this.isMoving = state; 
     }
     
     public void setTargetReached(boolean reached) {
         this.targetReached = reached;
+        this.isMoving = false;
     }
     
     public Position getAgentPos(){
@@ -175,6 +176,12 @@ public class ElfAgent extends Agent{
         
         this.targetPos = targetRelative;
         updateVision();
+        
+        this.addBehaviour(new TargetReachedBehaviour(this));
+        this.addBehaviour(new ThinkObstacleBehaviour(this));
+        this.addBehaviour(new UpdatePositionBehaviour(this));
+        
+        this.setIsMoving(true);
         
         System.out.println("CONFIGURATION FINISHES");
         System.out.println("Agent"+this.agentPos);
@@ -258,16 +265,16 @@ public class ElfAgent extends Agent{
         Map map = new Map("mapWithDiagonalWall.txt");        
         Environment.getInstance().setParameters(map);
         
-        Behaviour thinker = new ThinkObstacleBehaviour(this);
-        Behaviour updater = new UpdatePositionBehaviour(this);
-        Behaviour comm = new ElfComunicationBeh(); 
+//        Behaviour thinker = new ThinkObstacleBehaviour(this);
+//        Behaviour updater = new UpdatePositionBehaviour(this);
+        Behaviour comm = new ElfComunicationBeh(this); 
         
         this.addBehaviour(comm);
-        this.addBehaviour(new TargetReachedBehaviour(this));
-        this.addBehaviour(thinker);
-        this.addBehaviour(updater);
+//        this.addBehaviour(new TargetReachedBehaviour(this));
+//        this.addBehaviour(thinker);
+//        this.addBehaviour(updater);
        
-        movementBehaviours = new Behaviour[] { thinker, updater };
+        //movementBehaviours = new Behaviour[] { thinker, updater };
 
     }
 
