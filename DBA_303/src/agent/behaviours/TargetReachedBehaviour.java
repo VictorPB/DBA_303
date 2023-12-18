@@ -14,27 +14,24 @@ import jade.core.behaviours.Behaviour;
  * 
  * @author carlos
  */
-public class HadFinishedBehaviour extends Behaviour{
+public class TargetReachedBehaviour extends Behaviour{
     
     // Private atribute to access the agent that uses the behaviour
     private final ElfAgent myAgent;
     
-    public HadFinishedBehaviour(ScoutAgent agent) {
+    public TargetReachedBehaviour(ElfAgent agent) {
         this.myAgent = agent;
     }
     
     @Override
     public void action() {
-        // Sensor checks if the agent position is equal to the target position
-        myAgent.setTargetReached(Sensor.getInstance().targetReached());
         
-        // If agent is on the target, we remove all the behaviours form queue
-        // and call doDelete
-        if(myAgent.isTargetReached()){
-            for(Behaviour b : myAgent.getActiveBehaviours()){
+        //If agent is next to targetPos
+        if(myAgent.getAgentRelPos().getManhattanTo(myAgent.getTargetRelPos()) <= 2){
+            for(Behaviour b : myAgent.getMovementBehaviours()){
                 this.myAgent.removeBehaviour(b);
             }
-            myAgent.doDelete();
+            myAgent.setTargetReached(true);
         }
     }
 

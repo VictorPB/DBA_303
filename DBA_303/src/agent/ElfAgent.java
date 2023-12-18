@@ -5,6 +5,9 @@
  */
 package agent;
 
+import agent.behaviours.TargetReachedBehaviour;
+import agent.behaviours.ThinkObstacleBehaviour;
+import agent.behaviours.UpdatePositionBehaviour;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.AID;
@@ -38,12 +41,12 @@ public class ElfAgent extends Agent{
 
     // Next action to be done
     Action nextAction;
-
-    // List of behaviours added to the agent
-    Behaviour[] activeBehaviours;
+    
+    // List of behaviours for movement
+    Behaviour[] movementBehaviours;
     
     // Indicates whether the agent has to move or is moving so as not to engage in communication behavior
-    boolean isMoving = false;
+    boolean isTalking;
     
     /**
      * Constructor
@@ -51,9 +54,197 @@ public class ElfAgent extends Agent{
     public ElfAgent() {
         this.exploredArea = new Map(3,3);
         this.agentPos = new Position(1,1);
+        
+        this.isTalking = false;
     }
     
     // TODO refill with getters, etc
+    
+    /** GETTERS ***************************************************************/
+    /**
+     * Get the attribute isMoving
+     * 
+     */
+    public boolean getTalking() { return this.isTalking; }
+    
+    /**
+     * Method to get the internal map
+     * 
+     * @return the map that contains the explored area
+     */
+    public Map getExploredArea() {
+        return exploredArea;
+    }
+
+    public Position getAgentRelPos() {
+        return this.agentPos;
+    }
+
+    public Position getTargetRelPos() {
+        return this.targetPos;
+    }
+    
+    public boolean isTargetReached() {
+        return this.targetReached;
+    }
+    
+    /** SETTERS ***************************************************************/
+
+    /**
+     * Set the attribute isMoving
+     * @param state boolean to set
+     * 
+     */
+    public void setTalking(boolean state) { 
+        this.isTalking = state; 
+    }
+    
+    public void setTargetReached(boolean reached) {
+        this.targetReached = reached;
+    }
+    
+    public Position getAgentPos(){
+        return agentPos;
+    }
+    
+    public Position getTargetPos(){
+        return targetPos;
+    }
+    
+    public Action getNextAction(){
+        return nextAction;
+    }
+    
+    public void setNextAction(Action act){
+        this.nextAction = act;
+    }
+    
+    public void setAgentPos(Position pos){
+        agentPos = pos;
+    }
+    
+    public ArrayList<Tile> getVision(){
+        return vision;
+    }
+    
+    public void setVision(ArrayList<Tile> vis){
+        vision = vis;
+    }
+    
+    public Behaviour[] getMovementBehaviours(){
+        return movementBehaviours;
+    }
+    
+    /********************************************************/
+    //Funciones movimiento
+    /**
+     * Method to initialize the internal map
+     * It also calls the UpdateVision for the first time
+     * 
+     * @param targetRespectAgent
+     */
+    public void setMission(Position targetRespectAgent) {
+
+        Position targetRelative = new Position(
+                this.agentPos.getX() + targetRespectAgent.getX(),
+                this.agentPos.getY() + targetRespectAgent.getY());
+        
+        // Resize columns
+        // to the left (if necesary)
+        while(targetRelative.getX() <0){
+            this.exploredArea.addColToBeggining();
+            targetRelative = targetRelative.update(Action.RIGHT);
+            this.agentPos = this.agentPos.update(Action.RIGHT);
+        }
+        // or to the right (if necesary)
+        while(targetRelative.getX() > this.exploredArea.getNumCols() -1 ){
+            this.exploredArea.addColToEnd();
+        }
+        
+        // Resize rows
+        // above
+        while(targetRelative.getY() <0){
+            this.exploredArea.addRowToBeggining();
+            targetRelative = targetRelative.update(Action.DOWN);
+            this.agentPos = this.agentPos.update(Action.DOWN);
+        }
+        // below
+        while(targetRelative.getY() > this.exploredArea.getNumRows()-1){
+            this.exploredArea.addRowToEnd();
+        }
+        
+        this.targetPos = targetRelative;
+        updateVision();
+        
+        System.out.println("CONFIGURATION FINISHES");
+        System.out.println("Agent"+this.agentPos);
+        System.out.println("Target: "+this.targetPos);
+    }
+
+    /**
+     * Private method to prin the internal map in the console
+     * for debugging purposes
+     */
+    private void printInternalMap(){
+        exploredArea.getTile(agentPos).newVisit();
+        for (int i = 0; i < exploredArea.getNumRows(); i++) {
+            for (int j = 0; j < exploredArea.getNumCols(); j++) {
+                Position p = new Position(j, i);
+                if (p.equals(agentPos))
+                    System.out.print("A");
+                else if (p.equals(targetPos))
+                    System.out.print("X");
+                else
+                    System.out.print("0");
+            }
+            System.out.println("");
+        }
+    }
+    
+    /**
+     * Method to set the values of the agent's adjacent tiles
+     * It calls the sensor to take the value tiles
+     */
+    public void updateVision() {
+
+        vision = Sensor.getInstance().reveal();
+        int indexVision = 0;
+
+        for (int i = agentPos.getY() - 1; i <= agentPos.getY() + 1; i++) {
+            for (int j = agentPos.getX() - 1; j <= agentPos.getX() + 1; j++) {
+                exploredArea.setTile(i, j, vision.get(indexVision));
+                indexVision++;
+            }
+        }
+    }
+
+    /**
+     * Check if Agent Map (exploredArea) needs to be resized because
+     * being in the border of the map.
+     */
+    public void updateResizeMap() {
+
+        if (agentPos.getX() == 0) {
+            exploredArea.addColToBeggining();
+            agentPos = agentPos.update(Action.RIGHT);
+            targetPos = targetPos.update(Action.RIGHT);
+        } else if (agentPos.getX() == exploredArea.getNumCols() - 1) { // En ultima columna
+            exploredArea.addColToEnd();
+        }
+
+        if (agentPos.getY() == 0) {
+            exploredArea.addRowToBeggining();
+            agentPos = agentPos.update(Action.DOWN);
+            targetPos = targetPos.update(Action.DOWN);
+        } else if (agentPos.getY() == exploredArea.getNumRows() - 1) {
+            exploredArea.addRowToEnd();
+        }
+    }
+    
+    
+    /********************************************************/
+    
+    
     
     /**
      * In setup we initialize the agent, we set the sensor
@@ -67,11 +258,21 @@ public class ElfAgent extends Agent{
         Map map = new Map("mapWithDiagonalWall.txt");        
         Environment.getInstance().setParameters(map);
         
-        this.addBehaviour(new ElfComunicationBeh());
+        Behaviour thinker = new ThinkObstacleBehaviour(this);
+        Behaviour updater = new UpdatePositionBehaviour(this);
+        Behaviour comm = new ElfComunicationBeh(); 
+        
+        this.addBehaviour(comm);
+        this.addBehaviour(new TargetReachedBehaviour(this));
+        this.addBehaviour(thinker);
+        this.addBehaviour(updater);
+       
+        movementBehaviours = new Behaviour[] { thinker, updater };
+
     }
 
     @Override
     protected void takeDown() {
-        System.out.println("Agent has reached the target. Terminating ElfAgent...\n");
+        System.out.println("Agent has completed the mision. Terminating ElfAgent...\n");
     }
 }
