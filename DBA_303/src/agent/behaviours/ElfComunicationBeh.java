@@ -1,6 +1,7 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file          ElfComunicationBeh.java
+ * @author    DBA_303. Carlos, Jorge, Victor
  */
 package agent.behaviours;
 
@@ -12,8 +13,8 @@ import components.*;
 import agent.CommManager;
 
 /**
- *
- * @author carlos
+ * @brief Class that do the comunication behaviour Rudolph-Elf-Santa
+ * 
  */
 public class ElfComunicationBeh extends Behaviour{
          

@@ -1,15 +1,17 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file          CommManager.java
+ * @author    DBA_303. Jorge, Maria, Victor, Carlos
  */
+
 package agent;
 
 import java.util.Random;
 
 /**
- *
- * @author JorgeBG
+ *  @brief Class to manage the agent AIDs and states related with communication.
+ * It also generates the secret code used by the elf agent to talk to rudolph
+ * 
  */
 public class CommManager {
     public static final String AID_ELF = "ELF";

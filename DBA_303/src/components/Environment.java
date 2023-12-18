@@ -1,6 +1,7 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file          Environment.java
+ * @author    DBA_303. Carlos
  */
 package components;
 import java.util.ArrayList;
