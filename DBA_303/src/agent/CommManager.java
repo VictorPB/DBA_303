@@ -16,11 +16,11 @@ public class CommManager {
     public static final String AID_SANTA = "SANTA";
     public static final String AID_RUDOLPH = "RUDOLPH";
     
-    static final String CONV_ID_SANTA = "SANTA_MISION";
+    public static final String CONV_ID_SANTA = "SANTA_MISION";
     
-    static final String CONV_ID_RUDOLPH = generateSecretCode();
+    public static final String CONV_ID_RUDOLPH = generateSecretCode();
     
-    static final String SEPARATOR = ";";
+    public static final String SEPARATOR = ";";
     
     /**
      * Generates a secret code (8 length string) using only alphabetic letters
