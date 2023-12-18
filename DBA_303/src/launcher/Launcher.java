@@ -145,6 +145,11 @@ public class Launcher {
         launcherW.setVisible(false);
     }
     
+    /**
+     * Getter for the Main Window to be updated from the differents behaviours
+     */
+    static public MainWindow getMainWindow() { return mainW; }    
+    
     
     /**************************************************************************/
     /**

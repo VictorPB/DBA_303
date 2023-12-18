@@ -10,6 +10,7 @@ import components.Environment;
 import components.Reindeer;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
+import launcher.Launcher;
 
 /**
  *
@@ -24,7 +25,7 @@ public class RudolphComunicationBeh extends Behaviour{
         this.rudolphAgent = agent;
     }
          
-        CommManager.RudolphCommStates state = CommManager.RudolphCommStates.RECEIVE_CODE;
+        CommManager.RudolphCommStates state = CommManager.RudolphCommStates.WAIT_FOR_PROPOSAL;
         boolean finish = false;
         ACLMessage lastMsg;
         
@@ -33,25 +34,28 @@ public class RudolphComunicationBeh extends Behaviour{
             ACLMessage resp;
             
             switch (state) {
-                case RECEIVE_CODE:
+                case WAIT_FOR_PROPOSAL:
                     this.lastMsg = myAgent.blockingReceive();
 
                     if(this.lastMsg.getPerformative() == ACLMessage.PROPOSE){
                         System.out.println("RUDOLPH <--- ELF  ---------------  PROPOSE");
                         if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLPH)){
                             resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
-                            Reindeer ini = this.rudolphAgent.getNextReindeer();
-                            resp.setContent("PENDING" + CommManager.SEPARATOR + 
-                                            ini.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
-                                            ini.getPosition().toString(CommManager.SEPARATOR));
                             this.myAgent.send(resp);
+                            Launcher.getMainWindow()
+                                    .getRudolphConversation()
+                                    .addReceiverMsg("Codigo secreto Correcto!");
                             System.out.println("RUDOLPH ---> ELF --------------- ACCEPT ReindeerName + ReindeerPos\n");
-                            state = CommManager.RudolphCommStates.INFORM_ELF;
+                            state = CommManager.RudolphCommStates.WAIT_REQUESTS_OR_INFORMS;
                         }
                         else{
                             resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
                             System.out.println("RUDOLPH ---> ELF --------------- REJECT\n");
                             this.myAgent.send(resp);
+                            Launcher.getMainWindow()
+                                    .getRudolphConversation()
+                                    .addReceiverMsg("Codigo INCORRECTO!");
+                            finish = true;
                         }
                     }else{
                         resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
@@ -61,34 +65,39 @@ public class RudolphComunicationBeh extends Behaviour{
                     }
                     break;
                     
-                case INFORM_ELF:
+                case WAIT_REQUESTS_OR_INFORMS:
                     this.lastMsg = myAgent.blockingReceive();
                     if(this.lastMsg.getPerformative() == ACLMessage.REQUEST) {
                         System.out.println("RUDOLPH <--- ELF  ---------------  REQUEST nextReindeer");
                         if (Environment.getInstance().getNumberReindeers() > 0){
-                            System.out.println("RUDOLPH ---> ELF --------------- INFORM ReindeerName + ReindeerPos\n");
-                            
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
                             Reindeer next = this.rudolphAgent.getNextReindeer();
                             resp.setContent("PENDING" + CommManager.SEPARATOR + 
-                                            next.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
+                                            next.getName().name() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
                                             next.getPosition().toString(CommManager.SEPARATOR));
                             myAgent.send(resp);
+                            System.out.println("RUDOLPH ---> ELF --------------- INFORM ReindeerName + ReindeerPos\n");
+                            Launcher.getMainWindow()
+                                    .getRudolphConversation()
+                                    .addReceiverMsg(next.getName().toString() + " " + next.getPosition());
                         }
                         else {
-                            System.out.println("RUDOLPH ---> ELF --------------- INFORM FINISH\n");
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
                             resp.setContent("FINISH");
                             myAgent.send(resp);
+                            System.out.println("RUDOLPH ---> ELF --------------- INFORM FINISH\n");
+                            Launcher.getMainWindow()
+                                    .getRudolphConversation()
+                                    .addReceiverMsg("Has terminado!");
                             finish = true;
                         }
                     }
                     else if (this.lastMsg.getPerformative() == ACLMessage.INFORM) {
                         System.out.println("RUDOLPH <--- ELF  ---------------  INFORM found");
-                        Reindeer reindeer = new Reindeer(Integer.parseInt(this.lastMsg.getContent()));
-                        this.rudolphAgent.foundReindeer(reindeer.getName());
+                        Reindeer.Name reindeer = Reindeer.Name.fromName(this.lastMsg.getContent());
+                        this.rudolphAgent.foundReindeer(reindeer);
 
                     }
                     else {
@@ -99,6 +108,11 @@ public class RudolphComunicationBeh extends Behaviour{
                     }
                     break;
             }
+                    try {
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+            Thread.currentThread().interrupt();
+        }
         }
         
         @Override

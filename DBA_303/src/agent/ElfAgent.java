@@ -263,9 +263,9 @@ public class ElfAgent extends Agent{
         Behaviour comm = new ElfComunicationBeh(); 
         
         this.addBehaviour(comm);
-        this.addBehaviour(new TargetReachedBehaviour(this));
-        this.addBehaviour(thinker);
-        this.addBehaviour(updater);
+//        this.addBehaviour(new TargetReachedBehaviour(this));
+//        this.addBehaviour(thinker);
+//        this.addBehaviour(updater);
        
         movementBehaviours = new Behaviour[] { thinker, updater };
 
