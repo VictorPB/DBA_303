@@ -19,6 +19,7 @@ import agent.ElfAgent;
 import agent.SantaAgent;
 import agent.RudolphAgent;
 import agent.CommManager;
+import components.Environment;
 
 import gui.MainWindow;
 import javax.swing.JFrame;
@@ -136,9 +137,9 @@ public class Launcher {
     public static void runP3(){
         // Create agents (first those that have to hear others)
         createP3Agents();
-               
-        // configure?
-        // open the P3 window
+        
+        // Set the environment and open the mainWindow
+        Environment.getInstance().setParameters(launcherW.selectedMap);
         openMainWindow(launcherW.selectedMap);
         
         //start agents (first those that have to hear others)

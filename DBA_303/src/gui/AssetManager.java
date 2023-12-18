@@ -8,11 +8,8 @@ package gui;
 import components.Tile;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import javax.swing.ImageIcon;
 import java.awt.Image;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 

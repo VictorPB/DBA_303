@@ -42,9 +42,6 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow(Map map) {
         initComponents();
         
-        // set the environment
-        Environment.getInstance().setParameters(map);
-        
         this.map = map;
         this.mainMap.setBackground(AssetManager.CONVERSATION_HEADER_BG);
         
