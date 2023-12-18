@@ -1,44 +1,46 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    MainWindow.java
+ * @author  DBA_303. JorgeBG
  */
 package gui;
 
 import components.Environment;
-import components.Action;
 import components.Map;
 import components.Position;
-import components.Tile;
+import components.Reindeer;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.text.DefaultCaret;
-import launcher.Launcher;
 
 /**
- *
- * @author JorgeBG
+ * @brief   Class that models the main window that opens when the main execution
+ *          of the P3 starts
  */
-public class MainWindowP3 extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame {
 
+    /// The original map to be represented
     Map map;
-    String mapStringName;
+    
+    /// An array with the corresponding Tiles for the map representation
     List<List<JPanel>> mainMapTilePanelArr;
+    
+    /// Internal variable for the Map tile dimension
     int MapTileWidth;
     
+    /// Panels for the conversation with Santa and Rudolph
     JPanel rudolphConvPanel, santaConvPanel;
     
-    
-    
+        
     /**
-     * Creates new form MainWindow with a Map as argument
+     * Constructor. Creates new form MainWindow with a Map as argument
      */
-    public MainWindowP3(Map map) {
+    public MainWindow(Map map) {
         initComponents();
         
         this.map = map;
@@ -50,7 +52,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         this.rudolphConvPanel = new ConversationPanel("RUDOLF");
         this.rudolphConvPanel.setMaximumSize(new Dimension(360,360));
         this.rudolphConvContainer.add(this.rudolphConvPanel);
-        
+        this.MapTileWidth = (int)(this.mainMap.getWidth()/map.getNumCols());
         
         createMapView();
         
@@ -82,61 +84,59 @@ public class MainWindowP3 extends javax.swing.JFrame {
             }
         }
 
-        this.mainMap.updateUI();
+        this.updateAgentIcons();
+    }
+    
+    
+    /**
+     * Method to update the agents (Elf, Santa and Rudolph) position in the
+     * map besides the lost reindeers ones. 
+     */
+    private void updateAgentIcons(){
+        clearMap();
+        Environment theEnvironment = Environment.getInstance();
+        Position elf = theEnvironment.getElfPosition();
+        this.mainMapTilePanelArr.get(elf.getY()).get(elf.getX()).add(
+            new JLabel(new ImageIcon(AssetManager.getElfIcon(this.MapTileWidth))));
+        Position santa = theEnvironment.getSantaPosition();
+        this.mainMapTilePanelArr.get(santa.getY()).get(santa.getX()).add(
+            new JLabel(new ImageIcon(AssetManager.getSantaAvatar(this.MapTileWidth))));
+        Position rudolph = theEnvironment.getRudolphPosition();
+        this.mainMapTilePanelArr.get(rudolph.getY()).get(rudolph.getX()).add(
+            new JLabel(new ImageIcon(AssetManager.getRudolfAvatar(this.MapTileWidth))));
+        
+        for(Reindeer r: theEnvironment.getReindeers()){
+            Position pos = r.getPosition();
+            JLabel icon;
+            switch (r.getState()) {
+                case UNKNOWN:
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Soft(this.MapTileWidth)));
+                    break;
+                case KNOWN:
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Line(this.MapTileWidth)));
+                    break;
+                case CURRENT:
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Target(this.MapTileWidth)));
+                    break;
+                default:
+                    icon = new JLabel("");
+            }
+            this.mainMapTilePanelArr.get(pos.getY()).get(pos.getX()).add(icon);
+            this.mainMap.updateUI();
+        }
     }
     
 
-    
     /**
-     * Updates the agent position 
+     * Private method to clear all icons in the map
      */
-    public void updateAgent(){
-//        clearAgentPath();
-//        
-//        ArrayList<Sensor.ActionPair> path = Sensor.getInstance().getAgentVisitedPath();
-//        
-//        for(int i=0; i<path.size(); i++){
-//            Position p = path.get(i).getPos();
-//            JPanel panel = this.mainMapTilePanelArr.get(p.getY()).get(p.getX());
-//            if(path.get(i).getAct() == Action.IDLE)
-//                panel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
-//            else
-//                panel.add(new JLabel (AssetManager.getAgentPastIcon(this.MapTileWidth)));
-//        }
-//        
-//        this.mainMap.updateUI();
-//        
-    }
-    
-    private void clearAgentPath(){
+    private void clearMap(){
         for(List<JPanel> row : this.mainMapTilePanelArr)
             for(JPanel p: row)
                 p.removeAll();
     }
     
     
-    /**************************************************************************/
-    /*** update the agent in the main map *************************************/
-    // this is a temporal implementation
-    public void updateAgentWithoutPath(){
-//        clearAgentPath();
-//        
-//        // temporal -> it access directly to sensors
-//        Position agentPos = Sensor.getInstance().getAgentPosition();
-//        Position targetPos = Sensor.getInstance().getTargetPosition();
-//        
-//        JPanel agentPanel = this.mainMapTilePanelArr.get(agentPos.getY()).get(agentPos.getX());
-//        JPanel targetPanel = this.mainMapTilePanelArr.get(targetPos.getY()).get(targetPos.getX());
-//        
-//        agentPanel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
-//        targetPanel.add(new JLabel(AssetManager.getTargetIcon(this.MapTileWidth, true)));
-//        
-//        this.mainMap.updateUI();
-    }
-    
-    /**************************************************************************/   
-    /**************************************************************************/
-    /**************************************************************************/
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -240,14 +240,15 @@ public class MainWindowP3 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         // Create the example map
@@ -257,7 +258,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MainWindowP3 mw = new MainWindowP3(myMap);
+                MainWindow mw = new MainWindow(myMap);
                 mw.setVisible(true);
                 
                 ((ConversationPanel)mw.santaConvPanel).addElfMessage("Yepaaaa que pacha!!!");
