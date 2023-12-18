@@ -1,7 +1,7 @@
 /*
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
  * @file    SantaAgent.java
- * @author 
- * @version
+ * @author  DBA_303. Jorge
  */
 package agent;
 

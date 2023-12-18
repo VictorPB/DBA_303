@@ -1,13 +1,14 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    Reindeer.java
+ * @author  DBA_303. Carlos
  */
 package components;
 
 
 /**
- * @brief This class models each tile inside the Map.
+ * @brief This class stores the name, state and position of each reindeer in
+ * environment.
  */
 public class Reindeer {
     
