@@ -59,6 +59,23 @@ public class CommManager {
         RECEIVE_SANTA_CONGRATS;
     }
     
+    /**
+     * Enum all Santa communication states
+     */
+    public enum SantaCommStates {
+        RECEIVE_MISSION,
+        RECEIVE_FOUND_OR_FINISH,
+        HOHOHO;
+    }
+    
+    /**
+     * Enum all Rudolph communication states
+     */
+    public enum RudolphCommStates {
+        RECEIVE_CODE,
+        INFORM_ELF;
+    }
+    
     
     /**
     public static void main(String args[]){
