@@ -4,7 +4,7 @@
  */
 package agent.behaviours;
 
-import agent.ScoutAgent;
+import agent.ElfAgent;
 import agent.Sensor;
 import jade.core.behaviours.Behaviour;
 
@@ -17,7 +17,7 @@ import jade.core.behaviours.Behaviour;
 public class HadFinishedBehaviour extends Behaviour{
     
     // Private atribute to access the agent that uses the behaviour
-    private final ScoutAgent myAgent;
+    private final ElfAgent myAgent;
     
     public HadFinishedBehaviour(ScoutAgent agent) {
         this.myAgent = agent;

@@ -25,7 +25,7 @@ import launcher.Launcher;
  *
  * @author JorgeBG
  */
-public class MainWindowP3 extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame {
 
     Map map;
     String mapStringName;
@@ -39,7 +39,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
     /**
      * Creates new form MainWindow with a Map as argument
      */
-    public MainWindowP3(Map map) {
+    public MainWindow(Map map) {
         initComponents();
         
         // set the environment
@@ -276,14 +276,15 @@ public class MainWindowP3 extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainWindowP3.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainWindow.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         // Create the example map
@@ -293,7 +294,7 @@ public class MainWindowP3 extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                MainWindowP3 mw = new MainWindowP3(myMap);
+                MainWindow mw = new MainWindow(myMap);
                 mw.setVisible(true);
                 
                 ((ConversationPanel)mw.santaConvPanel).addElfMessage("Yepaaaa que pacha!!!");
