@@ -1,6 +1,9 @@
-
+/*
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    Launcher.java
+ * @author  DBA_303. JorgeBg / Carlos
+ */
 package launcher;
-
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -22,15 +25,11 @@ import agent.CommManager;
 import components.Environment;
 
 import gui.MainWindow;
-import javax.swing.JFrame;
 
 
 /**
- *
- * @author carlos
- * 
- * @brief Class that implements the main function that loads the 
- * containers and agents.
+ * @brief   Class that implements the main function that loads the containers
+ *          and agents, such as opens the launcher window.
  */
 public class Launcher {
 
@@ -56,6 +55,7 @@ public class Launcher {
     /// windows
     private static LauncherWindow launcherW = new LauncherWindow();
     private static MainWindow mainW;
+    
     
     /**
      * Initialize containers profiles
@@ -90,6 +90,7 @@ public class Launcher {
         }
     }
     
+    
     /**
      * Public metho to start the agents for the P3
      * for being called from the launcher window
@@ -105,6 +106,7 @@ public class Launcher {
         }
     }
     
+    
     /**
      * Method to configure the agent for the P2 launch
      * @param map
@@ -115,6 +117,7 @@ public class Launcher {
         Sensor.getInstance().setParameters(map, origin, target);
     }
 
+    
     /**
      * Method that open and start the main Window
      * @param map 
@@ -123,13 +126,7 @@ public class Launcher {
         mainW = new MainWindow(map);
         mainW.setVisible(true);
     }
-    
-    // TODO review this
-    //public static JFrame getMainWindow(){ return mainW; }
-    
-    //public static Agent getAgent(){ return scoutAgent; }
-   
-   
+
     
     /**
      * Method that initializes agents for the P3 and open the corresponding window
@@ -148,9 +145,10 @@ public class Launcher {
         launcherW.setVisible(false);
     }
     
+    
     /**************************************************************************/
     /**
-     * Main
+     * Main Function. Entry point of the application
      */
     public static void main(String[] args) throws StaleProxyException {
 
@@ -166,35 +164,5 @@ public class Launcher {
         
         // Show the launcher window
         launcherW.setVisible(true);
-
-        // TODO change with the UI
-        // previous steps for the P3
-//        Agent elfAgent = new ElfAgent();
-//        Agent santaAgent = new SantaAgent();
-//        try{
-//            AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
-//            AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
-//            santaController.start();
-//            elfController.start();
-//        }
-//        catch(StaleProxyException e){
-//            System.out.println(e);
-//        }
-//        Agent elfAgent = new ElfAgent();
-//        Agent santaAgent = new SantaAgent();
-//        Agent rudolphAgent = new RudolphAgent();
-//        try{
-//            AgentController elfController = agentContController.acceptNewAgent("ELF", elfAgent);
-//            AgentController santaController = agentContController.acceptNewAgent("SANTA", santaAgent);
-//            AgentController rudolphController = agentContController.acceptNewAgent("RUDOLPH", rudolphAgent);
-//            santaController.start();
-//            elfController.start();
-//            rudolphController.start();
-//        }
-//        catch(StaleProxyException e){
-//            System.out.println(e);
-//        }
-
     }
-                
 }

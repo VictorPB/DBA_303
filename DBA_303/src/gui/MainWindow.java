@@ -1,7 +1,7 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    MainWindow.java
+ * @author  DBA_303. JorgeBG
  */
 package gui;
 
@@ -9,7 +9,6 @@ import components.Environment;
 import components.Map;
 import components.Position;
 import components.Reindeer;
-import components.Tile;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
@@ -18,26 +17,28 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.text.DefaultCaret;
-import launcher.Launcher;
 
 /**
- *
- * @author JorgeBG
+ * @brief   Class that models the main window that opens when the main execution
+ *          of the P3 starts
  */
 public class MainWindow extends javax.swing.JFrame {
 
+    /// The original map to be represented
     Map map;
-    String mapStringName;
+    
+    /// An array with the corresponding Tiles for the map representation
     List<List<JPanel>> mainMapTilePanelArr;
+    
+    /// Internal variable for the Map tile dimension
     int MapTileWidth;
     
+    /// Panels for the conversation with Santa and Rudolph
     JPanel rudolphConvPanel, santaConvPanel;
     
-    
-    
+        
     /**
-     * Creates new form MainWindow with a Map as argument
+     * Constructor. Creates new form MainWindow with a Map as argument
      */
     public MainWindow(Map map) {
         initComponents();
@@ -77,16 +78,21 @@ public class MainWindow extends javax.swing.JFrame {
         for(int i = 0; i< rows; i++){
             this.mainMapTilePanelArr.add(new ArrayList<>());
             for(int j=0; j<cols; j++){
-                JPanel p = AssetManager.getTileP3Panel(map.getTile(i, j).getType());
+                JPanel p = AssetManager.getTilePanel(map.getTile(i, j).getType());
                 this.mainMapTilePanelArr.get(i).add( p );
                 this.mainMap.add(p);
             }
         }
 
-        this.updateIcons();
+        this.updateAgentIcons();
     }
     
-    private void updateIcons(){
+    
+    /**
+     * Method to update the agents (Elf, Santa and Rudolph) position in the
+     * map besides the lost reindeers ones. 
+     */
+    private void updateAgentIcons(){
         clearMap();
         Environment theEnvironment = Environment.getInstance();
         Position elf = theEnvironment.getElfPosition();
@@ -120,27 +126,10 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
     
+
     /**
-     * Updates the agent position 
+     * Private method to clear all icons in the map
      */
-    public void updateAgent(){
-//        clearAgentPath();
-//        
-//        ArrayList<Sensor.ActionPair> path = Sensor.getInstance().getAgentVisitedPath();
-//        
-//        for(int i=0; i<path.size(); i++){
-//            Position p = path.get(i).getPos();
-//            JPanel panel = this.mainMapTilePanelArr.get(p.getY()).get(p.getX());
-//            if(path.get(i).getAct() == Action.IDLE)
-//                panel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
-//            else
-//                panel.add(new JLabel (AssetManager.getAgentPastIcon(this.MapTileWidth)));
-//        }
-//        
-//        this.mainMap.updateUI();
-//        
-    }
-    
     private void clearMap(){
         for(List<JPanel> row : this.mainMapTilePanelArr)
             for(JPanel p: row)
@@ -148,28 +137,6 @@ public class MainWindow extends javax.swing.JFrame {
     }
     
     
-    /**************************************************************************/
-    /*** update the agent in the main map *************************************/
-    // this is a temporal implementation
-    public void updateAgentWithoutPath(){
-//        clearAgentPath();
-//        
-//        // temporal -> it access directly to sensors
-//        Position agentPos = Sensor.getInstance().getAgentPosition();
-//        Position targetPos = Sensor.getInstance().getTargetPosition();
-//        
-//        JPanel agentPanel = this.mainMapTilePanelArr.get(agentPos.getY()).get(agentPos.getX());
-//        JPanel targetPanel = this.mainMapTilePanelArr.get(targetPos.getY()).get(targetPos.getX());
-//        
-//        agentPanel.add(new JLabel(AssetManager.getAgentCurrentIcon(this.MapTileWidth)));
-//        targetPanel.add(new JLabel(AssetManager.getTargetIcon(this.MapTileWidth, true)));
-//        
-//        this.mainMap.updateUI();
-    }
-    
-    /**************************************************************************/   
-    /**************************************************************************/
-    /**************************************************************************/
     
     /**
      * This method is called from within the constructor to initialize the form.

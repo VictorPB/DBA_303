@@ -1,7 +1,7 @@
 /*
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
  * @file    LauncherWindow.java
- * @author  JorgeBG
- * @version 2.0 (P3)
+ * @author  DBA_303. JorgeBG
  */
 package gui;
 
@@ -20,17 +20,16 @@ import launcher.Launcher;
 /**
  * @biref   Class that models the initial (launcher) window for the P3.
  *          Here you select the map to be used in the P3 execution.
- * @author  JorgeBG
  */
 public class LauncherWindow extends javax.swing.JFrame {
 
+    /// selected map name
     static public String mapName;
+    /// selected map : Map
     static public Map selectedMap;
+    /// variable to allocate the tile list for the map preview
     static private List<JPanel> panelTileList;
-        
-    static public Position originPos = new Position(0,0);
-    static public Position targetPos = new Position(0,0);
-            
+                 
     
     /**
      * Creates new form LauncherWindow
@@ -41,8 +40,9 @@ public class LauncherWindow extends javax.swing.JFrame {
         initializeListeners();
     }
 
+    
     /**
-     * Function that reads all files into the map folder and fills the launcher
+     * Method that reads all files into the map folder and fills the launcher
      * menu
      */
     private void updateMapList(){
@@ -89,7 +89,6 @@ public class LauncherWindow extends javax.swing.JFrame {
         this.mapPreview.updateUI();
     }
 
-
     
     /**
      * Method to initialize all listener for the gui usability
@@ -100,22 +99,15 @@ public class LauncherWindow extends javax.swing.JFrame {
             if( !e.getValueIsAdjusting()){
                 LauncherWindow.mapName = mapSelection_List.getSelectedValue();
                 updateMapPreview();
-                if(valid())
+                if(selectedMap != null)
                     this.acceptButton.setEnabled(true);
             }
         });
-        
+        // Add listener to the accept button -> starts the main execution
         this.acceptButton.addActionListener((e) -> Launcher.runP3());
     }
 
-    /**
-     * Private function to check conditions to allow to open the MainWindow
-     * @return 
-     */
-    private boolean valid(){
-        return selectedMap != null;
-    }
-    
+        
     /**************************************************************************/
     /**
      * This method is called from within the constructor to initialize the form.

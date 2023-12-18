@@ -1,7 +1,7 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    AssetManager.java
+ * @author  DBA_303. JorgeBG
  */
 package gui;
 
@@ -13,6 +13,10 @@ import java.awt.Image;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * @brief   Class that encapsulates different kind of assets to be used by the
+ *          other gui instances, such as colors, icons, etc 
+ */
 public class AssetManager {
     
     static final Color COL_FREE = Color.decode("#68BBE3");
@@ -122,10 +126,10 @@ public class AssetManager {
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
         switch (type) {
             case EMPTY: 
-                panelTile.setBackground(COL_FREE);
+                panelTile.setBackground(COL_P3_EMPTY_TILE);
                 break;
             case UNREACHABLE:
-                panelTile.setBackground(COL_WALL);
+                panelTile.setBackground(COL_P3_UNREACHABLE);
                 break;
             case UNKNOWN:
                 panelTile.setBackground(COL_UNKNOWN);
@@ -149,19 +153,6 @@ public class AssetManager {
             default:
                 panelTile.setBackground(COL_MIND_BASE);
                 break;
-        }
-        return panelTile;
-    }
-    
-     /** TILE PANEL FOR P3 *****************************************************/
-    
-    static JPanel getTileP3Panel(Tile.Type type) {
-        JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
-        if (type == Tile.Type.EMPTY){
-            panelTile.setBackground(COL_P3_EMPTY_TILE);
-        }
-        else{
-            panelTile.setBackground(COL_P3_UNREACHABLE);
         }
         return panelTile;
     }
