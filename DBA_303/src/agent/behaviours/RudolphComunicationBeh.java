@@ -65,7 +65,7 @@ public class RudolphComunicationBeh extends Behaviour{
                     this.lastMsg = myAgent.blockingReceive();
                     if(this.lastMsg.getPerformative() == ACLMessage.REQUEST) {
                         System.out.println("RUDOLPH <--- ELF  ---------------  REQUEST nextReindeer");
-                        if (Environment.getInstance().getNumberReindeers() == 0){
+                        if (Environment.getInstance().getNumberReindeers() > 0){
                             System.out.println("RUDOLPH ---> ELF --------------- INFORM ReindeerName + ReindeerPos\n");
                             
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);

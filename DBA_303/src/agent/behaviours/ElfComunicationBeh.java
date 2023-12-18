@@ -17,7 +17,7 @@ import agent.CommManager;
  */
 public class ElfComunicationBeh extends Behaviour{
          
-        int state = 0;
+        CommManager.ElfCommStates state = CommManager.ElfCommStates.INIT_MISSION;
         boolean finish = false;
         boolean allReindeerFound = false;
         
@@ -40,7 +40,7 @@ public class ElfComunicationBeh extends Behaviour{
             switch (state) {
                 //SANTA
                 
-                case 0:
+                case INIT_MISSION:
                     System.out.println("ELF ---> SANTA --------------- PROPOSE mission");
                     msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_SANTA,AID.ISLOCALNAME));
@@ -48,10 +48,10 @@ public class ElfComunicationBeh extends Behaviour{
                     msg.setContent("Elf: Me propongo voluntario para buscar los renos perdidos");
                     myAgent.send(msg);
                     
-                    this.state = 1;
+                    this.state = CommManager.ElfCommStates.RECEIVE_ACCEPT_SANTA;
                     break;
                 
-                case 1:
+                case RECEIVE_ACCEPT_SANTA:
                     this.lastMsgSanta = myAgent.blockingReceive();
                     if(this.lastMsgSanta.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
                         String santaValidationContent = this.lastMsgSanta.getContent();
@@ -70,12 +70,12 @@ public class ElfComunicationBeh extends Behaviour{
                         this.finish = true;
                     }
                     
-                    this.state = 2;
+                    this.state = CommManager.ElfCommStates.PROPOSE_RUDOLPH;
                     break;
                     
                 //RUDOLF
                     
-                case 2:
+                case PROPOSE_RUDOLPH:
                     msg = new ACLMessage(ACLMessage.PROPOSE);
                     msg.addReceiver(new AID(CommManager.AID_RUDOLPH,AID.ISLOCALNAME));
                     msg.setConversationId(secretCode);
@@ -83,10 +83,10 @@ public class ElfComunicationBeh extends Behaviour{
                     System.out.println("ELF ---> RUDOLPH  ---------------  PROPOSE code " + this.secretCode);
                     myAgent.send(msg);                  
                     
-                    this.state = 3;
+                    this.state = CommManager.ElfCommStates.RECEIVE_ACCEPT_RUDOLPH;
                     break;
                     
-                case 3:
+                case RECEIVE_ACCEPT_RUDOLPH:
                     this.lastMsgRudolph = myAgent.blockingReceive();
                     if(this.lastMsgRudolph.getPerformative() == ACLMessage.ACCEPT_PROPOSAL){
                         String reindeerPosContent = this.lastMsgRudolph.getContent();
@@ -107,10 +107,10 @@ public class ElfComunicationBeh extends Behaviour{
                         this.finish = true;
                     }
                     
-                    this.state = 4;                 
+                    this.state = CommManager.ElfCommStates.FOUND_AND_NEXT_REINDEER;                 
                     break;
                     
-                case 4:         //Informamos reno encontrado y pedimos siguiente reno
+                case FOUND_AND_NEXT_REINDEER:         //Informamos reno encontrado y pedimos siguiente reno
                     // Inform to rudolph of the found reindeer
                     replyRudolph = this.lastMsgRudolph.createReply(ACLMessage.INFORM);
                     replyRudolph.setContent(this.reindeerName);
@@ -129,10 +129,10 @@ public class ElfComunicationBeh extends Behaviour{
                     System.out.println("ELF ---> RUDOLPH  ---------------  REQUEST nextReindeer");
                     this.myAgent.send(replyRudolph);
                     
-                    this.state = 5;
+                    this.state = CommManager.ElfCommStates.RECEIVE_NEW_REINDEER_POS;
                     break;
                     
-                case 5:         //Obtenemos coordenadas
+                case RECEIVE_NEW_REINDEER_POS:         //Obtenemos coordenadas
                     this.lastMsgRudolph = myAgent.blockingReceive();
                     
                     if(this.lastMsgRudolph.getPerformative() == ACLMessage.INFORM){
@@ -149,10 +149,10 @@ public class ElfComunicationBeh extends Behaviour{
                             
                             //TODO: volver a Rudolf
                             
-                            this.state = 4;
+                            this.state = CommManager.ElfCommStates.FOUND_AND_NEXT_REINDEER;
                         }else{
                             System.out.println("ELF <--- RUDOLPH  ---------------  INFORM FINISH");
-                            this.state = 6;
+                            this.state = CommManager.ElfCommStates.REQUEST_SANTA_POS;
                         }
                     }else{
                         System.out.println("Elf: Rudolf no mando un INFORM.\n");
@@ -162,15 +162,15 @@ public class ElfComunicationBeh extends Behaviour{
                     
                     break;
                     
-                case 6:         //Request Santa position
+                case REQUEST_SANTA_POS:         //Request Santa position
                     replySanta = this.lastMsgSanta.createReply(ACLMessage.REQUEST);
                     System.out.println("ELF ---> SANTA --------------- REQUEST SantaPos");
                     this.myAgent.send(replySanta);
                     
-                    this.state = 7;
+                    this.state = CommManager.ElfCommStates.RECEIVE_SANTA_POS;
                     break;
                     
-                case 7:
+                case RECEIVE_SANTA_POS:
                     this.lastMsgSanta = myAgent.blockingReceive();
                     if(this.lastMsgSanta.getPerformative() == ACLMessage.INFORM){
                         String santaLocationContent = this.lastMsgSanta.getContent();
@@ -187,19 +187,19 @@ public class ElfComunicationBeh extends Behaviour{
                         System.out.println("Elf: Mi pana el santa no me mando bien la ubi\n");
                         this.finish = true;
                     }
-                    this.state = 8;
+                    this.state = CommManager.ElfCommStates.INFORM_SANTA_REACHED;
                     break;
                     
-                case 8:
+                case INFORM_SANTA_REACHED:
                     replySanta = this.lastMsgSanta.createReply(ACLMessage.INFORM);
                     System.out.println("Elf: Hola santa, ya estoy aqui. Mision Completada");
                     System.out.println("ELF ---> SANTA --------------- INFORM");
                     this.myAgent.send(replySanta);
                     
-                    this.state = 9;
+                    this.state = CommManager.ElfCommStates.RECEIVE_SANTA_CONGRATS;
                     break; 
                     
-                case 9:
+                case RECEIVE_SANTA_CONGRATS:
                     this.lastMsgSanta = myAgent.blockingReceive();
                     if(this.lastMsgSanta.getPerformative() == ACLMessage.INFORM){
                         String santaThanksContent = this.lastMsgSanta.getContent();
