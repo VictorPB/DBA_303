@@ -1,7 +1,7 @@
 /*
  * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
- * @file          SantaComunicationBeh.java
- * @author    DBA_303. Maria, Victor
+ * @file    SantaComunicationBeh.java
+ * @author  DBA_303. Maria, Victor
  */
 package agent.behaviours;
 

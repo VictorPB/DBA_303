@@ -1,7 +1,7 @@
 /*
  * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
- * @file          Reindeer.java
- * @author    DBA_303. Carlos
+ * @file    Reindeer.java
+ * @author  DBA_303. Carlos
  */
 package components;
 

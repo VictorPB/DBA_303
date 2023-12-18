@@ -1,7 +1,7 @@
 /*
  * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
- * @file          CommManager.java
- * @author    DBA_303. Jorge, Maria, Victor, Carlos
+ * @file    CommManager.java
+ * @author  DBA_303. Jorge, Maria, Victor, Carlos
  */
 
 package agent;

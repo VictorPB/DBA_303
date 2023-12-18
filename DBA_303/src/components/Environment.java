@@ -1,7 +1,7 @@
 /*
  * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
- * @file          Environment.java
- * @author    DBA_303. Carlos
+ * @file    Environment.java
+ * @author  DBA_303. Carlos
  */
 package components;
 import java.util.ArrayList;

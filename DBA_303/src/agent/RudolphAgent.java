@@ -1,7 +1,7 @@
 /*
  * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
- * @file          RudolphAgent.java
- * @author    DBA_303. Jorge, Carlos
+ * @file    RudolphAgent.java
+ * @author  DBA_303. Jorge, Carlos
  */
 package agent;
 

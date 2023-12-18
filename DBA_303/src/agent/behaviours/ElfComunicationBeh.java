@@ -1,7 +1,7 @@
 /*
  * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
- * @file          ElfComunicationBeh.java
- * @author    DBA_303. Carlos, Jorge, Victor
+ * @file    ElfComunicationBeh.java
+ * @author  DBA_303. Carlos, Jorge, Victor
  */
 package agent.behaviours;
 
