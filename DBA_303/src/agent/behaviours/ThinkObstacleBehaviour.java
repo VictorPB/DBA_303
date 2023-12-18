@@ -4,7 +4,7 @@
  */
 package agent.behaviours;
 
-import agent.ScoutAgent;
+import agent.ElfAgent;
 import agent.Sensor;
 import components.Action;
 import components.Position;
@@ -20,9 +20,9 @@ import java.util.ArrayList;
 public class ThinkObstacleBehaviour extends Behaviour {
 
     // Private atribute to access the agent that uses the behaviour
-    private final ScoutAgent myAgent;
+    private final ElfAgent myAgent;
     
-    public ThinkObstacleBehaviour(ScoutAgent agent) {
+    public ThinkObstacleBehaviour(ElfAgent agent) {
         this.myAgent = agent;
     }
     

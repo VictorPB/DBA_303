@@ -4,7 +4,7 @@
  */
 package agent.behaviours;
 
-import agent.ScoutAgent;
+import agent.ElfAgent;
 import agent.Sensor;
 import components.Position;
 import components.Tile;
@@ -18,9 +18,9 @@ import jade.core.behaviours.Behaviour;
 public class UpdatePositionBehaviour extends Behaviour{
     
     // Private atribute to access the agent that uses the behaviour
-    private final ScoutAgent myAgent;
+    private final ElfAgent myAgent;
     
-    public UpdatePositionBehaviour(ScoutAgent agent) {
+    public UpdatePositionBehaviour(ElfAgent agent) {
         this.myAgent = agent;
     }
     

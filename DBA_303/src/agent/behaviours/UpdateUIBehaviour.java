@@ -4,7 +4,7 @@
  */
 package agent.behaviours;
 
-import agent.ScoutAgent;
+import agent.ElfAgent;
 import jade.core.behaviours.Behaviour;
 import launcher.Launcher;
 
@@ -16,9 +16,9 @@ import launcher.Launcher;
 public class UpdateUIBehaviour extends Behaviour {
 
     // Private atribute to access the agent that uses the behaviour
-    private final ScoutAgent myAgent;
+    private final ElfAgent myAgent;
     
-    public UpdateUIBehaviour(ScoutAgent agent) {
+    public UpdateUIBehaviour(ElfAgent agent) {
         this.myAgent = agent;
     }
     
