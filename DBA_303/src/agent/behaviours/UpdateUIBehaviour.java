@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package agent.behaviours;
 
 import agent.ElfAgent;
+import gui.MainWindowP2;
 import jade.core.behaviours.Behaviour;
 import launcher.Launcher;
 
@@ -24,9 +21,9 @@ public class UpdateUIBehaviour extends Behaviour {
     
     @Override
     public void action() {
-        Launcher.getMainWindow().updateAgentWithoutPath();
-        Launcher.getMainWindow().updateInternalMapView();
-        Launcher.getMainWindow().updateActionList();
+        ((MainWindowP2)Launcher.getMainWindow()).updateAgentWithoutPath();
+        ((MainWindowP2)Launcher.getMainWindow()).updateInternalMapView();
+        ((MainWindowP2)Launcher.getMainWindow()).updateActionList();
     }
 
     @Override

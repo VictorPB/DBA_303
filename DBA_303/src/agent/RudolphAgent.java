@@ -5,6 +5,7 @@
  */
 package agent;
 
+import agent.behaviours.RudolphComunicationBeh;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.AID;
@@ -39,6 +40,12 @@ public class RudolphAgent extends Agent{
     // TODO refill with getters, etc
     
     /**
+     * Get the number of found reindeers
+     * @return the number of found reindeers
+     */
+    public int getNumFoundReindeers () { return this.foundReindeers; }
+    
+    /**
      * In setup we initialize the agent, we set the sensor
      * and add to queue of Behaviours the actions that the
      * agent needs
@@ -47,7 +54,7 @@ public class RudolphAgent extends Agent{
     public void setup() {
         System.out.println("Hello! I'm the Rudolph Agent. \"¡Hiaa, hiaa!\\n");
         
-        this.addBehaviour(new RudolphComunicationBeh());
+        this.addBehaviour(new RudolphComunicationBeh(this));
         
     }
 
@@ -73,93 +80,5 @@ public class RudolphAgent extends Agent{
         Reindeer reindeer = (Reindeer) Environment.getInstance().getReindeers().stream().filter(r -> r.getName().equals(name)).findAny().orElse(null);
             
         return Environment.getInstance().getReindeers().remove(reindeer);
-    }
-    
-    /**************************************************************************/
-    
-    class RudolphComunicationBeh extends Behaviour{
-         
-        int state = 0;
-        boolean finish = false;
-        ACLMessage lastMsg;
-        
-        @Override
-        public void action(){
-            ACLMessage resp;
-            
-            switch (state) {
-                case 0:
-                    this.lastMsg = myAgent.blockingReceive();
-
-                    if(this.lastMsg.getPerformative() == ACLMessage.PROPOSE){
-                        System.out.println("RUDOLPH <--- ELF  ---------------  PROPOSE");
-                        if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_RUDOLPH)){
-                            resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);
-                            Reindeer ini = getNextReindeer();
-                            resp.setContent("PENDING" + CommManager.SEPARATOR + 
-                                            ini.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
-                                            ini.getPosition().toString(CommManager.SEPARATOR));
-                            this.myAgent.send(resp);
-                            System.out.println("RUDOLPH ---> ELF --------------- ACCEPT ReindeerName + ReindeerPos\n");
-                            state = 1;
-                        }
-                        else{
-                            resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
-                            System.out.println("RUDOLPH ---> ELF --------------- REJECT\n");
-                            this.myAgent.send(resp);
-                        }
-                    }else{
-                        resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
-                        this.myAgent.send(resp);
-                            System.out.println("RUDOLPH ---> ELF --------------- UNKNOWN\n");
-                        finish = true;
-                    }
-                    break;
-                    
-                case 1:
-                    this.lastMsg = myAgent.blockingReceive();
-                    if(this.lastMsg.getPerformative() == ACLMessage.REQUEST) {
-                        System.out.println("RUDOLPH <--- ELF  ---------------  REQUEST nextReindeer");
-                        if (foundReindeers < Environment.getInstance().getNumberReindeers()){
-                            System.out.println("RUDOLPH ---> ELF --------------- INFORM ReindeerName + ReindeerPos\n");
-                            
-                            resp = this.lastMsg.createReply(ACLMessage.INFORM);
-                            // Añadir a la respuesta un reno
-                            Reindeer next = getNextReindeer();
-                            resp.setContent("PENDING" + CommManager.SEPARATOR + 
-                                            next.getName().toString() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
-                                            next.getPosition().toString(CommManager.SEPARATOR));
-                            myAgent.send(resp);
-                        }
-                        else {
-                            System.out.println("RUDOLPH ---> ELF --------------- INFORM FINISH\n");
-                            resp = this.lastMsg.createReply(ACLMessage.INFORM);
-                            // Añadir a la respuesta un reno
-                            resp.setContent("FINISH");
-                            myAgent.send(resp);
-                            finish = true;
-                        }
-                    }
-                    else if (this.lastMsg.getPerformative() == ACLMessage.INFORM) {
-                        System.out.println("RUDOLPH <--- ELF  ---------------  INFORM found");
-                        Reindeer reindeer = new Reindeer(Integer.parseInt(this.lastMsg.getContent()));
-                        foundReindeer(reindeer.getName());
-
-                    }
-                    else {
-                        resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
-                        this.myAgent.send(resp);
-                        System.out.println("RUDOLPH ---> ELF --------------- UNKNOWN\n");
-                        finish = true;
-                    }
-                    break;
-            }
-        }
-        
-        @Override
-        public boolean done(){
-            return finish; 
-        }
-        
     }
 }

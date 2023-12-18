@@ -43,6 +43,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         updateMapList();
         initializeListeners();
         this.warningLabel.setVisible(false);
+        
     }
 
     /**
@@ -56,7 +57,46 @@ public class LauncherWindow extends javax.swing.JFrame {
             .filter(file -> file.getName().endsWith(".txt"))
             .map(file -> file.getName())
             .toArray(String[]::new);
-        this.mapSelection_List.setListData(mapList);
+        String [] filteredMapList;
+        String [] p3List = Stream.of(mapList)
+                .filter(name -> name.startsWith("P3"))
+                .toArray(String[]::new);
+        
+        if(this.numPract_ComboBox.getSelectedIndex() == 0){
+            filteredMapList = Stream.of(mapList)
+                .filter(name -> !name.startsWith("P3"))
+                .toArray(String[]::new);
+        }
+        else{
+            filteredMapList = Stream.of(mapList)
+                .filter(name -> name.startsWith("P3"))
+                .toArray(String[]::new);
+        }
+        
+        this.mapSelection_List.setListData(filteredMapList);
+    }
+    
+    
+    /**
+     * Private method that checks if its the P3 selected
+     */
+    private boolean isP2selected(){
+        return this.numPract_ComboBox.getSelectedIndex()==0;
+    }
+    
+    /**
+     * Private method that control the interaction between the GUI instances
+     */
+    private void notifyPChange(){
+        if(isP2selected()){
+            this.positionPanel.setVisible(true);
+        }
+        else{   // P3
+            this.positionPanel.setVisible(false);
+        }
+        this.mapSelection_List.setSelectedIndex(-1);
+        this.updateMapList();
+        this.acceptButton.setEnabled(false);
     }
     
     /**
@@ -69,31 +109,35 @@ public class LauncherWindow extends javax.swing.JFrame {
         panelTileList = new ArrayList<JPanel>();
         
         // Open the new map
-        selectedMap = new Map(LauncherWindow.mapName);
-        int rows = selectedMap.getNumRows();
-        int cols = selectedMap.getNumCols();
-        
-        // Create the grid and assign to the mapPreview Panel
-        GridLayout gridLayout = new GridLayout(rows, cols,1,1);
-        this.mapPreview.setLayout(gridLayout);
-        for(int i=0; i<rows; i++){
-            for(int j=0; j<cols; j++){
-                Tile tile = selectedMap.getTile(i,j);
-                // add the tile to the panel
-                JPanel panelTile = AssetManager.getTilePanel(tile.getType());
-                panelTileList.add(panelTile);
-                this.mapPreview.add(panelTile);
+        if(this.numPract_ComboBox.getSelectedIndex()>-1){
+            selectedMap = new Map(LauncherWindow.mapName);
+            int rows = selectedMap.getNumRows();
+            int cols = selectedMap.getNumCols();
+
+            // Create the grid and assign to the mapPreview Panel
+            GridLayout gridLayout = new GridLayout(rows, cols,1,1);
+            this.mapPreview.setLayout(gridLayout);
+            for(int i=0; i<rows; i++){
+                for(int j=0; j<cols; j++){
+                    Tile tile = selectedMap.getTile(i,j);
+                    // add the tile to the panel
+                    JPanel panelTile = AssetManager.getTilePanel(tile.getType());
+                    panelTileList.add(panelTile);
+                    this.mapPreview.add(panelTile);
+                }
             }
+        
+            // set the limit to the spinner widgets
+            ((SpinnerNumberModel)this.originRowSpinner.getModel()).setMaximum(rows-1);
+            ((SpinnerNumberModel)this.originColSpinner.getModel()).setMaximum(cols-1);
+            ((SpinnerNumberModel)this.targetRowSpinner.getModel()).setMaximum(rows-1);
+            ((SpinnerNumberModel)this.targetColSpinner.getModel()).setMaximum(cols-1);
         }
         
-        // set the limit to the spinner widgets
-        ((SpinnerNumberModel)this.originRowSpinner.getModel()).setMaximum(rows-1);
-        ((SpinnerNumberModel)this.originColSpinner.getModel()).setMaximum(cols-1);
-        ((SpinnerNumberModel)this.targetRowSpinner.getModel()).setMaximum(rows-1);
-        ((SpinnerNumberModel)this.targetColSpinner.getModel()).setMaximum(cols-1);
-        
-        // Update the map preview
-        this.updatePositionIcons();
+        // Update the position icons only if it is in P2
+        if(isP2selected()){
+            this.updatePositionIcons();
+        }
         this.mapPreview.updateUI();
     }
 
@@ -140,6 +184,10 @@ public class LauncherWindow extends javax.swing.JFrame {
             if( !e.getValueIsAdjusting()){
                 LauncherWindow.mapName = mapSelection_List.getSelectedValue();
                 updateMapPreview();
+                // enable the button if it is the p3 selection
+                if(numPract_ComboBox.getSelectedIndex() == 1){
+                    this.acceptButton.setEnabled(true);
+                }
             }
         });
         
@@ -166,38 +214,29 @@ public class LauncherWindow extends javax.swing.JFrame {
         this.targetRowSpinner.addChangeListener(spinnerChListener);
         this.targetColSpinner.addChangeListener(spinnerChListener);
         
-        this.acceptButton.addActionListener((e) -> {  runAgent(); });
+        this.numPract_ComboBox.addActionListener((e) -> notifyPChange());
+        
+        this.acceptButton.addActionListener((e) -> openCorrespondingMainWindow());
     }
     
-    
-    
-    private void runAgent(){
-        // CHECK IF THE VALUES ARE CORRECT...
-        if(valid()){
-
-            // Creates and launch the agent
-            Launcher.createScoutAgent();
-            
-            // set initial mision
-            Launcher.configureAgent(selectedMap, originPos, targetPos);
-            
-            // call to the main window
-            Launcher.openMainWindow(selectedMap, mapName);
-            
-            // start the agent
-            Launcher.startScoutAgent();
-            
-            // close the window
-            this.setVisible(false);
-        }
+    /**
+     * Private method to use as callback in the accept button
+     * Its select the corresponding main window to be opened
+     */
+    private void openCorrespondingMainWindow(){
+        if(isP2selected())  Launcher.runP2();
+        else                Launcher.runP3();
     }
-    
+        
     private boolean valid(){
-        if(selectedMap != null){
+        if(isP2selected() && selectedMap != null){
             boolean res = !targetPos.equals(originPos);
             res &= selectedMap.getTile(originPos).isReacheable();
             res &= selectedMap.getTile(targetPos).isReacheable();
             return res;
+        }
+        else if( !isP2selected() && selectedMap != null){
+            return true;
         }
         else{
             return false;
@@ -222,7 +261,7 @@ public class LauncherWindow extends javax.swing.JFrame {
         mapSelection_List = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         acceptButton = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
+        positionPanel = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -245,7 +284,6 @@ public class LauncherWindow extends javax.swing.JFrame {
         DBATitle_Label.setText("Pantalla de Carga - DBA");
 
         numPract_ComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "P2 - Busqueda Objetivo", "P3 - Busqueda otro Agente" }));
-        numPract_ComboBox.setEnabled(false);
 
         mapSelection_Frame.setBackground(new java.awt.Color(102, 102, 102));
         mapSelection_Frame.setPreferredSize(new java.awt.Dimension(500, 220));
@@ -330,50 +368,50 @@ public class LauncherWindow extends javax.swing.JFrame {
         warningLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         warningLabel.setText("<html><center> Compruebe las posiciones de inicio y final.</br> No deben ser iguales ni estar sobre un muro. </center></html>");
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+        javax.swing.GroupLayout positionPanelLayout = new javax.swing.GroupLayout(positionPanel);
+        positionPanel.setLayout(positionPanelLayout);
+        positionPanelLayout.setHorizontalGroup(
+            positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(positionPanelLayout.createSequentialGroup()
+                .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(warningLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(positionPanelLayout.createSequentialGroup()
                             .addGap(6, 6, 6)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(positionPanelLayout.createSequentialGroup()
                             .addGap(11, 11, 11)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(positionPanelLayout.createSequentialGroup()
+                                    .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel8)
                                         .addComponent(jLabel5))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(originRowSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(targetRowSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel7)
                                 .addComponent(jLabel6))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(originColSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(targetColSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(14, 14, 14))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        positionPanelLayout.setVerticalGroup(
+            positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(positionPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(originRowSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -381,8 +419,8 @@ public class LauncherWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(positionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(targetRowSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -409,7 +447,7 @@ public class LauncherWindow extends javax.swing.JFrame {
                                 .addComponent(DBATitle_Label, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(mapSelection_Frame, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(positionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -421,7 +459,7 @@ public class LauncherWindow extends javax.swing.JFrame {
                 .addComponent(numPract_ComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(positionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(mapSelection_Frame, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(acceptButton)
@@ -479,7 +517,6 @@ public class LauncherWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel mapPreview;
     private javax.swing.JPanel mapSelection_Frame;
     private javax.swing.JList<String> mapSelection_List;
@@ -487,6 +524,7 @@ public class LauncherWindow extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> numPract_ComboBox;
     private javax.swing.JSpinner originColSpinner;
     private javax.swing.JSpinner originRowSpinner;
+    private javax.swing.JPanel positionPanel;
     private javax.swing.JSpinner targetColSpinner;
     private javax.swing.JSpinner targetRowSpinner;
     private javax.swing.JLabel warningLabel;

@@ -8,8 +8,11 @@ package gui;
 import components.Tile;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import javax.swing.ImageIcon;
 import java.awt.Image;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -23,6 +26,9 @@ public class AssetManager {
     static final Color COL_MIND_FREE = Color.decode("#EFEDF0");
     static final Color COL_MIND_WALL = Color.decode("#9c4d3d");
     static final Color COL_MIND_UNKN = Color.decode("#898989");
+    
+    static final Color CONVERSATION_HEADER_BG = Color.decode("#A3A3A3");
+    static final Color CONVERSATION_SCREEN_BG = Color.decode("#707070");
             
     static private final ImageIcon originValid = new ImageIcon("assets/icon_home_valid.png");
     static private final ImageIcon originNotValid = new ImageIcon("assets/icon_home_not_valid.png");
@@ -30,6 +36,19 @@ public class AssetManager {
     static private final ImageIcon targetNotValid = new ImageIcon("assets/icon_target_not_valid.png");
     static private final ImageIcon pastAgent = new ImageIcon("assets/icon_agent_past.png");
     static private final ImageIcon currentAgent = new ImageIcon("assets/icon_agent_current.png");
+    
+    
+    // ICONS FOR THE P3 UI
+    static private final ImageIcon ELF_AGENT = new ImageIcon( "assets/p3-elf-agent.png");
+    static private final ImageIcon ELF_AVATAR = new ImageIcon( "assets/p3-elf-agent-avatar.png");
+    static private final ImageIcon RUDOLF_AVATAR = new ImageIcon( "assets/p3-rudolf.png");
+    static private final ImageIcon SANTA_AVATAR = new ImageIcon( "assets/p3-santa.png");
+    static private final ImageIcon TICK_EMPTY = new ImageIcon("assets/icon_tick_empty.png");
+    static private final ImageIcon TICK_CHECKED = new ImageIcon("assets/icon_tick_checked.png");
+    static private final ImageIcon SOFT_REINDEER = new ImageIcon("assets/icon_soft_reindeer.png");
+    static private final ImageIcon LINE_REINDEER = new ImageIcon("assets/icon_line_reindeer.png");
+    static private final ImageIcon TARGET_REINDEER = new ImageIcon("assets/icon_target_reindeer.png");
+    
     
     static ImageIcon getOriginIcon(int dim, boolean valid){
         ImageIcon sourceIcon = originValid;
@@ -59,7 +78,40 @@ public class AssetManager {
         return lbl;
     }
     
+    static Image getSantaAvatar(int dim){
+        return SANTA_AVATAR.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getRudolfAvatar(int dim){
+        return RUDOLF_AVATAR.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
 
+    static Image getElfAvatar(int dim){
+        return ELF_AVATAR.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getTick_Empty(int dim){
+        return TICK_EMPTY.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getTick_Checked(int dim){
+        return TICK_CHECKED.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getReindeer_Soft(int dim){
+        return SOFT_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getReindeer_Line(int dim){
+        return LINE_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    static Image getReindeer_Target(int dim){
+        return TARGET_REINDEER.getImage().getScaledInstance(dim, dim, Image.SCALE_DEFAULT);
+    }
+    
+    /** TILE PANEL FOR P2 *****************************************************/
+    
     static JPanel getTilePanel(Tile.Type type){
 
         JPanel panelTile = new JPanel(new FlowLayout(FlowLayout.CENTER, 0,0));
