@@ -34,7 +34,7 @@ public class MainWindow extends javax.swing.JFrame {
     int MapTileWidth;
     
     /// Panels for the conversation with Santa and Rudolph
-    JPanel rudolphConvPanel, santaConvPanel;
+    ConversationPanel rudolphConvPanel, santaConvPanel;
     
         
     /**
@@ -136,7 +136,9 @@ public class MainWindow extends javax.swing.JFrame {
                 p.removeAll();
     }
     
+    public ConversationPanel getSantaConversation(){ return this.santaConvPanel; }
     
+    public ConversationPanel getRudolphConversation() { return this.rudolphConvPanel; }
     
     /**
      * This method is called from within the constructor to initialize the form.

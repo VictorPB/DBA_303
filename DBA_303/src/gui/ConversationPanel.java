@@ -102,6 +102,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.ME, msg));
+        this.updateUI();
     }
 
     /**
@@ -113,6 +114,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.TARGET, msg));
+        this.updateUI();
     }    
 
     /**
@@ -336,6 +338,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         // create and add the entry panel to the conversation
         this.taskListPanel = new missionList();
         this.ConvPanel.add(this.taskListPanel);
+        this.updateUI();
     }
     
     /**
@@ -345,6 +348,7 @@ public class ConversationPanel extends javax.swing.JPanel {
      */
     public void addCheckFoundReindeer(Reindeer.Name reindeer){
         ((missionList)this.taskListPanel).checkFoundReindeer(reindeer);
+        this.updateUI();
     }
     
     /**
