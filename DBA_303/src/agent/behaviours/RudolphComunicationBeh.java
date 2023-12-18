@@ -24,7 +24,7 @@ public class RudolphComunicationBeh extends Behaviour{
         this.rudolphAgent = agent;
     }
          
-        int state = 0;
+        CommManager.RudolphCommStates state = CommManager.RudolphCommStates.RECEIVE_CODE;
         boolean finish = false;
         ACLMessage lastMsg;
         
@@ -33,7 +33,7 @@ public class RudolphComunicationBeh extends Behaviour{
             ACLMessage resp;
             
             switch (state) {
-                case 0:
+                case RECEIVE_CODE:
                     this.lastMsg = myAgent.blockingReceive();
 
                     if(this.lastMsg.getPerformative() == ACLMessage.PROPOSE){
@@ -46,7 +46,7 @@ public class RudolphComunicationBeh extends Behaviour{
                                             ini.getPosition().toString(CommManager.SEPARATOR));
                             this.myAgent.send(resp);
                             System.out.println("RUDOLPH ---> ELF --------------- ACCEPT ReindeerName + ReindeerPos\n");
-                            state = 1;
+                            state = CommManager.RudolphCommStates.INFORM_ELF;
                         }
                         else{
                             resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
@@ -61,11 +61,11 @@ public class RudolphComunicationBeh extends Behaviour{
                     }
                     break;
                     
-                case 1:
+                case INFORM_ELF:
                     this.lastMsg = myAgent.blockingReceive();
                     if(this.lastMsg.getPerformative() == ACLMessage.REQUEST) {
                         System.out.println("RUDOLPH <--- ELF  ---------------  REQUEST nextReindeer");
-                        if (Environment.getInstance().getNumberReindeers() == 0){
+                        if (Environment.getInstance().getNumberReindeers() > 0){
                             System.out.println("RUDOLPH ---> ELF --------------- INFORM ReindeerName + ReindeerPos\n");
                             
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);

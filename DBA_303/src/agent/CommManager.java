@@ -42,6 +42,41 @@ public class CommManager {
         return result;
     }
     
+    
+    /**
+     * Enum all Elf communication states
+     */
+    public enum ElfCommStates {
+        INIT_MISSION,
+        RECEIVE_ACCEPT_SANTA,
+        PROPOSE_RUDOLPH,
+        RECEIVE_ACCEPT_RUDOLPH,
+        FOUND_AND_NEXT_REINDEER,
+        RECEIVE_NEW_REINDEER_POS,
+        REQUEST_SANTA_POS,
+        RECEIVE_SANTA_POS,
+        INFORM_SANTA_REACHED,
+        RECEIVE_SANTA_CONGRATS;
+    }
+    
+    /**
+     * Enum all Santa communication states
+     */
+    public enum SantaCommStates {
+        RECEIVE_MISSION,
+        RECEIVE_FOUND_OR_FINISH,
+        HOHOHO;
+    }
+    
+    /**
+     * Enum all Rudolph communication states
+     */
+    public enum RudolphCommStates {
+        RECEIVE_CODE,
+        INFORM_ELF;
+    }
+    
+    
     /**
     public static void main(String args[]){
         

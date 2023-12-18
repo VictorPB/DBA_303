@@ -24,7 +24,7 @@ public class SantaComunicationBeh extends Behaviour{
         this.santaAgent = agent;
     }
          
-        int state = 0;
+        CommManager.SantaCommStates state = CommManager.SantaCommStates.RECEIVE_MISSION;
         boolean finish = false;
         ACLMessage lastMsg;
         
@@ -35,7 +35,7 @@ public class SantaComunicationBeh extends Behaviour{
             this.lastMsg = myAgent.blockingReceive();
 
             switch (state) {
-                case 0:
+                case RECEIVE_MISSION:
                     if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         System.out.println("SANTA <--- ELF  --------------- PROPOSE mission");
                         if(this.santaAgent.radomElfAprove()){
@@ -47,7 +47,7 @@ public class SantaComunicationBeh extends Behaviour{
                                             Environment.getInstance().getRudolphPosition().toString(CommManager.SEPARATOR));
                             myAgent.send(resp);
                             System.out.println("SANTA ---> ELF --------------- ACCEPT code + rudolphPos\n");
-                            this.state = 1;
+                            this.state = CommManager.SantaCommStates.RECEIVE_FOUND_OR_FINISH;
                         }
                         else{
                             resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
@@ -64,7 +64,7 @@ public class SantaComunicationBeh extends Behaviour{
                     }
                     break;
                 
-                case 1:
+                case RECEIVE_FOUND_OR_FINISH:
                     if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         if (this.lastMsg.getPerformative() == ACLMessage.INFORM) {
                             System.out.println("SANTA <--- ELF  --------------- INFORM found");
@@ -87,7 +87,7 @@ public class SantaComunicationBeh extends Behaviour{
                             myAgent.send(posResponse);
 
                             System.out.println("SANTA ---> ELF --------------- INFORM SantaPos\n");
-                            this.state = 2;
+                            this.state = CommManager.SantaCommStates.HOHOHO;
                         }
                         else{
                             resp = this.lastMsg.createReply(ACLMessage.UNKNOWN);
@@ -103,7 +103,7 @@ public class SantaComunicationBeh extends Behaviour{
                         this.finish = true;
                     }
                     break;
-                case 2:
+                case HOHOHO:
                     if (this.lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)) {
                         System.out.println("SANTA <--- ELF  --------------- INFORM final");
                         
