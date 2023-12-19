@@ -47,6 +47,8 @@ public class RudolphComunicationBeh extends Behaviour{
                                     .getRudolphConversation()
                                     .addReceiverMsg("Codigo secreto Correcto!");
                             System.out.println("RUDOLPH ---> ELF --------------- ACCEPT ReindeerName + ReindeerPos\n");
+                            // Updates reindeers as 'known'
+                            Environment.getInstance().setReindeerAsKnown();
                             state = CommManager.RudolphCommStates.WAIT_REQUESTS_OR_INFORMS;
                         }
                         else{

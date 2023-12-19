@@ -69,6 +69,6 @@ public class UpdatePositionBehaviour extends Behaviour{
         
         @Override
         public boolean done() {
-            return myAgent.finished;
+            return myAgent.isFinished();
         }
 }

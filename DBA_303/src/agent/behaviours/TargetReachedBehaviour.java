@@ -26,9 +26,7 @@ public class TargetReachedBehaviour extends Behaviour{
     public void action() {
         if(myAgent.getElfState() != ElfAgent.State.COMMUNICATING){
             //If agent is next to targetPos
-            System.out.println("REL AGENT: "+myAgent.getAgentRelPos() + " TARGET: "+myAgent.getTargetRelPos());
             if(myAgent.getAgentRelPos().getChebyshovTo(myAgent.getTargetRelPos()) < 2){
-                System.out.println("SE SUPONE QUE HA LLEGAU!");
                 myAgent.setTargetReached(true);
                 myAgent.setElfState(ElfAgent.State.COMMUNICATING);
             }
@@ -37,6 +35,6 @@ public class TargetReachedBehaviour extends Behaviour{
 
     @Override
     public boolean done() {
-        return myAgent.finished;
+        return myAgent.isFinished();
     }
 }

@@ -110,7 +110,7 @@ public class MainWindow extends javax.swing.JFrame {
             JLabel icon;
             switch (r.getState()) {
                 case UNKNOWN:
-                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Line(this.MapTileWidth)));
+                    icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Soft(this.MapTileWidth)));
                     break;
                 case KNOWN:
                     icon = new JLabel(new ImageIcon(AssetManager.getReindeer_Line(this.MapTileWidth)));

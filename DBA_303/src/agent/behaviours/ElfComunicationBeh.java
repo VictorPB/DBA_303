@@ -25,7 +25,6 @@ public class ElfComunicationBeh extends Behaviour {
     private final ElfAgent myAgent;
 
     CommManager.ElfCommStates commState = CommManager.ElfCommStates.PROPOSE_SANTA_MISSION;
-    boolean finish = false;
     boolean allReindeerFound = false;
 
     String secretCode;
@@ -89,7 +88,7 @@ public class ElfComunicationBeh extends Behaviour {
 
                     } else {
                         System.out.println("ELF <--- SANTA  ---------------  REJECT");
-                        this.finish = true;
+                        this.myAgent.setFinished(true);
                     }
 
                     this.commState = CommManager.ElfCommStates.PROPOSE_RUDOLPH;
@@ -119,7 +118,7 @@ public class ElfComunicationBeh extends Behaviour {
                         this.commState = CommManager.ElfCommStates.REQUEST_REINDEER;
                     } else {
                         System.out.println("ELF <--- RUDOLPH  ---------------  REJECT");
-                        this.finish = true;
+                        this.myAgent.setFinished(true);
                     }
                     break;
 
@@ -159,7 +158,7 @@ public class ElfComunicationBeh extends Behaviour {
                         }
                     } else {
                         System.out.println("Elf: Rudolf no mando un INFORM.\n");
-                        this.finish = true;
+                        this.myAgent.setFinished(true);
                     }
                     break;
 
@@ -217,7 +216,7 @@ public class ElfComunicationBeh extends Behaviour {
 
                     } else {
                         System.out.println("Elf: Mi pana el santa no me mando bien la ubi\n");
-                        this.finish = true;
+                        this.myAgent.setFinished(true);
                     }
                     this.commState = CommManager.ElfCommStates.INFORM_SANTA_REACHED;
                     break;
@@ -237,13 +236,11 @@ public class ElfComunicationBeh extends Behaviour {
                 case RECEIVE_SANTA_CONGRATS:
                     this.lastMsgSanta = myAgent.blockingReceive();
                     if (this.lastMsgSanta.getPerformative() == ACLMessage.INFORM) {
-                        String santaThanksContent = this.lastMsgSanta.getContent();
                         System.out.println("Elf: Santa me agradeció la labor.");
-                        this.finish = true;
-                        this.myAgent.finished = true;
+                        this.myAgent.setFinished(true);
                     } else {
                         System.out.println("Elf: Santa manda performativa final mal\n");
-                        this.finish = true;
+                        this.myAgent.setFinished(true);
                     }
                     break;
             }
@@ -258,7 +255,7 @@ public class ElfComunicationBeh extends Behaviour {
 
     @Override
     public boolean done() {
-        return finish;
+        return myAgent.isFinished();
     }
 
     /**

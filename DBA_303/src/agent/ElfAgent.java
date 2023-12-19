@@ -48,7 +48,8 @@ public class ElfAgent extends Agent{
     // State of the agent
     State state;
     
-    public boolean finished;
+    // Flag to know if the agent has finished all actions
+    private boolean finished;
     
     /**
      * Constructor
@@ -91,6 +92,9 @@ public class ElfAgent extends Agent{
         return this.targetReached;
     }
     
+    public boolean isFinished() {
+        return this.finished;
+    }
     /** SETTERS ***************************************************************/
 
     /**
@@ -137,6 +141,10 @@ public class ElfAgent extends Agent{
     
     public Behaviour[] getMovementBehaviours(){
         return movementBehaviours;
+    }
+    
+    public void setFinished(boolean finished){
+        this.finished = finished;
     }
     
     /********************************************************/

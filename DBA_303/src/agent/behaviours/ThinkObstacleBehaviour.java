@@ -29,9 +29,6 @@ public class ThinkObstacleBehaviour extends Behaviour {
     @Override
     public void action() {
         if(myAgent.getElfState() != ElfAgent.State.COMMUNICATING && !myAgent.isTargetReached()){
-            System.out.println("Evaluating...");
-            System.out.println("Ag_abs" + Environment.getInstance().getElfPosition() + 
-                    "   Target_abs"+Environment.getInstance().getTargetPosition());
 
             // The agent takes the ajacents tiles with the Environment
             myAgent.setVision(Environment.getInstance().reveal());
@@ -144,6 +141,6 @@ public class ThinkObstacleBehaviour extends Behaviour {
 
     @Override
     public boolean done() {
-        return myAgent.finished;
+        return myAgent.isFinished();
     }
 }

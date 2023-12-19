@@ -199,6 +199,15 @@ public class Environment {
         this.reindeers.get(index).setState(state);
     };
     
+    /**
+     * Public Method to stablish reindeers as 'known' so it updates the icon
+     * at the UI
+     */
+    public void setReindeerAsKnown(){
+        for(Reindeer r:this.reindeers)
+            r.setState(Reindeer.State.KNOWN);
+    }
+    
     /** PRIVATE UTIL METHODS **************************************************/
 
     /**
