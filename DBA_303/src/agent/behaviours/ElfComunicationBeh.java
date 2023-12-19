@@ -47,18 +47,16 @@ public class ElfComunicationBeh extends Behaviour{
             //SANTA
             
             case PROPOSE_SANTA_MISSION:
+                System.out.println("ELF ---> SANTA --------------- PROPOSE mission");
+                Launcher.getMainWindow()
+                        .getSantaConversation()
+                        .addElfMessage("Hola Santa! Me propongo voluntario para la misión");
 
                 msg = new ACLMessage(ACLMessage.PROPOSE);
                 msg.addReceiver(new AID(CommManager.AID_SANTA,AID.ISLOCALNAME));
                 msg.setConversationId(CommManager.CONV_ID_SANTA);
                 msg.setContent("PROPOSE MISION");
                 myAgent.send(msg);
-
-                // Console log and UI update
-                System.out.println("ELF ---> SANTA --------------- PROPOSE mission");
-                Launcher.getMainWindow()
-                        .getSantaConversation()
-                        .addElfMessage("Hola Santa! Me propongo voluntario para la misión");
 
                 this.state = CommManager.ElfCommStates.SANTA_PROPOSAL_RESPONSE;
                 break;
@@ -69,14 +67,13 @@ public class ElfComunicationBeh extends Behaviour{
                     String santaValidationContent = this.lastMsgSanta.getContent();
                     System.out.println("ELF <--- SANTA  ---------------  ACCEPT code + rudoplhPos");
                     System.out.println("       msg: " + santaValidationContent+"\n");
+                    // Update the Santa conversation with the mision list
+                    Launcher.getMainWindow().getSantaConversation().addTaskListPanel();
 
                     //Decode Message Get Secret Code and Rudolf Pos
                     decodeMSG(santaValidationContent);
 
                     System.out.println("       code: "+this.secretCode + " ---- rudolphPos: " +this.rudolphPos.toString()+"\n\n");
-                    
-                    // Update the Santa conversation with the mision list
-                    Launcher.getMainWindow().getSantaConversation().addTaskListPanel();
                     
                     //TODO: desplazarse hacia Rudolf
                 }
@@ -91,17 +88,16 @@ public class ElfComunicationBeh extends Behaviour{
             //RUDOLF
 
             case PROPOSE_RUDOLPH:
+                System.out.println("ELF ---> RUDOLPH  ---------------  PROPOSE code " + this.secretCode);
+                Launcher.getMainWindow()
+                        .getRudolphConversation()
+                        .addElfMessage("Hola Rudolph! Código secreto: "+this.secretCode);
+                
                 msg = new ACLMessage(ACLMessage.PROPOSE);
                 msg.addReceiver(new AID(CommManager.AID_RUDOLPH,AID.ISLOCALNAME));
                 msg.setConversationId(secretCode);
                 msg.setContent("Elf: Hola Rudolf, este es el codigo secreto:"+this.secretCode);               
                 myAgent.send(msg);                  
-
-                // Console log and UI update
-                System.out.println("ELF ---> RUDOLPH  ---------------  PROPOSE code " + this.secretCode);
-                Launcher.getMainWindow()
-                        .getRudolphConversation()
-                        .addElfMessage("Hola Rudolph! Código secreto: "+this.secretCode);
 
                 this.state = CommManager.ElfCommStates.RUDOLPH_PROPOSAL_RESPONSE;
                 break;
@@ -119,14 +115,14 @@ public class ElfComunicationBeh extends Behaviour{
                 break;
 
             case REQUEST_REINDEER:
+                Launcher.getMainWindow()
+                        .getRudolphConversation()
+                        .addElfMessage("Dame coordenadas");
+                System.out.println("ELF ---> RUDOLPH  ---------------  REQUEST nextReindeer");
+                
                 replyRudolph = this.lastMsgRudolph.createReply(ACLMessage.REQUEST);
                 replyRudolph.setContent("Next Reindeer");
                 this.myAgent.send(replyRudolph);
-                
-                System.out.println("ELF ---> RUDOLPH  ---------------  REQUEST nextReindeer");
-                Launcher.getMainWindow()
-                        .getRudolphConversation()
-                        .addElfMessage("Dame más coordenadas");
                 
                 this.state = CommManager.ElfCommStates.RECEIVE_REINDEER_OR_FINISH;
                 break;
@@ -135,7 +131,6 @@ public class ElfComunicationBeh extends Behaviour{
                 this.lastMsgRudolph = myAgent.blockingReceive();
                 if(this.lastMsgRudolph.getPerformative() == ACLMessage.INFORM){
                     String reindeerPosContent = this.lastMsgRudolph.getContent();
-                    
 
                     //Decode Message Get first lost reindeer
                     decodeMSG(reindeerPosContent);
@@ -158,7 +153,13 @@ public class ElfComunicationBeh extends Behaviour{
                 }
                 break;
 
-            case INFORM_FOUND_REINDEER:         //Informamos reno encontrado y pedimos siguiente reno
+            case INFORM_FOUND_REINDEER:
+                Launcher.getMainWindow()
+                        .getRudolphConversation()
+                        .addElfMessage("Encontrado "+this.reindeerName);
+                System.out.println("ELF ---> SANTA  ---------------  INFORM found reindeer " + this.reindeerName);
+                System.out.println("ELF ---> RUDOLPH  ---------------  INFORM found reindeer " + this.reindeerName);
+
                 // Inform to rudolph of the found reindeer
                 replyRudolph = this.lastMsgRudolph.createReply(ACLMessage.INFORM);
                 replyRudolph.setContent(this.reindeerName);
@@ -170,23 +171,17 @@ public class ElfComunicationBeh extends Behaviour{
                 System.out.println(this.reindeerName);
                 this.myAgent.send(replySanta);
                 
-                System.out.println("ELF ---> SANTA  ---------------  INFORM found reindeer " + this.reindeerName);
-                Launcher.getMainWindow()
-                        .getRudolphConversation()
-                        .addElfMessage("Encontrado "+this.reindeerName);
-                System.out.println("ELF ---> RUDOLPH  ---------------  INFORM found reindeer " + this.reindeerName);
-                
                 this.state = CommManager.ElfCommStates.REQUEST_REINDEER;
                 break;
 
             case REQUEST_SANTA_POS:         //Request Santa position
-                replySanta = this.lastMsgSanta.createReply(ACLMessage.REQUEST);
-                this.myAgent.send(replySanta);
-                
-                System.out.println("ELF ---> SANTA --------------- REQUEST SantaPos");
                 Launcher.getMainWindow()
                         .getSantaConversation()
                         .addElfMessage("Santa, dime tu posición");
+                System.out.println("ELF ---> SANTA --------------- REQUEST SantaPos");
+                
+                replySanta = this.lastMsgSanta.createReply(ACLMessage.REQUEST);
+                this.myAgent.send(replySanta);
                 
                 this.state = CommManager.ElfCommStates.RECEIVE_SANTA_POS;
                 break;
@@ -212,13 +207,13 @@ public class ElfComunicationBeh extends Behaviour{
                 break;
 
             case INFORM_SANTA_REACHED:
-                replySanta = this.lastMsgSanta.createReply(ACLMessage.INFORM);                
-                this.myAgent.send(replySanta);
-
-                System.out.println("ELF ---> SANTA --------------- INFORM");
                 Launcher.getMainWindow()
                         .getSantaConversation()
                         .addElfMessage("Ya estoy aquí. Misión Completada!");
+                System.out.println("ELF ---> SANTA --------------- INFORM");
+                
+                replySanta = this.lastMsgSanta.createReply(ACLMessage.INFORM);                
+                this.myAgent.send(replySanta);
                 
                 this.state = CommManager.ElfCommStates.RECEIVE_SANTA_CONGRATS;
                 break; 
@@ -236,7 +231,7 @@ public class ElfComunicationBeh extends Behaviour{
         }
         
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }

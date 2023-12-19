@@ -110,7 +110,7 @@ public class RudolphComunicationBeh extends Behaviour{
                     break;
             }
                     try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }

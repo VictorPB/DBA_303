@@ -42,6 +42,14 @@ public class SantaComunicationBeh extends Behaviour{
                     if(this.lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)){
                         System.out.println("SANTA <--- ELF  --------------- PROPOSE mission");
                         if(this.santaAgent.radomElfAprove()){
+                            Launcher.getMainWindow()
+                                    .getSantaConversation()
+                                    .addReceiverMsg("Eres un elfo válido");
+                            Launcher.getMainWindow()
+                                    .getSantaConversation()
+                                    .addReceiverMsg("Este es el código: "+CommManager.CONV_ID_RUDOLPH);
+                            System.out.println("SANTA ---> ELF --------------- ACCEPT code + rudolphPos\n");
+                            
                             resp = this.lastMsg.createReply(ACLMessage.ACCEPT_PROPOSAL);                          
                             resp.setContent("SecretCode" + 
                                             CommManager.SEPARATOR +
@@ -49,22 +57,18 @@ public class SantaComunicationBeh extends Behaviour{
                                             CommManager.SEPARATOR +
                                             Environment.getInstance().getRudolphPosition().toString(CommManager.SEPARATOR));
                             myAgent.send(resp);
-                            System.out.println("SANTA ---> ELF --------------- ACCEPT code + rudolphPos\n");
-                            Launcher.getMainWindow()
-                                    .getSantaConversation()
-                                    .addReceiverMsg("Eres un elfo válido");
-                            Launcher.getMainWindow()
-                                    .getSantaConversation()
-                                    .addReceiverMsg("Este es el código: "+CommManager.CONV_ID_RUDOLPH);
+                                                        
                             this.state = CommManager.SantaCommStates.RECEIVE_FOUND_OR_FINISH;
                         }
                         else{
-                            resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
-                            this.myAgent.send(resp);
-                            System.out.println("SANTA ---> ELF --------------- REJECT\n");
                             Launcher.getMainWindow()
                                     .getSantaConversation()
                                     .addReceiverMsg("No creo que valgas para esto...");
+                            System.out.println("SANTA ---> ELF --------------- REJECT\n");
+                            
+                            resp = this.lastMsg.createReply(ACLMessage.REJECT_PROPOSAL);
+                            this.myAgent.send(resp);
+                                                        
                             this.finish = true;
                         }
                     }
@@ -85,27 +89,25 @@ public class SantaComunicationBeh extends Behaviour{
                             Launcher.getMainWindow()
                                     .getSantaConversation()
                                     .addCheckFoundReindeer(Reindeer.Name.fromName(reinderName));
-                            // TODO: Añadir interfaz
                         }
                         else if (this.lastMsg.getPerformative() == ACLMessage.REQUEST) {
                             System.out.println("SANTA <--- ELF  --------------- REQUEST SantaPos");
 
-                            // TODO: Obtener ubicación de Santa
                             Position santaPos = Environment.getInstance().getSantaPosition();
+                            
+                            Launcher.getMainWindow()
+                                    .getSantaConversation()
+                                    .addReceiverMsg("Estoy en "+santaPos);
+                            System.out.println("SANTA ---> ELF --------------- INFORM SantaPos\n");
 
                             resp = this.lastMsg.createReply();
-
                             resp.setPerformative(ACLMessage.INFORM);
                             resp.setContent("SANTA" + CommManager.SEPARATOR 
                                             + " POS " + CommManager.SEPARATOR 
                                             + santaPos.toString(CommManager.SEPARATOR));
 
                             myAgent.send(resp);
-
-                            System.out.println("SANTA ---> ELF --------------- INFORM SantaPos\n");
-                            Launcher.getMainWindow()
-                                    .getSantaConversation()
-                                    .addReceiverMsg("Estoy en "+santaPos);
+                            
                             this.state = CommManager.SantaCommStates.HOHOHO;
                         }
                         else{
@@ -122,30 +124,33 @@ public class SantaComunicationBeh extends Behaviour{
                         this.finish = true;
                     }
                     break;
+
                 case HOHOHO:
                     if (this.lastMsg.getConversationId().equals(CommManager.CONV_ID_SANTA)) {
                         System.out.println("SANTA <--- ELF  --------------- INFORM final");
+                        System.out.println("Santa: ¡HoHoHo! - Elf llegó a la ubicación.");
+                        Launcher.getMainWindow()
+                                .getSantaConversation()
+                                .addReceiverMsg("Gracias, HoHoHo!!!");
                         
                         resp = this.lastMsg.createReply();
                         resp.setPerformative(ACLMessage.INFORM);
                         resp.setContent("HoHoHo!");
                         myAgent.send(resp);
-
-                        System.out.println("Santa: ¡HoHoHo! - Elf llegó a la ubicación.");
-                        Launcher.getMainWindow()
-                                .getSantaConversation()
-                                .addReceiverMsg("Gracias, HoHoHo!!!");
+                        
                     } else {
                         System.out.println("Santa: Mensaje inesperado o elfo no llegó.");
                     }
                     this.finish = true;
                     break;
                 }
-                    try {
-            Thread.sleep(500);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
+                
+                // Force delay
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
             }
 
             @Override
