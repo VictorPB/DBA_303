@@ -8,6 +8,7 @@ import agent.Sensor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.ArrayList;
 
 
 /**
@@ -44,6 +45,8 @@ public class Environment {
      * It initializes the environment, the reindeers array and the agents position
      */
     private Environment(){
+        this.visitedPath = new ArrayList<>();
+        
         this.reindeers = new ArrayList<>();
         
         for(Reindeer.Name name : Reindeer.Name.values()){
@@ -94,6 +97,27 @@ public class Environment {
     };
     
     /**
+     * Gets the santa agent position
+     */
+    public Position getSantaRespectAgent() {
+        return getTargetRespectAgent(this.santaPosition);
+    };
+    
+    /**
+     * Gets the rudolph agent position
+     */
+    public Position getRudolphRespectAgent() {
+        return getTargetRespectAgent(this.rudolphPosition);
+    };
+    
+    /**
+     * Gets the rudolph agent position
+     */
+    public Position getRudolphRespectAgent(Position Target) {
+        return getTargetRespectAgent(this.rudolphPosition);
+    };
+    
+    /**
      * Gets the elf agent position
      */
     public Position getElfPosition() {
@@ -127,10 +151,12 @@ public class Environment {
      */
     public void setParameters (Map map) {
         this.theMap = map;
-        
+             
         initRudolphPos();
         this.santaPosition = new Position(1,2);
         this.elfPosition = new Position(1,3);
+        
+        this.visitedPath.add(new ActionPair(this.elfPosition, Action.IDLE));
         
         generateLostReindeers();
     }
@@ -286,7 +312,7 @@ public class Environment {
         Position newPosition = this.elfPosition.update(action);
         if(theMap.getTile(newPosition.getY(),newPosition.getX()).isType(Tile.Type.EMPTY)){
             this.elfPosition = newPosition;
-            this.visitedPath.get(this.visitedPath.size()-1).a = action;
+            this.visitedPath.get(Math.max(0, this.visitedPath.size()-1)).a = action;
             if(targetReached()){
                 this.visitedPath.add(new ActionPair(newPosition, Action.END));
             }
@@ -301,10 +327,10 @@ public class Environment {
     }
     
     
-    Position getTargetRespectAgent(){
+    public Position getTargetRespectAgent(Position target){
         return new Position(
-            targetPosition.getX() - this.elfPosition.getX(),
-            targetPosition.getY() - this.elfPosition.getY()
+            target.getX() - this.elfPosition.getX(),
+            target.getY() - this.elfPosition.getY()
         );
     }
     
@@ -347,7 +373,7 @@ public class Environment {
     /**************************************************************************/
     public static void main(String args[]){
         
-        Map map = new Map("mapWithDiagonalWall.txt");
+        Map map = new Map("P3map40.txt");
         System.out.println("Generating new Environment...");
         
         Environment.getInstance().setParameters(map);

@@ -5,7 +5,7 @@
 package agent.behaviours;
 
 import agent.ElfAgent;
-import agent.Sensor;
+import components.Environment;
 import components.Position;
 import components.Tile;
 import jade.core.behaviours.Behaviour;
@@ -32,8 +32,8 @@ public class UpdatePositionBehaviour extends Behaviour{
             // The agent actualizes his position on his internal map
             myAgent.setAgentPos(myAgent.getAgentPos().update(myAgent.getNextAction()));
             
-            // The sensor actualize the position of the agent
-            Sensor.getInstance().updatePosition(myAgent.getNextAction());
+            // The Environment actualize the position of the agent
+            Environment.getInstance().updatePosition(myAgent.getNextAction());
             
             //If needs it, resize AgentMap
             myAgent.updateResizeMap(); 

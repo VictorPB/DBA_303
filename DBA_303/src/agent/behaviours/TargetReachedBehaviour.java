@@ -5,7 +5,6 @@
 package agent.behaviours;
 
 import agent.ElfAgent;
-import agent.Sensor;
 import jade.core.behaviours.Behaviour;
 
 /**
