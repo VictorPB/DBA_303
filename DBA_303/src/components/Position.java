@@ -88,6 +88,10 @@ public class Position {
         return Math.sqrt(dX*dX + dY*dY);
     }
     
+    public int getChebyshovTo(Position target){
+        return Math.max(Math.abs(target.x-this.x),Math.abs(target.y-this.y));
+    }
+    
     /** GETTERS ***************************************************************/
     
     /**

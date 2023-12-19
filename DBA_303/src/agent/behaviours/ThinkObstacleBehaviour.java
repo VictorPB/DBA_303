@@ -5,8 +5,8 @@
 package agent.behaviours;
 
 import agent.ElfAgent;
-import agent.Sensor;
 import components.Action;
+import components.Environment;
 import components.Position;
 import components.Tile;
 import jade.core.behaviours.Behaviour;
@@ -28,13 +28,10 @@ public class ThinkObstacleBehaviour extends Behaviour {
     
     @Override
     public void action() {
-        if(!myAgent.isTargetReached()){
-            System.out.println("Evaluating...");
-            System.out.println("Ag_abs" + Sensor.getInstance().getAgentPosition() + 
-                    "   Target_abs"+Sensor.getInstance().getTargetPosition());
+        if(myAgent.getElfState() != ElfAgent.State.COMMUNICATING && !myAgent.isTargetReached()){
 
-            // The agent takes the ajacents tiles with the sensor
-            myAgent.setVision(Sensor.getInstance().reveal());
+            // The agent takes the ajacents tiles with the Environment
+            myAgent.setVision(Environment.getInstance().reveal());
 
             // The agent checks the adjacents tiles and decides the best one
             // by their values. The best one will be the tile whose score is lower.
@@ -144,6 +141,6 @@ public class ThinkObstacleBehaviour extends Behaviour {
 
     @Override
     public boolean done() {
-        return myAgent.isTargetReached();
+        return myAgent.isFinished();
     }
 }

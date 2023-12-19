@@ -5,7 +5,6 @@
 package agent.behaviours;
 
 import agent.ElfAgent;
-import agent.Sensor;
 import jade.core.behaviours.Behaviour;
 
 /**
@@ -25,18 +24,17 @@ public class TargetReachedBehaviour extends Behaviour{
     
     @Override
     public void action() {
-        
-        //If agent is next to targetPos
-        if(myAgent.getAgentRelPos().getManhattanTo(myAgent.getTargetRelPos()) <= 2){
-            for(Behaviour b : myAgent.getMovementBehaviours()){
-                this.myAgent.removeBehaviour(b);
+        if(myAgent.getElfState() != ElfAgent.State.COMMUNICATING){
+            //If agent is next to targetPos
+            if(myAgent.getAgentRelPos().getChebyshovTo(myAgent.getTargetRelPos()) < 2){
+                myAgent.setTargetReached(true);
+                myAgent.setElfState(ElfAgent.State.COMMUNICATING);
             }
-            myAgent.setTargetReached(true);
         }
     }
 
     @Override
     public boolean done() {
-        return myAgent.isTargetReached();
+        return myAgent.isFinished();
     }
 }

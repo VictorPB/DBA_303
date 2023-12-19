@@ -45,8 +45,11 @@ public class ElfAgent extends Agent{
     // List of behaviours for movement
     Behaviour[] movementBehaviours;
     
-    // Indicates whether the agent has to move or is moving so as not to engage in communication behavior
-    boolean isTalking;
+    // State of the agent
+    State state;
+    
+    // Flag to know if the agent has finished all actions
+    private boolean finished;
     
     /**
      * Constructor
@@ -55,17 +58,18 @@ public class ElfAgent extends Agent{
         this.exploredArea = new Map(3,3);
         this.agentPos = new Position(1,1);
         
-        this.isTalking = false;
+        this.state = State.COMMUNICATING;
+        this.finished = false;
     }
     
     // TODO refill with getters, etc
     
     /** GETTERS ***************************************************************/
     /**
-     * Get the attribute isMoving
+     * Get the attribute state
      * 
      */
-    public boolean getTalking() { return this.isTalking; }
+    public State getElfState() { return this.state; }
     
     /**
      * Method to get the internal map
@@ -88,6 +92,9 @@ public class ElfAgent extends Agent{
         return this.targetReached;
     }
     
+    public boolean isFinished() {
+        return this.finished;
+    }
     /** SETTERS ***************************************************************/
 
     /**
@@ -95,8 +102,9 @@ public class ElfAgent extends Agent{
      * @param state boolean to set
      * 
      */
-    public void setTalking(boolean state) { 
-        this.isTalking = state; 
+    public void setElfState(State state) {
+        System.out.println("New State: "+state);
+        this.state = state;
     }
     
     public void setTargetReached(boolean reached) {
@@ -135,6 +143,10 @@ public class ElfAgent extends Agent{
         return movementBehaviours;
     }
     
+    public void setFinished(boolean finished){
+        this.finished = finished;
+    }
+    
     /********************************************************/
     //Funciones movimiento
     /**
@@ -144,7 +156,7 @@ public class ElfAgent extends Agent{
      * @param targetRespectAgent
      */
     public void setMission(Position targetRespectAgent) {
-
+        
         Position targetRelative = new Position(
                 this.agentPos.getX() + targetRespectAgent.getX(),
                 this.agentPos.getY() + targetRespectAgent.getY());
@@ -174,40 +186,23 @@ public class ElfAgent extends Agent{
         }
         
         this.targetPos = targetRelative;
+        this.targetReached = false;
+        this.exploredArea.clearVisited();
         updateVision();
         
-        System.out.println("CONFIGURATION FINISHES");
-        System.out.println("Agent"+this.agentPos);
-        System.out.println("Target: "+this.targetPos);
+        System.out.println("NEW MISSION SET:");
+        System.out.println("   Agent"+this.agentPos);
+        System.out.println("   Target: "+this.targetPos);
     }
 
-    /**
-     * Private method to prin the internal map in the console
-     * for debugging purposes
-     */
-    private void printInternalMap(){
-        exploredArea.getTile(agentPos).newVisit();
-        for (int i = 0; i < exploredArea.getNumRows(); i++) {
-            for (int j = 0; j < exploredArea.getNumCols(); j++) {
-                Position p = new Position(j, i);
-                if (p.equals(agentPos))
-                    System.out.print("A");
-                else if (p.equals(targetPos))
-                    System.out.print("X");
-                else
-                    System.out.print("0");
-            }
-            System.out.println("");
-        }
-    }
-    
+
     /**
      * Method to set the values of the agent's adjacent tiles
-     * It calls the sensor to take the value tiles
+     * It calls the enviroment to take the value tiles
      */
     public void updateVision() {
 
-        vision = Sensor.getInstance().reveal();
+        vision = Environment.getInstance().reveal();
         int indexVision = 0;
 
         for (int i = agentPos.getY() - 1; i <= agentPos.getY() + 1; i++) {
@@ -218,6 +213,7 @@ public class ElfAgent extends Agent{
         }
     }
 
+    
     /**
      * Check if Agent Map (exploredArea) needs to be resized because
      * being in the border of the map.
@@ -244,10 +240,9 @@ public class ElfAgent extends Agent{
     
     /********************************************************/
     
-    
-    
+        
     /**
-     * In setup we initialize the agent, we set the sensor
+     * In setup we initialize the agent, we set the enviroment
      * and add to queue of Behaviours the actions that the
      * agent needs
      */
@@ -255,24 +250,28 @@ public class ElfAgent extends Agent{
     public void setup() {
         System.out.println("Hello! I'm the Elf Agent.\n");
         
-        Map map = new Map("mapWithDiagonalWall.txt");        
-        Environment.getInstance().setParameters(map);
-        
+        Behaviour comm = new ElfComunicationBeh(this); 
         Behaviour thinker = new ThinkObstacleBehaviour(this);
         Behaviour updater = new UpdatePositionBehaviour(this);
-        Behaviour comm = new ElfComunicationBeh(); 
+        Behaviour reacher = new TargetReachedBehaviour(this);
         
         this.addBehaviour(comm);
-//        this.addBehaviour(new TargetReachedBehaviour(this));
-//        this.addBehaviour(thinker);
-//        this.addBehaviour(updater);
-       
-        movementBehaviours = new Behaviour[] { thinker, updater };
+        this.addBehaviour(thinker);
+        this.addBehaviour(updater);
+        this.addBehaviour(reacher);
 
+        this.setElfState(State.COMMUNICATING);
     }
 
     @Override
     protected void takeDown() {
         System.out.println("Agent has completed the mision. Terminating ElfAgent...\n");
+    }
+    
+    public enum State {
+        COMMUNICATING,
+        GOING_TO_SANTA,
+        GOING_TO_RUDOLPH,
+        GOING_TO_LOST_REINDEER,
     }
 }

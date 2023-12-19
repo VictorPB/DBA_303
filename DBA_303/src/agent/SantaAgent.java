@@ -57,9 +57,6 @@ public class SantaAgent extends Agent{
      * @return true 80% and false 20%
      */
     public boolean radomElfAprove(){
-        int value = new Random().nextInt(5);
-        System.out.println("   evaluating elf with a ..."+value);
-        return true;//value >0;
-        //return (new Random().nextInt(5)) >0 ;
+        return (new Random().nextInt(5)) >0 ;
     }
 }

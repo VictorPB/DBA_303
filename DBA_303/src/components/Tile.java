@@ -59,6 +59,10 @@ public class Tile {
         this.timesVisited++;
     }
     
+    public void clearVisits(){
+        this.timesVisited = 0;
+    }
+    
     /**
      * Checks if a Tile is of a specific type
      * @param type TileType to check about

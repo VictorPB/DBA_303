@@ -92,7 +92,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Method to update the agents (Elf, Santa and Rudolph) position in the
      * map besides the lost reindeers ones. 
      */
-    private void updateAgentIcons(){
+    public void updateAgentIcons(){
         clearMap();
         Environment theEnvironment = Environment.getInstance();
         Position elf = theEnvironment.getElfPosition();
@@ -122,8 +122,8 @@ public class MainWindow extends javax.swing.JFrame {
                     icon = new JLabel("");
             }
             this.mainMapTilePanelArr.get(pos.getY()).get(pos.getX()).add(icon);
-            this.mainMap.updateUI();
         }
+        this.mainMap.updateUI();
     }
     
 
