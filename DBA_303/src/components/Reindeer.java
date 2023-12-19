@@ -1,13 +1,14 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    Reindeer.java
+ * @author  DBA_303. Carlos
  */
 package components;
 
 
 /**
- * @brief This class models each tile inside the Map.
+ * @brief This class stores the name, state and position of each reindeer in
+ * environment.
  */
 public class Reindeer {
     
@@ -20,16 +21,6 @@ public class Reindeer {
     /// Position of the reindeer in the map
     private Position pos;
     
-    
-    /**
-     * Reindeer Constructor by the representation value
-     * @param value
-     */
-    public Reindeer(int value) {
-        this.name = Name.fromValue(value);
-        this.state = State.UNKNOWN;
-        this.pos = new Position(1,1);
-    }
     
     /**
      * Reindeer Constructor by the reindeer name
@@ -109,46 +100,46 @@ public class Reindeer {
      * Enum all Santa's lost reindeers 
      */
     public enum Name {
-        BLITZEN(0),
-        COMET(1),
-        CUPIDO(2),
-        DANCER(3),
-        DASHER(4),
-        DONNER(5),
-        PRANCER(6),
-        VIXEN(7);
+        BLITZEN("BLITZEN"),
+        COMET("COMET"),
+        CUPIDO("CUPIDO"),
+        DANCER("DANCER"),
+        DASHER("DASHER"),
+        DONNER("DONNER"),
+        PRANCER("PRANCER"),
+        VIXEN("VIXEN");
         
-        private final int nameValue;
+        private final String nameValue;
 
-        private Name(int value) {
-            this.nameValue = value;
+        private Name(String nameValue) {
+            this.nameValue = nameValue;
         }
         
-        public static Name fromValue(int value) {
+        public static Name fromName(String name) {
             Name res = null;
-            switch (value) {
-                case 0:
+            switch (name) {
+                case "BLITZEN":
                     res = Name.BLITZEN;
                     break;
-                case 1:
+                case "COMET":
                     res = Name.COMET;
                     break;
-                case 2:
+                case "CUPIDO":
                     res = Name.CUPIDO;
                     break;
-                case 3:
+                case "DANCER":
                     res = Name.DANCER;
                     break;
-                case 4:
+                case "DASHER":
                     res = Name.DASHER;
                     break;
-                case 5:
+                case "DONNER":
                     res = Name.DONNER;
                     break;
-                case 6:
+                case "PRANCER":
                     res = Name.PRANCER;
                     break;
-                case 7:
+                case "VIXEN":
                     res = Name.VIXEN;
                     break;
                 default:
@@ -158,10 +149,6 @@ public class Reindeer {
             return res;
         }
 
-        @Override
-        public String toString() {
-            return Integer.toString(nameValue);
-        }
     }
     
     /**

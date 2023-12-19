@@ -1,7 +1,7 @@
 /*
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
  * @file    ElfAgent.java
- * @author 
- * @version
+ * @author  DBA_303. Jorge, Victor
  */
 package agent;
 
@@ -267,7 +267,7 @@ public class ElfAgent extends Agent{
         
 //        Behaviour thinker = new ThinkObstacleBehaviour(this);
 //        Behaviour updater = new UpdatePositionBehaviour(this);
-        Behaviour comm = new ElfComunicationBeh(this); 
+        Behaviour comm = new ElfComunicationBeh(); 
         
         this.addBehaviour(comm);
 //        this.addBehaviour(new TargetReachedBehaviour(this));

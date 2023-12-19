@@ -1,7 +1,7 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    ConversationPanel.java
+ * @author  DBA_303. JorgeBG
  */
 package gui;
 
@@ -30,8 +30,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
- *
- * @author JorgeBG
+ * @brief   Class that models a Panel where diferent agents shows its
+ *          conversation.
  */
 public class ConversationPanel extends javax.swing.JPanel {
 
@@ -42,9 +42,11 @@ public class ConversationPanel extends javax.swing.JPanel {
     static final Color AVATAR_BG = Color.decode("#c7cfd4");
     static final Color MSG_PANEL_BG = Color.decode("#e9f1f5");
     
-    
+    /// Destionation avatar icon
     Image destIcon;
+    /// Destionation agent name
     String destName;
+    /// internal panel for a tasklist to be showed
     JLayeredPane taskListPanel;
     
     /**
@@ -90,20 +92,29 @@ public class ConversationPanel extends javax.swing.JPanel {
         this.headerPanel.add(name);
     }
     
-
     
+    /**
+     * Adds an elf message
+     * @param msg the message
+     */
     public void addElfMessage(String msg){
         // add a previous separator
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.ME, msg));
+        this.updateUI();
     }
 
+    /**
+     * Adds a message from the other agent (Rudolf or Santa)
+     * @param msg the message
+     */
     public void addReceiverMsg(String msg){
         // add a previous separator
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.TARGET, msg));
+        this.updateUI();
     }    
 
     /**
@@ -120,6 +131,10 @@ public class ConversationPanel extends javax.swing.JPanel {
     
     /**  USEFUL INNER CLASSES  *************************************************/
     
+    /**
+     * @brief   A class that creates a panel with a circled backgroud for the
+     *          header of the conversation panel
+     */
     class CirclePanel extends JPanel{
         
         private Dimension size;
@@ -144,10 +159,15 @@ public class ConversationPanel extends javax.swing.JPanel {
         }
     }
     
-    // Enum to difference between the message sender
+    
+    /**
+     * Enum to difference between the message sender
+     */
     enum Sender{ ME, TARGET }
 
-    // Inner class to draw the message background
+    /**
+     * @brief Inner class to draw the message background
+     */
     class MessageBgPanel extends JPanel {
         
         Sender sender;
@@ -193,6 +213,10 @@ public class ConversationPanel extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * @brief   Class to generate the whole entry panel for the main
+     *          panel of the conversation
+     */
     class MessageEntryPanel extends JLayeredPane {
         ConversationPanel.Sender sender;
         String msg;
@@ -242,6 +266,9 @@ public class ConversationPanel extends javax.swing.JPanel {
         }
     }
     
+    /**
+     * @brief   Class that models a task (mission) list
+     */
     class missionList extends JLayeredPane {
         Map<Reindeer.Name, Boolean> misions;
         public Map<Reindeer.Name, JLabel> missionsCheckedPanels;
@@ -302,17 +329,26 @@ public class ConversationPanel extends javax.swing.JPanel {
         }
     }
 
-        
+    /**
+     * Method that adds the task list (lost reindeers) panel to the conversation
+     */
     public void addTaskListPanel(){
          // add a previous separator
         addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.taskListPanel = new missionList();
         this.ConvPanel.add(this.taskListPanel);
+        this.updateUI();
     }
     
+    /**
+     * Method that sets one lost reindeer as found (checked) in the mission list
+     * @pre   The task list must be created before this method is called
+     * @param reindeer the found reindeer
+     */
     public void addCheckFoundReindeer(Reindeer.Name reindeer){
         ((missionList)this.taskListPanel).checkFoundReindeer(reindeer);
+        this.updateUI();
     }
     
     /**

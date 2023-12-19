@@ -1,15 +1,17 @@
 /*
- * @file
- * @author
- * @version
+ * DBA PR3 - Files for the resolution of the Pr3, Agent communication.
+ * @file    CommManager.java
+ * @author  DBA_303. Jorge, Maria, Victor, Carlos
  */
+
 package agent;
 
 import java.util.Random;
 
 /**
- *
- * @author JorgeBG
+ *  @brief Class to manage the agent AIDs and states related with communication.
+ * It also generates the secret code used by the elf agent to talk to rudolph
+ * 
  */
 public class CommManager {
     public static final String AID_ELF = "ELF";
@@ -41,6 +43,42 @@ public class CommManager {
         }
         return result;
     }
+    
+    
+    /**
+     * Enum all Elf communication states
+     */
+    public enum ElfCommStates {
+        PROPOSE_SANTA_MISSION,
+        SANTA_PROPOSAL_RESPONSE,
+        PROPOSE_RUDOLPH,
+        RUDOLPH_PROPOSAL_RESPONSE,
+        REQUEST_REINDEER,
+        RECEIVE_REINDEER_OR_FINISH,
+        INFORM_FOUND_REINDEER,
+        REQUEST_SANTA_POS,
+        RECEIVE_SANTA_POS,
+        INFORM_SANTA_REACHED,
+        RECEIVE_SANTA_CONGRATS;
+    }
+    
+    /**
+     * Enum all Santa communication states
+     */
+    public enum SantaCommStates {
+        WAIT_FOR_PROPOSAL,
+        RECEIVE_FOUND_OR_FINISH,
+        HOHOHO;
+    }
+    
+    /**
+     * Enum all Rudolph communication states
+     */
+    public enum RudolphCommStates {
+        WAIT_FOR_PROPOSAL,
+        WAIT_REQUESTS_OR_INFORMS;
+    }
+    
     
     /**
     public static void main(String args[]){
