@@ -17,6 +17,7 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Box;
@@ -99,7 +100,7 @@ public class ConversationPanel extends javax.swing.JPanel {
      */
     public void addElfMessage(String msg){
         // add a previous separator
-        addSeparatorToConversation();
+        //addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.ME, msg));
         this.updateUI();
@@ -111,7 +112,7 @@ public class ConversationPanel extends javax.swing.JPanel {
      */
     public void addReceiverMsg(String msg){
         // add a previous separator
-        addSeparatorToConversation();
+        //addSeparatorToConversation();
         // create and add the entry panel to the conversation
         this.ConvPanel.add(new MessageEntryPanel(Sender.TARGET, msg));
         this.updateUI();
@@ -127,6 +128,7 @@ public class ConversationPanel extends javax.swing.JPanel {
                         new Dimension(0, 5), 
                         new Dimension(32767, 5))
         );
+        this.updateUI();
     }
     
     /**  USEFUL INNER CLASSES  *************************************************/
@@ -220,21 +222,40 @@ public class ConversationPanel extends javax.swing.JPanel {
     class MessageEntryPanel extends JLayeredPane {
         ConversationPanel.Sender sender;
         String msg;
+        
+        static final int LINE_H = 14;
+        static final int VMARGIN = 5;
+        static final int MIN_H = LINE_H + 4*VMARGIN;
 
         MessageEntryPanel(ConversationPanel.Sender sender, String msg) {
             this.sender = sender;
             this.msg = msg;
-            // supongo 1 linea
-            int nlines = 1;
+            
+            // Split lines and count
+            String newMsg = msg;
+            ArrayList<String> lines = new ArrayList<>();
+            while(newMsg.length()>40){
+                int ind = newMsg.indexOf(" ",0);
+                while(newMsg.indexOf(" ",ind+1)<40 && newMsg.indexOf(" ",ind+1)!= -1)
+                    ind = newMsg.indexOf(" ",ind+1);
+                lines.add(newMsg.substring(0,ind));
+                newMsg = newMsg.substring(ind).trim();
+            }
+            lines.add(newMsg);
 
-            int height = nlines*20 + 10;
-            if(height < 30) height = 30;
-
+            // calculate the dimension of the pannel
+            int height = lines.size()*LINE_H + 4*VMARGIN;
+            if(height < MIN_H) height = MIN_H;
+            int bgHeight = height - 2*VMARGIN;
+            
+            /******************************************************************/
             
             // Create the label(s)
-            JLabel msgLabel = new JLabel(msg);
-            msgLabel.setBounds(55,5,250,14);
-            this.add(msgLabel);
+            for(int i=0; i<lines.size(); i++){
+                JLabel l = new JLabel(lines.get(i));
+                l.setBounds(55,2*VMARGIN+i*LINE_H,250,LINE_H);
+                this.add(l);
+            }
 
             //dpending on the sender, place icon, msg bg (and circle?)
             JLabel avatar;
@@ -242,17 +263,17 @@ public class ConversationPanel extends javax.swing.JPanel {
 
             if(sender==ConversationPanel.Sender.ME){
                 avatar = new JLabel(new ImageIcon(AssetManager.getElfAvatar(30)));
-                avatar.setBounds(10,0, 30,30);
-                avatarBg.setBounds(10,0,30,30);
+                avatar.setBounds(10,VMARGIN, 30,30);
+                avatarBg.setBounds(10,VMARGIN,30,30);
             }
             else{
                 avatar = new JLabel(new ImageIcon(destIcon.getScaledInstance(30, 30, 0)));
-                avatar.setBounds(320,0,30,30);
-                avatarBg.setBounds(320,0,30,30);
+                avatar.setBounds(320,VMARGIN,30,30);
+                avatarBg.setBounds(320,VMARGIN,30,30);
             }
 
-            JPanel msgBg = new ConversationPanel.MessageBgPanel(sender, height);
-            msgBg.setBounds(40,0,280,height);
+            JPanel msgBg = new ConversationPanel.MessageBgPanel(sender, bgHeight);
+            msgBg.setBounds(40,VMARGIN,280,bgHeight);
 
             this.add(avatar);
             this.add(avatarBg);
