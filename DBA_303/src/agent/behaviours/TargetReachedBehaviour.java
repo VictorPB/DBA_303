@@ -36,6 +36,7 @@ public class TargetReachedBehaviour extends Behaviour{
 
     @Override
     public boolean done() {
+        myAgent.setElfState(ElfAgent.State.COMMUNICATING);
         return myAgent.isTargetReached();
     }
 }

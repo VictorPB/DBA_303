@@ -101,7 +101,6 @@ public class ElfAgent extends Agent{
     
     public void setTargetReached(boolean reached) {
         this.targetReached = reached;
-        this.setElfState(State.COMMUNICATING);
     }
     
     public Position getAgentPos(){
@@ -280,11 +279,6 @@ public class ElfAgent extends Agent{
         Behaviour comm = new ElfComunicationBeh(this); 
         
         this.addBehaviour(comm);
-//        this.addBehaviour(new TargetReachedBehaviour(this));
-//        this.addBehaviour(thinker);
-//        this.addBehaviour(updater);
-       
-        //movementBehaviours = new Behaviour[] { thinker, updater };
 
     }
 

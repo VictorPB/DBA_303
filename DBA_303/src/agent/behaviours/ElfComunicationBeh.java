@@ -154,7 +154,7 @@ public class ElfComunicationBeh extends Behaviour{
 
                             System.out.println("ELF <--- RUDOLPH  ---------------  "+this.reindeerName+" "+this.reindeerPos.toString());
 
-                            myAgent.setMission(Environment.getInstance().getRudolphRespectAgent());
+                            myAgent.setMission(Environment.getInstance().getTargetRespectAgent(this.reindeerPos));
                             myAgent.setElfState(ElfAgent.State.GOING_TO_LOST_REINDEER);
                             
                             this.state = CommManager.ElfCommStates.INFORM_FOUND_REINDEER;
