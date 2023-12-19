@@ -5,7 +5,7 @@
  */
 package gui;
 
-import agent.ScoutAgent;
+import agent.ElfAgent;
 import agent.Sensor;
 import components.Action;
 import components.Map;
@@ -88,7 +88,7 @@ public class MainWindowP2 extends javax.swing.JFrame {
     }
     
     public void updateInternalMapView(){
-        Map mindMap = ((ScoutAgent)Launcher.getAgent()).getExploredArea();
+        Map mindMap = ((ElfAgent)Launcher.getAgent()).getExploredArea();
         int rows = mindMap.getNumRows();
         int cols = mindMap.getNumCols();
         int size = Math.max(rows, cols);
@@ -104,7 +104,7 @@ public class MainWindowP2 extends javax.swing.JFrame {
         for(int i=0; i<size; i++){
             for(int j=0; j<size; j++){
                 if(i<rows && j<cols){
-                    ScoutAgent agent = ((ScoutAgent)Launcher.getAgent());
+                    ElfAgent agent = ((ElfAgent)Launcher.getAgent());
                     Position talePos = new Position(j, i);
                     JPanel miniTale = AssetManager.getMentalTilePanel(mindMap.getTile(talePos).getType());
 

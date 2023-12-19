@@ -8,7 +8,7 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-import agent.ScoutAgent;
+import agent.ElfAgent;
 
 import agent.Sensor;
 import components.Map;
@@ -77,7 +77,7 @@ public class Launcher {
      * for being called from the launcher window
      */
     public static void createScoutAgent(){
-        scoutAgent = new ScoutAgent();
+        scoutAgent = new ElfAgent();
         try{
             agentController = agentContController.acceptNewAgent("scoutter", scoutAgent);
         }
