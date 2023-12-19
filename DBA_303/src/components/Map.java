@@ -182,6 +182,14 @@ public class Map {
             r.add(0, new Tile(Tile.Type.UNKNOWN));
     }
     
+    public void clearVisited(){
+        for(ArrayList<Tile> r: this.board){
+            for(Tile t: r){
+                t.clearVisits();
+            }
+        }
+    }
+    
     /**************************************************************************/
 
     @Override

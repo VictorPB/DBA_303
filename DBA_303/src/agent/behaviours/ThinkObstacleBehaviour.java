@@ -28,7 +28,7 @@ public class ThinkObstacleBehaviour extends Behaviour {
     
     @Override
     public void action() {
-        if(!myAgent.isTargetReached()){
+        if(myAgent.getElfState() != ElfAgent.State.COMMUNICATING && !myAgent.isTargetReached()){
             System.out.println("Evaluating...");
             System.out.println("Ag_abs" + Environment.getInstance().getElfPosition() + 
                     "   Target_abs"+Environment.getInstance().getTargetPosition());
@@ -144,6 +144,6 @@ public class ThinkObstacleBehaviour extends Behaviour {
 
     @Override
     public boolean done() {
-        return myAgent.isTargetReached();
+        return myAgent.finished;
     }
 }

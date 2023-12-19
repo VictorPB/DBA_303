@@ -74,6 +74,7 @@ public class RudolphComunicationBeh extends Behaviour{
                             resp = this.lastMsg.createReply(ACLMessage.INFORM);
                             // Añadir a la respuesta un reno
                             Reindeer next = this.rudolphAgent.getNextReindeer();
+                            next.setState(Reindeer.State.CURRENT);
                             resp.setContent("PENDING" + CommManager.SEPARATOR + 
                                             next.getName().name() + CommManager.SEPARATOR +              // TODO: getName devuelve numero del ENUM- pasar a String
                                             next.getPosition().toString(CommManager.SEPARATOR));
@@ -110,7 +111,7 @@ public class RudolphComunicationBeh extends Behaviour{
                     break;
             }
                     try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }

@@ -4,6 +4,7 @@
  * @author  DBA_303. Carlos
  */
 package components;
+import launcher.Launcher;
 import agent.Sensor;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -292,11 +293,20 @@ public class Environment {
             for(int j=col-1; j<=col+1; j++){
                 // if the position is out of the map bounds, it adds an
                 // unreachable tile. otherwise it adds the source tile.
+//                if(i<0 || i>=theMap.getNumRows() || j<0 || j>=theMap.getNumCols()){
+//                    result.add(new Tile(Tile.Type.UNREACHABLE));
+//                }
+//                else{
+//                    result.add(theMap.getTile(i, j));
+//                }
                 if(i<0 || i>=theMap.getNumRows() || j<0 || j>=theMap.getNumCols()){
                     result.add(new Tile(Tile.Type.UNREACHABLE));
                 }
+                else if(legalPos(new Position(j,i))){
+                    result.add(new Tile(Tile.Type.EMPTY));
+                }
                 else{
-                    result.add(theMap.getTile(i, j));
+                    result.add(new Tile(Tile.Type.UNREACHABLE));
                 }
             }
         }
@@ -319,6 +329,7 @@ public class Environment {
             else{
                 this.visitedPath.add(new ActionPair(newPosition, Action.IDLE));
             }
+            Launcher.getMainWindow().updateAgentIcons();
             return true;
         }
         else{
@@ -369,6 +380,22 @@ public class Environment {
         return res;
     }
     
+    public void printMap() {
+        for(int i=0; i<Environment.getInstance().theMap.getNumRows(); i++){
+            for(int j=0; j<Environment.getInstance().theMap.getNumCols(); j++){
+                Position at = new Position(j,i);
+                Tile t = Environment.getInstance().theMap.getTile(i, j);
+                if(at.equals(Environment.getInstance().getElfPosition()))                           System.out.print("E");
+                else if (at.equals(Environment.getInstance().getRudolphPosition()))                 System.out.print("R");
+                else if (at.equals(Environment.getInstance().getSantaPosition()))                   System.out.print("S");
+                else if (Environment.getInstance().isReindeerInTile(at))                            System.out.print("D");
+                else if (t.isType(Tile.Type.EMPTY))                                                 System.out.print("▯");
+                else if (t.isType(Tile.Type.UNREACHABLE))                                           System.out.print("▮");
+                else                                                                                    System.out.print("?");
+            }
+            System.out.println("");
+        }
+    }
     
     /**************************************************************************/
     public static void main(String args[]){

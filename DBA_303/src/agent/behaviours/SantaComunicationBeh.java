@@ -147,7 +147,7 @@ public class SantaComunicationBeh extends Behaviour{
                 
                 // Force delay
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                 }
