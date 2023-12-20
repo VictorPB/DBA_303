@@ -391,8 +391,9 @@ public class ConversationPanel extends javax.swing.JPanel {
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         headerPanel.setBackground(new java.awt.Color(30, 30, 30));
+        headerPanel.setAlignmentY(0.0F);
         headerPanel.setMaximumSize(new java.awt.Dimension(360, 50));
-        headerPanel.setMinimumSize(new java.awt.Dimension(100, 50));
+        headerPanel.setMinimumSize(new java.awt.Dimension(360, 50));
         headerPanel.setOpaque(true);
         headerPanel.setPreferredSize(new java.awt.Dimension(360, 50));
 
@@ -411,7 +412,9 @@ public class ConversationPanel extends javax.swing.JPanel {
         add(filler1);
 
         ConvPanel.setBackground(new java.awt.Color(80, 80, 80));
+        ConvPanel.setToolTipText("");
         ConvPanel.setAlignmentX(0.5F);
+        ConvPanel.setAlignmentY(0.0F);
         ConvPanel.setMaximumSize(new java.awt.Dimension(360, 305));
         ConvPanel.setMinimumSize(new java.awt.Dimension(360, 305));
         ConvPanel.setPreferredSize(new java.awt.Dimension(360, 305));
