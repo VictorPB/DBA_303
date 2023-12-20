@@ -57,7 +57,6 @@ public class ConversationPanel extends javax.swing.JPanel {
         initComponents();
         this.headerPanel.setBackground(AssetManager.CONVERSATION_HEADER_BG);
         
-        
         // Init the 
         if(receiver=="SANTA"){
             destName = "SantaClaus";
@@ -175,7 +174,7 @@ public class ConversationPanel extends javax.swing.JPanel {
         Sender sender;
         Area msgBg;
         static final int PAN_WIDTH = 280;
-        static final int STEP = 10;
+        static final int STEP = 6;
         
         MessageBgPanel(Sender sender, int height){
             this.sender = sender;
@@ -186,7 +185,7 @@ public class ConversationPanel extends javax.swing.JPanel {
             this.setMaximumSize(d);
             
             this.msgBg = new Area(
-                    new RoundRectangle2D.Float(10,0,260,height,10,10));
+                    new RoundRectangle2D.Float(STEP,0,PAN_WIDTH-2*STEP,height,10,10));
             Path2D mark = new Path2D.Float();
             if(this.sender.equals(Sender.ME)){
                 mark.moveTo(0, 0);
@@ -224,8 +223,10 @@ public class ConversationPanel extends javax.swing.JPanel {
         String msg;
         
         static final int LINE_H = 14;
-        static final int VMARGIN = 5;
-        static final int MIN_H = LINE_H + 4*VMARGIN;
+        static final int OUT_VMARGIN = 2;
+        static final int IN_VMARGIN = 5;
+        static final int AVATAR_D = 28;
+        static final int MIN_H = AVATAR_D+2*OUT_VMARGIN;
 
         MessageEntryPanel(ConversationPanel.Sender sender, String msg) {
             this.sender = sender;
@@ -242,42 +243,42 @@ public class ConversationPanel extends javax.swing.JPanel {
                 newMsg = newMsg.substring(ind).trim();
             }
             lines.add(newMsg);
-
-            // calculate the dimension of the pannel
-            int height = lines.size()*LINE_H + 4*VMARGIN;
-            if(height < MIN_H) height = MIN_H;
-            int bgHeight = height - 2*VMARGIN;
             
             /******************************************************************/
             
             // Create the label(s)
             for(int i=0; i<lines.size(); i++){
                 JLabel l = new JLabel(lines.get(i));
-                l.setBounds(55,2*VMARGIN+i*LINE_H,250,LINE_H);
+                // x = 40+step_msg_bg+5
+                l.setBounds(51,OUT_VMARGIN+IN_VMARGIN+i*LINE_H,250,LINE_H);
                 this.add(l);
             }
 
             //dpending on the sender, place icon, msg bg (and circle?)
             JLabel avatar;
-            JPanel avatarBg = new ConversationPanel.CirclePanel(30, AVATAR_BG);
+            JPanel avatarBg = new ConversationPanel.CirclePanel(AVATAR_D, AVATAR_BG);
 
             if(sender==ConversationPanel.Sender.ME){
-                avatar = new JLabel(new ImageIcon(AssetManager.getElfAvatar(30)));
-                avatar.setBounds(10,VMARGIN, 30,30);
-                avatarBg.setBounds(10,VMARGIN,30,30);
+                avatar = new JLabel(new ImageIcon(AssetManager.getElfAvatar(AVATAR_D)));
+                avatar.setBounds(10,OUT_VMARGIN, AVATAR_D,AVATAR_D);
+                avatarBg.setBounds(10,OUT_VMARGIN,AVATAR_D,AVATAR_D);
             }
             else{
-                avatar = new JLabel(new ImageIcon(destIcon.getScaledInstance(30, 30, 0)));
-                avatar.setBounds(320,VMARGIN,30,30);
-                avatarBg.setBounds(320,VMARGIN,30,30);
+                avatar = new JLabel(new ImageIcon(destIcon.getScaledInstance(AVATAR_D, AVATAR_D, 0)));
+                avatar.setBounds(320,OUT_VMARGIN,AVATAR_D,AVATAR_D);
+                avatarBg.setBounds(320,OUT_VMARGIN,AVATAR_D,AVATAR_D);
             }
 
+            int bgHeight = lines.size()*LINE_H + 2*IN_VMARGIN;
             JPanel msgBg = new ConversationPanel.MessageBgPanel(sender, bgHeight);
-            msgBg.setBounds(40,VMARGIN,280,bgHeight);
+            msgBg.setBounds(40,OUT_VMARGIN,280,bgHeight);
 
             this.add(avatar);
             this.add(avatarBg);
             this.add(msgBg);
+            
+            int height = bgHeight + 2*IN_VMARGIN;
+            if(height < MIN_H) height = MIN_H;
             
             // resize the panel
             Dimension d = new Dimension(360 ,height);
@@ -385,14 +386,15 @@ public class ConversationPanel extends javax.swing.JPanel {
         filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 5), new java.awt.Dimension(0, 5), new java.awt.Dimension(32767, 5));
         ConvPanel = new javax.swing.JPanel();
 
-        setMaximumSize(new java.awt.Dimension(360, 360));
-        setMinimumSize(new java.awt.Dimension(360, 360));
-        setPreferredSize(new java.awt.Dimension(360, 360));
+        setMaximumSize(new java.awt.Dimension(360, 1600));
+        setMinimumSize(new java.awt.Dimension(360, 305));
+        setPreferredSize(new java.awt.Dimension(360, 700));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
         headerPanel.setBackground(new java.awt.Color(30, 30, 30));
+        headerPanel.setAlignmentY(0.0F);
         headerPanel.setMaximumSize(new java.awt.Dimension(360, 50));
-        headerPanel.setMinimumSize(new java.awt.Dimension(100, 50));
+        headerPanel.setMinimumSize(new java.awt.Dimension(360, 50));
         headerPanel.setOpaque(true);
         headerPanel.setPreferredSize(new java.awt.Dimension(360, 50));
 
@@ -411,8 +413,10 @@ public class ConversationPanel extends javax.swing.JPanel {
         add(filler1);
 
         ConvPanel.setBackground(new java.awt.Color(80, 80, 80));
+        ConvPanel.setToolTipText("");
         ConvPanel.setAlignmentX(0.5F);
-        ConvPanel.setMaximumSize(new java.awt.Dimension(360, 305));
+        ConvPanel.setAlignmentY(0.0F);
+        ConvPanel.setMaximumSize(new java.awt.Dimension(360, 16000));
         ConvPanel.setMinimumSize(new java.awt.Dimension(360, 305));
         ConvPanel.setPreferredSize(new java.awt.Dimension(360, 305));
         ConvPanel.setLayout(new javax.swing.BoxLayout(ConvPanel, javax.swing.BoxLayout.Y_AXIS));

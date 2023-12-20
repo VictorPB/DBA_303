@@ -45,18 +45,18 @@ public class UpdatePositionBehaviour extends Behaviour{
 
                 // this may show in console what the agent know about the map
 //                // it position and the target
-//                for(int i=0; i<myAgent.getExploredArea().getNumRows(); i++){
-//                    for(int j=0; j<myAgent.getExploredArea().getNumCols(); j++){
-//                        Position at = new Position(j,i);
-//                        Tile t = myAgent.getExploredArea().getTile(i, j);
-//                        if(at.equals(myAgent.getAgentPos()))                          System.out.print("A");
-//                        else if (at.equals(myAgent.getTargetPos()))                   System.out.print("X");
-//                        else if (t.isType(Tile.Type.EMPTY))         System.out.print("▯");
-//                        else if (t.isType(Tile.Type.UNREACHABLE))   System.out.print("▮");
-//                        else                                                System.out.print("?");
-//                    }
-//                    System.out.println("");
-//                }
+                for(int i=0; i<myAgent.getExploredArea().getNumRows(); i++){
+                    for(int j=0; j<myAgent.getExploredArea().getNumCols(); j++){
+                        Position at = new Position(j,i);
+                        Tile t = myAgent.getExploredArea().getTile(i, j);
+                        if(at.equals(myAgent.getAgentPos()))                          System.out.print("A");
+                        else if (at.equals(myAgent.getTargetPos()))                   System.out.print("X");
+                        else if (t.isType(Tile.Type.EMPTY))         System.out.print("▯");
+                        else if (t.isType(Tile.Type.UNREACHABLE))   System.out.print("▮");
+                        else                                                System.out.print("?");
+                    }
+                    System.out.println("");
+                }
 //                System.out.println("---------------------------------");
 
                 try {

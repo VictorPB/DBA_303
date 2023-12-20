@@ -163,9 +163,9 @@ public class ElfComunicationBeh extends Behaviour {
                     break;
 
                 case INFORM_FOUND_REINDEER: // Informamos reno encontrado y pedimos siguiente reno
-                    Launcher.getMainWindow()
-                            .getRudolphConversation()
-                            .addElfMessage("Encontrado " + this.reindeerName);
+//                    Launcher.getMainWindow()
+//                            .getRudolphConversation()
+//                            .addElfMessage("Encontrado " + this.reindeerName);
                     System.out.println("ELF ---> SANTA  ---------------  INFORM found reindeer " + this.reindeerName);
                     System.out.println("ELF ---> RUDOLPH  ---------------  INFORM found reindeer " + this.reindeerName);
 
