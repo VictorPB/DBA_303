@@ -23,6 +23,7 @@ import agent.SantaAgent;
 import agent.RudolphAgent;
 import agent.CommManager;
 import components.Environment;
+import gui.AssetManager;
 
 import gui.MainWindow;
 
